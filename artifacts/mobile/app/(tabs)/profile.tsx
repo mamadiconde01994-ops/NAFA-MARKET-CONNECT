@@ -14,17 +14,20 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Badge } from "@/components/common/Badge";
 import { UserAvatar } from "@/components/profile/UserAvatar";
 import { useAuth } from "@/context/AuthContext";
+import { useTheme } from "@/context/ThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { formatRole } from "@/lib/format";
+import type { ThemeKey } from "@/constants/colors";
 
 interface MenuItemProps {
   icon: keyof typeof Ionicons.glyphMap;
   label: string;
   onPress: () => void;
   danger?: boolean;
+  rightElement?: React.ReactNode;
 }
 
-function MenuItem({ icon, label, onPress, danger = false }: MenuItemProps) {
+function MenuItem({ icon, label, onPress, danger = false, rightElement }: MenuItemProps) {
   const colors = useColors();
   return (
     <Pressable
@@ -61,14 +64,82 @@ function MenuItem({ icon, label, onPress, danger = false }: MenuItemProps) {
       >
         {label}
       </Text>
-      {!danger && (
-        <Ionicons
-          name="chevron-forward"
-          size={16}
-          color={colors.mutedForeground}
-        />
-      )}
+      {rightElement
+        ? rightElement
+        : !danger && (
+          <Ionicons name="chevron-forward" size={16} color={colors.mutedForeground} />
+        )}
     </Pressable>
+  );
+}
+
+const THEME_OPTIONS: { key: ThemeKey; label: string; icon: keyof typeof Ionicons.glyphMap; description: string }[] = [
+  { key: "light", label: "Premium", icon: "sunny-outline", description: "Blanc & Marine" },
+  { key: "dark", label: "Sombre", icon: "moon-outline", description: "Mode nuit" },
+  { key: "green", label: "Agriculture", icon: "leaf-outline", description: "Vert nature" },
+];
+
+function ThemeSwitcher() {
+  const colors = useColors();
+  const { themeMode, setThemeMode } = useTheme();
+
+  return (
+    <View
+      style={[
+        styles.themeSwitcher,
+        {
+          backgroundColor: colors.card,
+          borderColor: colors.border,
+          borderRadius: colors.radius,
+        },
+      ]}
+    >
+      {THEME_OPTIONS.map((opt) => {
+        const isActive = themeMode === opt.key;
+        return (
+          <Pressable
+            key={opt.key}
+            onPress={() => setThemeMode(opt.key)}
+            style={({ pressed }) => [
+              styles.themeOption,
+              {
+                backgroundColor: isActive ? colors.primary : "transparent",
+                borderRadius: colors.radius - 4,
+                opacity: pressed ? 0.75 : 1,
+              },
+            ]}
+          >
+            <Ionicons
+              name={opt.icon}
+              size={18}
+              color={isActive ? colors.primaryForeground : colors.mutedForeground}
+            />
+            <View>
+              <Text
+                style={[
+                  styles.themeLabel,
+                  { color: isActive ? colors.primaryForeground : colors.foreground },
+                ]}
+              >
+                {opt.label}
+              </Text>
+              <Text
+                style={[
+                  styles.themeDesc,
+                  {
+                    color: isActive
+                      ? colors.primaryForeground + "BB"
+                      : colors.mutedForeground,
+                  },
+                ]}
+              >
+                {opt.description}
+              </Text>
+            </View>
+          </Pressable>
+        );
+      })}
+    </View>
   );
 }
 
@@ -99,7 +170,7 @@ export default function ProfileScreen() {
           styles.profileCard,
           {
             paddingTop: topPad,
-            backgroundColor: colors.primary,
+            backgroundColor: colors.navyHeader,
           },
         ]}
       >
@@ -116,11 +187,7 @@ export default function ProfileScreen() {
             )}
           </View>
           <View style={styles.locationRow}>
-            <Ionicons
-              name="location-outline"
-              size={13}
-              color="rgba(255,255,255,0.7)"
-            />
+            <Ionicons name="location-outline" size={13} color="rgba(255,255,255,0.7)" />
             <Text style={styles.locationText}>{user.location}</Text>
           </View>
         </View>
@@ -141,9 +208,7 @@ export default function ProfileScreen() {
         ].map((stat, i) => (
           <React.Fragment key={stat.label}>
             {i > 0 && (
-              <View
-                style={[styles.statDivider, { backgroundColor: colors.border }]}
-              />
+              <View style={[styles.statDivider, { backgroundColor: colors.border }]} />
             )}
             <View style={styles.statItem}>
               <Text style={[styles.statValue, { color: colors.foreground }]}>
@@ -157,7 +222,22 @@ export default function ProfileScreen() {
         ))}
       </View>
 
-      {/* Menu */}
+      {/* Theme switcher */}
+      <View style={styles.menuSection}>
+        <Text
+          style={[
+            styles.menuSectionTitle,
+            { color: colors.mutedForeground, paddingHorizontal: 16 },
+          ]}
+        >
+          APPARENCE
+        </Text>
+        <View style={{ paddingHorizontal: 16 }}>
+          <ThemeSwitcher />
+        </View>
+      </View>
+
+      {/* Account */}
       <View style={styles.menuSection}>
         <Text
           style={[
@@ -178,22 +258,14 @@ export default function ProfileScreen() {
             },
           ]}
         >
-          <MenuItem
-            icon="person-outline"
-            label="Modifier mon profil"
-            onPress={() => {}}
-          />
+          <MenuItem icon="person-outline" label="Modifier mon profil" onPress={() => {}} />
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
-          <MenuItem
-            icon="storefront-outline"
-            label="Mes annonces"
-            onPress={() => {}}
-          />
+          <MenuItem icon="storefront-outline" label="Mes annonces" onPress={() => {}} />
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
           <MenuItem
             icon="add-circle-outline"
             label="Publier un produit"
-            onPress={() => router.push("/product/create" as `/${string}`)}
+            onPress={() => router.push("/product/create" as any)}
           />
         </View>
       </View>
@@ -218,17 +290,9 @@ export default function ProfileScreen() {
             },
           ]}
         >
-          <MenuItem
-            icon="notifications-outline"
-            label="Notifications"
-            onPress={() => {}}
-          />
+          <MenuItem icon="notifications-outline" label="Notifications" onPress={() => {}} />
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
-          <MenuItem
-            icon="language-outline"
-            label="Langue"
-            onPress={() => {}}
-          />
+          <MenuItem icon="language-outline" label="Langue" onPress={() => {}} />
         </View>
       </View>
 
@@ -252,17 +316,9 @@ export default function ProfileScreen() {
             },
           ]}
         >
-          <MenuItem
-            icon="help-circle-outline"
-            label="Centre d'aide"
-            onPress={() => {}}
-          />
+          <MenuItem icon="help-circle-outline" label="Centre d'aide" onPress={() => {}} />
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
-          <MenuItem
-            icon="shield-outline"
-            label="Confidentialité"
-            onPress={() => {}}
-          />
+          <MenuItem icon="shield-outline" label="Confidentialité" onPress={() => {}} />
         </View>
       </View>
 
@@ -278,17 +334,12 @@ export default function ProfileScreen() {
             },
           ]}
         >
-          <MenuItem
-            icon="log-out-outline"
-            label="Se déconnecter"
-            onPress={handleLogout}
-            danger
-          />
+          <MenuItem icon="log-out-outline" label="Se déconnecter" onPress={handleLogout} danger />
         </View>
       </View>
 
       <Text style={[styles.version, { color: colors.mutedForeground }]}>
-        NAFA Marché v1.0.0
+        NAFA Marché v2.0.0
       </Text>
     </ScrollView>
   );
@@ -310,16 +361,8 @@ const styles = StyleSheet.create({
   },
   profileMeta: { flexDirection: "row", alignItems: "center", gap: 8 },
   verifiedRow: { flexDirection: "row", alignItems: "center", gap: 3 },
-  verifiedText: {
-    fontSize: 12,
-    color: "#4ADE80",
-    fontFamily: "Inter_500Medium",
-  },
-  locationRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 3,
-  },
+  verifiedText: { fontSize: 12, color: "#4ADE80", fontFamily: "Inter_500Medium" },
+  locationRow: { flexDirection: "row", alignItems: "center", gap: 3 },
   locationText: {
     fontSize: 13,
     color: "rgba(255,255,255,0.7)",
@@ -340,6 +383,25 @@ const styles = StyleSheet.create({
   statValue: { fontSize: 18, fontFamily: "Inter_700Bold" },
   statLabel: { fontSize: 11, fontFamily: "Inter_400Regular" },
   statDivider: { width: 1, height: 30 },
+
+  /* Theme switcher */
+  themeSwitcher: {
+    flexDirection: "row",
+    padding: 6,
+    gap: 4,
+    borderWidth: 1,
+  },
+  themeOption: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+  },
+  themeLabel: { fontSize: 12, fontFamily: "Inter_600SemiBold" },
+  themeDesc: { fontSize: 10, fontFamily: "Inter_400Regular" },
+
   menuSection: { marginTop: 24, gap: 10 },
   menuSectionTitle: {
     fontSize: 11,

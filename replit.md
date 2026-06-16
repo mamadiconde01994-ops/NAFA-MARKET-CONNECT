@@ -1,6 +1,6 @@
-# [Project name]
+# NAFA Marché
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A premium mobile marketplace app for Guinea — covering agriculture, restaurants, real estate, services, logistics/warehouses, and more. Built with Expo + React Native.
 
 ## Run & Operate
 
@@ -14,6 +14,7 @@ _Replace the heading above with the project's name, and this line with one sente
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
+- Mobile: Expo SDK 54, React Native 0.81, Expo Router (file-based)
 - API: Express 5
 - DB: PostgreSQL + Drizzle ORM
 - Validation: Zod (`zod/v4`), `drizzle-zod`
@@ -22,15 +23,36 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/mobile/app/` — Expo Router file-based screens
+  - `(tabs)/index.tsx` — Home screen (premium multi-module hub)
+  - `(tabs)/profile.tsx` — Profile + theme switcher
+  - `restaurants/` — Restaurant listing + details
+  - `real-estate/` — Property listing + details
+  - `services/` — Services marketplace
+  - `warehouses/` — Warehouse listing
+  - `product/` — Agriculture product detail + create
+- `artifacts/mobile/constants/colors.ts` — 3 themes: light (Navy/Gold), dark, green
+- `artifacts/mobile/constants/mockData.ts` — All mock data (products, restaurants, properties, services, warehouses, market prices)
+- `artifacts/mobile/context/ThemeContext.tsx` — Theme persistence + switching
+- `artifacts/mobile/types/index.ts` — All TypeScript interfaces
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- **ThemeProvider must wrap ErrorBoundary** — ErrorFallback uses useColors which needs ThemeContext
+- **3-theme system**: `light` (Navy #1E293B + Gold #F59E0B, default), `dark`, `green` (agriculture heritage)
+- **Category colors**: each vertical has its own brand color (agriculture=green, restaurants=orange, real estate=blue, services=purple, logistics=red)
+- **Typed routes**: Expo Router `typedRoutes: true` is enabled — use `as any` for dynamic router.push calls
+- **All new modules use mock data only** — no backend required yet
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+NAFA is the future digital marketplace of Guinea, organized around sub-brands:
+- **NAFA Market** — Agriculture (flagship)
+- **NAFA Food** — Restaurants & delivery
+- **NAFA Immo** — Real estate (buy/rent)
+- **NAFA Services** — Artisans & professionals
+- **NAFA Warehouses** — Storage & logistics
+- **NAFA Pay** — Payments (future)
 
 ## User preferences
 
@@ -38,7 +60,10 @@ _Populate as you build — explicit user instructions worth remembering across s
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- ThemeProvider must be the outermost provider (above ErrorBoundary) so ErrorFallback can call useColors
+- Expo Router typed routes: all new route files must be registered in `_layout.tsx` Stack.Screen list
+- Router.push with dynamic paths: use `as any` cast due to typed routes enforcement
+- Screenshots of the app always show the splash screen (2.2s timer) — the app IS working, the tool just captures the initial render
 
 ## Pointers
 

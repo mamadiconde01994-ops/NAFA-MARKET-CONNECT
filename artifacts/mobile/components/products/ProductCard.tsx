@@ -20,7 +20,7 @@ export function ProductCard({ product, horizontal = false }: ProductCardProps) {
   const cat = CATEGORIES.find((c) => c.id === product.category);
 
   const handlePress = () => {
-    router.push(`/product/${product.id}` as `/${string}`);
+    router.push(`/product/${product.id}` as any);
   };
 
   if (horizontal) {
