@@ -101,7 +101,7 @@ export default function PropertyDetailScreen() {
           {/* Specs */}
           <View style={[styles.specsRow, { backgroundColor: colors.muted, borderRadius: colors.radius - 2 }]}>
             <View style={styles.specItem}>
-              <Ionicons name="resize-outline" size={18} color="#2563EB" />
+              <Ionicons name="scan-outline" size={18} color="#2563EB" />
               <Text style={[styles.specValue, { color: colors.foreground }]}>{property.surface} m²</Text>
               <Text style={[styles.specLabel, { color: colors.mutedForeground }]}>Surface</Text>
             </View>

@@ -28,6 +28,8 @@ const CATEGORY_LABELS: Record<ServiceCategoryId, string> = {
   cleaning: "Nettoyage",
   security: "Sécurité",
   transport: "Transport",
+  construction: "Construction",
+  welder: "Soudure",
 };
 
 const CATEGORY_ICONS: Record<ServiceCategoryId, keyof typeof Ionicons.glyphMap> = {
@@ -36,9 +38,11 @@ const CATEGORY_ICONS: Record<ServiceCategoryId, keyof typeof Ionicons.glyphMap> 
   plumber: "water-outline",
   technician: "phone-portrait-outline",
   freelancer: "laptop-outline",
-  cleaning: "sparkles-outline",
+  cleaning: "brush-outline",
   security: "shield-outline",
   transport: "cube-outline",
+  construction: "hammer-outline",
+  welder: "flame-outline",
 };
 
 const PRICE_TYPE_LABELS = {

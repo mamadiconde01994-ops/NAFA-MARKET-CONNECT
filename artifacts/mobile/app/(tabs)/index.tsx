@@ -15,7 +15,6 @@ import { CategoryChip } from "@/components/products/CategoryChip";
 import { ProductCard } from "@/components/products/ProductCard";
 import { RestaurantCard } from "@/components/restaurants/RestaurantCard";
 import { PropertyCard } from "@/components/real-estate/PropertyCard";
-import { SearchBar } from "@/components/common/SearchBar";
 import { UserAvatar } from "@/components/profile/UserAvatar";
 import {
   CATEGORIES,
@@ -58,6 +57,18 @@ function SectionHeader({
       )}
     </View>
   );
+}
+
+function navigateToCategory(id: string) {
+  switch (id) {
+    case "restaurants": router.push("/restaurants/index" as any); break;
+    case "real-estate": router.push("/real-estate/index" as any); break;
+    case "services": router.push("/services/index" as any); break;
+    case "logistics": router.push("/warehouses/index" as any); break;
+    case "vehicles": router.push("/vehicles/index" as any); break;
+    case "jobs": router.push("/jobs/index" as any); break;
+    default: break;
+  }
 }
 
 export default function HomeScreen() {
@@ -167,10 +178,7 @@ export default function HomeScreen() {
           </Pressable>
 
           <View style={styles.headerActions}>
-            <Pressable
-              style={[styles.iconBtn]}
-              hitSlop={8}
-            >
+            <Pressable style={[styles.iconBtn]} hitSlop={8}>
               <Ionicons name="notifications-outline" size={21} color="rgba(255,255,255,0.85)" />
             </Pressable>
             <Pressable onPress={() => router.push("/(tabs)/profile" as any)}>
@@ -212,10 +220,7 @@ export default function HomeScreen() {
 
         {/* ── MAIN CATEGORIES ── */}
         <View style={[styles.categoriesGrid, { backgroundColor: colors.background }]}>
-          <SectionHeader
-            title="Explorer NAFA"
-            colors={colors}
-          />
+          <SectionHeader title="Explorer NAFA" colors={colors} />
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -224,12 +229,7 @@ export default function HomeScreen() {
             {MAIN_CATEGORIES.map((cat) => (
               <Pressable
                 key={cat.id}
-                onPress={() => {
-                  if (cat.id === "restaurants") router.push("/restaurants/index" as any);
-                  else if (cat.id === "real-estate") router.push("/real-estate/index" as any);
-                  else if (cat.id === "services") router.push("/services/index" as any);
-                  else if (cat.id === "logistics") router.push("/warehouses/index" as any);
-                }}
+                onPress={() => navigateToCategory(cat.id)}
                 style={({ pressed }) => [
                   styles.mainCatItem,
                   { opacity: pressed ? 0.75 : 1 },
@@ -348,7 +348,7 @@ export default function HomeScreen() {
             <View style={styles.agriTitleRow}>
               <View style={[styles.agriDot, { backgroundColor: "#16A34A" }]} />
               <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                Agriculture
+                🌿 Agriculture
               </Text>
             </View>
             <Pressable
@@ -432,7 +432,7 @@ export default function HomeScreen() {
             <View style={styles.agriTitleRow}>
               <View style={[styles.agriDot, { backgroundColor: "#EA580C" }]} />
               <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                Restaurants populaires
+                🍽️ Restaurants populaires
               </Text>
             </View>
             <Pressable
@@ -461,7 +461,7 @@ export default function HomeScreen() {
             <View style={styles.agriTitleRow}>
               <View style={[styles.agriDot, { backgroundColor: "#2563EB" }]} />
               <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                Biens immobiliers
+                🏠 Biens immobiliers
               </Text>
             </View>
             <Pressable
@@ -484,13 +484,13 @@ export default function HomeScreen() {
           </ScrollView>
         </View>
 
-        {/* ── SERVICES NEARBY ── */}
+        {/* ── SERVICES ── */}
         <View style={styles.section}>
           <View style={[styles.sectionHeader, { paddingHorizontal: 16 }]}>
             <View style={styles.agriTitleRow}>
               <View style={[styles.agriDot, { backgroundColor: "#7C3AED" }]} />
               <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                Services à proximité
+                🔧 Services à proximité
               </Text>
             </View>
             <Pressable
@@ -511,8 +511,9 @@ export default function HomeScreen() {
                 { icon: "flash-outline", label: "Électricien", color: "#7C3AED" },
                 { icon: "water-outline", label: "Plomberie", color: "#7C3AED" },
                 { icon: "phone-portrait-outline", label: "Technicien", color: "#7C3AED" },
-                { icon: "sparkles-outline", label: "Nettoyage", color: "#7C3AED" },
-                { icon: "cube-outline", label: "Transport", color: "#7C3AED" },
+                { icon: "brush-outline", label: "Nettoyage", color: "#7C3AED" },
+                { icon: "hammer-outline", label: "Construction", color: "#7C3AED" },
+                { icon: "flame-outline", label: "Soudure", color: "#7C3AED" },
               ] as const
             ).map((svc) => (
               <Pressable
@@ -538,6 +539,84 @@ export default function HomeScreen() {
             ))}
           </ScrollView>
         </View>
+
+        {/* ── VÉHICULES ── */}
+        <View style={styles.section}>
+          <View style={[styles.sectionHeader, { paddingHorizontal: 16 }]}>
+            <View style={styles.agriTitleRow}>
+              <View style={[styles.agriDot, { backgroundColor: "#475569" }]} />
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+                🚗 Véhicules
+              </Text>
+            </View>
+            <Pressable
+              onPress={() => router.push("/vehicles/index" as any)}
+              hitSlop={8}
+            >
+              <Text style={[styles.seeAll, { color: "#475569" }]}>Voir tout</Text>
+            </Pressable>
+          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}
+          >
+            {(
+              [
+                { icon: "car-outline", label: "Voitures" },
+                { icon: "bicycle-outline", label: "Motos" },
+                { icon: "car-sport-outline", label: "4x4" },
+                { icon: "bus-outline", label: "Minibus" },
+                { icon: "construct-outline", label: "Pièces" },
+              ] as const
+            ).map((item) => (
+              <Pressable
+                key={item.label}
+                onPress={() => router.push("/vehicles/index" as any)}
+                style={({ pressed }) => [
+                  styles.svcChip,
+                  {
+                    backgroundColor: colors.card,
+                    borderColor: colors.border,
+                    borderRadius: colors.radius,
+                    opacity: pressed ? 0.75 : 1,
+                  },
+                ]}
+              >
+                <View style={[styles.svcIconWrap, { backgroundColor: "#475569" + "18", borderRadius: 12 }]}>
+                  <Ionicons name={item.icon} size={20} color="#475569" />
+                </View>
+                <Text style={[styles.svcLabel, { color: colors.foreground }]}>
+                  {item.label}
+                </Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* ── EMPLOIS BANNER ── */}
+        <Pressable
+          onPress={() => router.push("/jobs/index" as any)}
+          style={({ pressed }) => [
+            styles.jobsBanner,
+            {
+              marginHorizontal: 16,
+              backgroundColor: "#0891B2",
+              borderRadius: colors.radius,
+              opacity: pressed ? 0.85 : 1,
+              marginBottom: 12,
+            },
+          ]}
+        >
+          <Ionicons name="briefcase-outline" size={32} color="rgba(255,255,255,0.85)" />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.bannerTitle}>NAFA Emplois</Text>
+            <Text style={styles.bannerSub}>
+              {`10+ offres d'emploi en Guinée — Agriculture, BTP, Restauration…`}
+            </Text>
+          </View>
+          <Ionicons name="arrow-forward" size={20} color="rgba(255,255,255,0.8)" />
+        </Pressable>
 
         {/* ── ENTREPÔTS ── */}
         <Pressable
@@ -656,24 +735,25 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.12,
-    shadowRadius: 12,
-    elevation: 8,
+    shadowRadius: 8,
+    elevation: 6,
   },
   cityOption: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
-    paddingVertical: 13,
+    paddingVertical: 12,
   },
   cityOptionText: { fontSize: 15 },
 
   /* Categories grid */
-  categoriesGrid: { paddingVertical: 20 },
+  categoriesGrid: {
+    paddingVertical: 16,
+  },
   mainCatList: {
     paddingHorizontal: 16,
-    gap: 8,
-    paddingBottom: 4,
+    gap: 12,
   },
   mainCatItem: {
     alignItems: "center",
@@ -681,39 +761,32 @@ const styles = StyleSheet.create({
     width: 72,
   },
   mainCatIcon: {
-    width: 56,
-    height: 56,
+    width: 60,
+    height: 60,
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
   },
-  mainCatName: { fontSize: 11, fontFamily: "Inter_500Medium", textAlign: "center" },
   soonDot: {
     position: "absolute",
-    top: 6,
-    right: 6,
+    top: 4,
+    right: 4,
     width: 8,
     height: 8,
     borderRadius: 4,
   },
-  soonLabel: { fontSize: 9, fontFamily: "Inter_400Regular" },
-
-  /* Market prices */
-  priceCard: {
-    padding: 12,
-    borderWidth: 1,
-    gap: 3,
-    minWidth: 130,
+  mainCatName: {
+    fontSize: 11,
+    fontFamily: "Inter_500Medium",
+    textAlign: "center",
   },
-  priceProd: { fontSize: 12, fontFamily: "Inter_500Medium" },
-  priceVal: { fontSize: 15, fontFamily: "Inter_700Bold" },
-  priceUnit: { fontSize: 11, fontFamily: "Inter_400Regular" },
-  trendRow: { flexDirection: "row", alignItems: "center", gap: 3 },
-  trendText: { fontSize: 12, fontFamily: "Inter_500Medium" },
-  priceMarket: { fontSize: 10, fontFamily: "Inter_400Regular" },
+  soonLabel: {
+    fontSize: 9,
+    fontFamily: "Inter_400Regular",
+  },
 
-  /* Section */
-  section: { marginBottom: 24 },
+  /* Section header */
+  section: { marginBottom: 20 },
   sectionHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -721,57 +794,62 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   sectionTitle: { fontSize: 17, fontFamily: "Inter_700Bold" },
-  seeAll: { fontSize: 13, fontFamily: "Inter_500Medium" },
+  seeAll: { fontSize: 13, fontFamily: "Inter_600SemiBold" },
+
+  /* Market prices */
+  priceCard: {
+    borderWidth: 1,
+    padding: 12,
+    width: 150,
+    gap: 4,
+  },
+  priceProd: { fontSize: 13, fontFamily: "Inter_600SemiBold" },
+  priceVal: { fontSize: 16, fontFamily: "Inter_700Bold" },
+  priceUnit: { fontSize: 12, fontFamily: "Inter_400Regular" },
+  trendRow: { flexDirection: "row", alignItems: "center", gap: 4 },
+  trendText: { fontSize: 12, fontFamily: "Inter_500Medium" },
+  priceMarket: { fontSize: 11, fontFamily: "Inter_400Regular" },
 
   /* Agriculture */
-  agriSection: { marginBottom: 24 },
+  agriSection: { marginBottom: 20 },
   agriHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-  agriTitleRow: { flexDirection: "row", alignItems: "center", gap: 7 },
-  agriDot: { width: 10, height: 10, borderRadius: 5 },
-  catList: {
-    paddingHorizontal: 16,
-    gap: 8,
-    paddingBottom: 10,
-    marginBottom: 4,
-  },
-
-  /* Grid */
+  agriTitleRow: { flexDirection: "row", alignItems: "center", gap: 8 },
+  agriDot: { width: 8, height: 8, borderRadius: 4 },
+  catList: { paddingHorizontal: 16, gap: 8, marginBottom: 12 },
   gridRow: { flexDirection: "row", gap: 10, marginBottom: 10 },
   gridItem: { flex: 1 },
 
-  /* Services chips */
+  /* Service chips */
   svcChip: {
     alignItems: "center",
-    gap: 7,
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     borderWidth: 1,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    minWidth: 90,
+    width: 90,
   },
   svcIconWrap: { width: 44, height: 44, alignItems: "center", justifyContent: "center" },
-  svcLabel: { fontSize: 11, fontFamily: "Inter_500Medium" },
+  svcLabel: { fontSize: 11, fontFamily: "Inter_500Medium", textAlign: "center" },
 
-  /* Warehouse banner */
+  /* Banners */
+  jobsBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 16,
+    gap: 14,
+  },
+  bannerTitle: { fontSize: 16, fontFamily: "Inter_700Bold", color: "#FFFFFF" },
+  bannerSub: { fontSize: 12, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.8)", marginTop: 2 },
   warehouseBanner: {
     flexDirection: "row",
     alignItems: "center",
+    padding: 16,
     gap: 14,
-    padding: 18,
-    marginBottom: 24,
   },
-  warehouseBannerTitle: {
-    fontSize: 16,
-    fontFamily: "Inter_700Bold",
-    color: "#FFFFFF",
-  },
-  warehouseBannerSub: {
-    fontSize: 12,
-    fontFamily: "Inter_400Regular",
-    color: "rgba(255,255,255,0.8)",
-    marginTop: 2,
-  },
+  warehouseBannerTitle: { fontSize: 16, fontFamily: "Inter_700Bold", color: "#FFFFFF" },
+  warehouseBannerSub: { fontSize: 12, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.8)", marginTop: 2 },
 });

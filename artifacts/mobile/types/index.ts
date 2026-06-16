@@ -145,7 +145,9 @@ export type RestaurantCuisine =
   | "french"
   | "chinese"
   | "fastfood"
-  | "mixed";
+  | "mixed"
+  | "bbq"
+  | "cafe";
 
 export interface RestaurantMenuItem {
   id: string;
@@ -211,7 +213,9 @@ export type ServiceCategoryId =
   | "freelancer"
   | "cleaning"
   | "security"
-  | "transport";
+  | "transport"
+  | "construction"
+  | "welder";
 
 export interface ServiceProvider {
   id: string;
@@ -244,4 +248,65 @@ export interface Warehouse {
   ownerName: string;
   ownerPhone: string;
   rating: number;
+}
+
+export type VehicleType =
+  | "car"
+  | "motorcycle"
+  | "truck"
+  | "van"
+  | "parts";
+
+export interface Vehicle {
+  id: string;
+  title: string;
+  description: string;
+  type: VehicleType;
+  brand: string;
+  model: string;
+  year: number;
+  price: number;
+  priceType: "sale" | "rent";
+  mileage?: number;
+  fuel?: "petrol" | "diesel" | "electric" | "hybrid";
+  condition: "new" | "used" | "refurbished";
+  city: string;
+  images: string[];
+  sellerName: string;
+  sellerPhone: string;
+  rating?: number;
+  featured: boolean;
+  createdAt: string;
+}
+
+export type JobCategory =
+  | "agriculture"
+  | "restaurant"
+  | "construction"
+  | "transport"
+  | "tech"
+  | "health"
+  | "education"
+  | "trade"
+  | "security"
+  | "domestic";
+
+export type ContractType = "full_time" | "part_time" | "temporary" | "freelance";
+
+export interface Job {
+  id: string;
+  title: string;
+  company: string;
+  description: string;
+  category: JobCategory;
+  city: string;
+  salary?: number;
+  salaryType?: "per_month" | "per_day" | "negotiable";
+  contractType: ContractType;
+  requirements: string[];
+  featured: boolean;
+  postedAt: string;
+  contactPhone: string;
+  contactName: string;
+  urgent?: boolean;
 }

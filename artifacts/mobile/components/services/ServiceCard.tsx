@@ -16,6 +16,8 @@ const CATEGORY_LABELS: Record<ServiceCategoryId, string> = {
   cleaning: "Nettoyage",
   security: "Sécurité",
   transport: "Transport",
+  construction: "Construction",
+  welder: "Soudure",
 };
 
 const CATEGORY_ICONS: Record<ServiceCategoryId, keyof typeof Ionicons.glyphMap> = {
@@ -24,9 +26,11 @@ const CATEGORY_ICONS: Record<ServiceCategoryId, keyof typeof Ionicons.glyphMap> 
   plumber: "water-outline",
   technician: "phone-portrait-outline",
   freelancer: "laptop-outline",
-  cleaning: "sparkles-outline",
+  cleaning: "brush-outline",
   security: "shield-outline",
   transport: "cube-outline",
+  construction: "hammer-outline",
+  welder: "flame-outline",
 };
 
 const PRICE_TYPE_LABELS = {
@@ -42,6 +46,8 @@ interface Props {
 
 export function ServiceCard({ provider, onPress }: Props) {
   const colors = useColors();
+  const icon = CATEGORY_ICONS[provider.category] ?? "construct-outline";
+  const label = CATEGORY_LABELS[provider.category] ?? provider.category;
 
   return (
     <Pressable
@@ -65,9 +71,9 @@ export function ServiceCard({ provider, onPress }: Props) {
       <View style={styles.info}>
         <View style={styles.row}>
           <View style={[styles.categoryBadge, { backgroundColor: "#7C3AED" + "18" }]}>
-            <Ionicons name={CATEGORY_ICONS[provider.category]} size={11} color="#7C3AED" />
+            <Ionicons name={icon} size={11} color="#7C3AED" />
             <Text style={[styles.categoryText, { color: "#7C3AED" }]}>
-              {CATEGORY_LABELS[provider.category]}
+              {label}
             </Text>
           </View>
           {provider.verified && (

@@ -23,9 +23,11 @@ const CATEGORY_FILTERS: { id: ServiceCategoryId | "all"; label: string; icon: ke
   { id: "electrician", label: "Électricien", icon: "flash-outline" },
   { id: "plumber", label: "Plomberie", icon: "water-outline" },
   { id: "technician", label: "Technicien", icon: "phone-portrait-outline" },
-  { id: "cleaning", label: "Nettoyage", icon: "sparkles-outline" },
+  { id: "cleaning", label: "Nettoyage", icon: "brush-outline" },
   { id: "transport", label: "Transport", icon: "cube-outline" },
   { id: "security", label: "Sécurité", icon: "shield-outline" },
+  { id: "construction", label: "Construction", icon: "hammer-outline" },
+  { id: "welder", label: "Soudure", icon: "flame-outline" },
   { id: "freelancer", label: "Freelance", icon: "laptop-outline" },
 ];
 
@@ -48,9 +50,11 @@ export default function ServicesScreen() {
     return matchSearch && matchCategory;
   });
 
+  const verified = MOCK_SERVICES.filter((s) => s.verified);
+  const available = MOCK_SERVICES.filter((s) => s.available);
+
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Header */}
       <View style={[styles.header, { paddingTop: topPad, backgroundColor: "#7C3AED" }]}>
         <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
           <Ionicons name="arrow-back" size={22} color="#FFFFFF" />
@@ -63,6 +67,25 @@ export default function ServicesScreen() {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: bottomPad }}>
+        {/* Stats */}
+        <View style={styles.statsRow}>
+          <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <Ionicons name="construct" size={22} color="#7C3AED" />
+            <Text style={[styles.statNum, { color: colors.foreground }]}>{MOCK_SERVICES.length}</Text>
+            <Text style={[styles.statLbl, { color: colors.mutedForeground }]}>Prestataires</Text>
+          </View>
+          <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <Ionicons name="checkmark-circle" size={22} color="#16A34A" />
+            <Text style={[styles.statNum, { color: colors.foreground }]}>{verified.length}</Text>
+            <Text style={[styles.statLbl, { color: colors.mutedForeground }]}>Vérifiés</Text>
+          </View>
+          <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <Ionicons name="time" size={22} color="#F59E0B" />
+            <Text style={[styles.statNum, { color: colors.foreground }]}>{available.length}</Text>
+            <Text style={[styles.statLbl, { color: colors.mutedForeground }]}>Disponibles</Text>
+          </View>
+        </View>
+
         {/* Search */}
         <View style={[styles.searchWrap, { backgroundColor: colors.background }]}>
           <View style={[styles.searchBar, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -111,7 +134,7 @@ export default function ServicesScreen() {
         <View style={[styles.infoBanner, { backgroundColor: "#F3E8FF", borderRadius: colors.radius }]}>
           <Ionicons name="information-circle-outline" size={18} color="#7C3AED" />
           <Text style={styles.infoText}>
-            Tous nos prestataires sont vérifiés. Demandez un devis avant de vous engager.
+            Tous nos prestataires vérifiés ont le badge ✓. Demandez un devis avant de vous engager.
           </Text>
         </View>
 
@@ -163,7 +186,11 @@ const styles = StyleSheet.create({
   headerTextWrap: { flex: 1 },
   headerTitle: { fontSize: 20, fontFamily: "Inter_700Bold", color: "#FFFFFF", letterSpacing: -0.3 },
   headerSub: { fontSize: 13, color: "rgba(255,255,255,0.75)", fontFamily: "Inter_400Regular" },
-  searchWrap: { paddingHorizontal: 16, paddingVertical: 12 },
+  statsRow: { flexDirection: "row", gap: 10, paddingHorizontal: 16, paddingVertical: 14 },
+  statCard: { flex: 1, alignItems: "center", gap: 4, borderWidth: 1, borderRadius: 12, paddingVertical: 14 },
+  statNum: { fontSize: 20, fontFamily: "Inter_700Bold" },
+  statLbl: { fontSize: 11, fontFamily: "Inter_400Regular" },
+  searchWrap: { paddingHorizontal: 16, paddingBottom: 12 },
   searchBar: {
     flexDirection: "row",
     alignItems: "center",

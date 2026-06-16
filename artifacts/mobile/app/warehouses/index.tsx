@@ -63,7 +63,7 @@ function WarehouseCard({ warehouse }: { warehouse: Warehouse }) {
           <Ionicons name="location-outline" size={13} color={colors.mutedForeground} />
           <Text style={[styles.meta, { color: colors.mutedForeground }]}>{warehouse.city}</Text>
           <Text style={[styles.dot, { color: colors.border }]}>·</Text>
-          <Ionicons name="resize-outline" size={13} color={colors.mutedForeground} />
+          <Ionicons name="scan-outline" size={13} color={colors.mutedForeground} />
           <Text style={[styles.meta, { color: colors.mutedForeground }]}>{warehouse.surfaceM2} m²</Text>
         </View>
         <Text style={[styles.price, { color: "#DC2626" }]}>
