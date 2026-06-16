@@ -5,7 +5,7 @@ import React, { useEffect } from "react";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { StyleSheet, Text } from "react-native";
 
-import { getOnboardingDone, getStoredUser } from "@/lib/storage";
+import { getOnboardingDone } from "@/lib/storage";
 
 export default function SplashScreen() {
   useEffect(() => {
@@ -13,11 +13,6 @@ export default function SplashScreen() {
       const onboardingDone = await getOnboardingDone();
       if (!onboardingDone) {
         router.replace("/onboarding");
-        return;
-      }
-      const userJson = await getStoredUser();
-      if (!userJson) {
-        router.replace("/(auth)/login");
         return;
       }
       router.replace("/(tabs)");

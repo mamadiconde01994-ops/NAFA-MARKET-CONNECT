@@ -1,0 +1,184 @@
+IMPORTANT PRODUCT DIRECTIVE
+DO NOT redesign, rebuild, replace or heavily modify screens that are already successful.
+
+The current NAFA application already has a strong foundation.
+
+Many screens already look professional and should remain mostly unchanged.
+
+Your mission is to identify what is already working well and preserve it.
+
+Improve only where necessary.
+
+==================================================== PRESERVE EXISTING QUALITY
+The following screens are already considered good foundations:
+
+Home Screen
+Product Cards
+Product Listing
+Product Detail
+Orders
+Profile
+Bottom Navigation
+Category Chips
+Existing Layout Structure
+Do not redesign these screens.
+
+Do not change their navigation logic.
+
+Do not replace working components.
+
+Only improve readability, spacing, visual quality and content richness.
+
+==================================================== HOME SCREEN PRIORITY CHANGE
+The application should open directly on the Home Screen after the splash screen.
+
+Users should be able to explore the marketplace immediately.
+
+Do NOT force login before browsing.
+
+Guest mode should be supported.
+
+Visitors must be able to:
+
+Browse products
+Browse categories
+Browse restaurants
+Browse properties
+Browse services
+Search products
+Authentication should only be required for:
+
+Ordering
+Publishing
+Messaging
+Favorites
+Profile management
+The goal is to reduce friction and increase adoption.
+
+==================================================== MAKE CONTENT EASIER TO READ
+Many users are new to technology.
+
+Increase readability across the entire application.
+
+Improve:
+
+Font sizes
+Button sizes
+Section titles
+Card spacing
+Margins
+Image visibility
+Avoid tiny text.
+
+Avoid small touch targets.
+
+Important information must be readable instantly.
+
+==================================================== LARGER IMAGES
+Product images should be slightly larger.
+
+Restaurant images should be larger.
+
+Property images should be larger.
+
+Service images should be larger.
+
+Visual understanding is critical.
+
+Users should understand products before reading.
+
+==================================================== REMOVE EMPTY FEELING
+Several screens feel unfinished because they contain too much empty space.
+
+Do not leave large blank areas.
+
+Add useful content blocks.
+
+Examples:
+
+Product Detail:
+
+Similar products
+Seller information
+Delivery information
+Related products
+Restaurant Detail:
+
+Popular dishes
+Reviews
+Similar restaurants
+Restaurant statistics
+Property Detail:
+
+Similar properties
+Property features
+Contact owner
+Profile:
+
+Recent activity
+Favorites
+Saved items
+==================================================== NO DEAD SCREENS
+Remove all placeholder screens.
+
+Remove all "This screen doesn't exist" pages.
+
+Fix broken navigation.
+
+Every navigation entry must lead to a real screen.
+
+No dead routes.
+
+No unfinished pages visible to users.
+
+==================================================== CONTENT DENSITY
+Every screen should feel useful.
+
+Every screen should answer:
+
+"What can I do next?"
+
+Users should never feel lost.
+
+Provide:
+
+Recommendations
+Related content
+Suggested actions
+without creating clutter.
+
+==================================================== PROFESSIONAL STARTUP FEEL
+The application should feel like a real business platform already operating in Guinea.
+
+Not a demo.
+
+Not a prototype.
+
+Not a template.
+
+The user must feel that NAFA is already becoming:
+
+The agriculture marketplace of Guinea
+The food ordering platform of Guinea
+The real estate platform of Guinea
+The services marketplace of Guinea
+while keeping agriculture as the flagship activity.
+
+==================================================== FINAL RULE
+Before modifying any screen ask:
+
+"Is the current version already good?"
+
+If YES:
+
+Keep it.
+
+Only improve details.
+
+If NO:
+
+Improve it.
+
+Never replace a good screen with a completely different design.
+
+The objective is evolution, not redesign.

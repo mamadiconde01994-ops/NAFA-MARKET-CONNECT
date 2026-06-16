@@ -31,6 +31,9 @@ export default function ProductDetailScreen() {
 
   const product = MOCK_PRODUCTS.find((p) => p.id === id);
   const cat = product ? CATEGORIES.find((c) => c.id === product.category) : null;
+  const similarProducts = product
+    ? MOCK_PRODUCTS.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 5)
+    : [];
 
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
@@ -215,6 +218,59 @@ export default function ProductDetailScreen() {
           <Text style={[styles.date, { color: colors.mutedForeground }]}>
             Publié le {formatDate(product.createdAt)}
           </Text>
+
+          {/* Similar products */}
+          {similarProducts.length > 0 && (
+            <>
+              <View style={[styles.divider, { backgroundColor: colors.border }]} />
+              <View style={{ gap: 10 }}>
+                <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>
+                  PRODUITS SIMILAIRES
+                </Text>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ gap: 10, paddingRight: 4 }}
+                >
+                  {similarProducts.map((p) => (
+                    <Pressable
+                      key={p.id}
+                      onPress={() => router.push(`/product/${p.id}` as any)}
+                      style={[
+                        styles.similarCard,
+                        {
+                          backgroundColor: colors.card,
+                          borderColor: colors.border,
+                          borderRadius: colors.radius,
+                        },
+                      ]}
+                    >
+                      <Image
+                        source={{ uri: p.images[0] }}
+                        style={styles.similarImage}
+                        contentFit="cover"
+                        transition={200}
+                      />
+                      <View style={styles.similarInfo}>
+                        <Text
+                          style={[styles.similarName, { color: colors.foreground }]}
+                          numberOfLines={2}
+                        >
+                          {p.name}
+                        </Text>
+                        <Text style={[styles.similarPrice, { color: colors.secondary }]}>
+                          {formatPrice(p.price)}
+                        </Text>
+                        <Text style={[styles.similarUnit, { color: colors.mutedForeground }]}>
+                          {formatUnit(p.unit)}
+                        </Text>
+                      </View>
+                    </Pressable>
+                  ))}
+                </ScrollView>
+              </View>
+            </>
+          )}
         </View>
       </ScrollView>
 
@@ -284,7 +340,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   notFoundText: { fontSize: 16, fontFamily: "Inter_400Regular" },
-  image: { width: "100%", height: 300 },
+  image: { width: "100%", height: 360 },
   backBtn: {
     position: "absolute",
     left: 16,
@@ -355,4 +411,10 @@ const styles = StyleSheet.create({
   },
   qtyBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
   qtyText: { fontSize: 17, fontFamily: "Inter_700Bold", width: 28, textAlign: "center" },
+  similarCard: { width: 130, borderWidth: 1, overflow: "hidden" },
+  similarImage: { width: 130, height: 100 },
+  similarInfo: { padding: 8, gap: 3 },
+  similarName: { fontSize: 12, fontFamily: "Inter_600SemiBold", lineHeight: 17 },
+  similarPrice: { fontSize: 13, fontFamily: "Inter_700Bold" },
+  similarUnit: { fontSize: 11, fontFamily: "Inter_400Regular" },
 });

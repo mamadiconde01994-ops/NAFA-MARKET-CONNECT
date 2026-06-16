@@ -33,6 +33,9 @@ export default function RestaurantDetailScreen() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   const restaurant = MOCK_RESTAURANTS.find((r) => r.id === id);
+  const similarRestaurants = restaurant
+    ? MOCK_RESTAURANTS.filter((r) => r.id !== restaurant.id && r.cuisine === restaurant.cuisine).slice(0, 4)
+    : [];
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 + 84 : 100;
@@ -207,6 +210,43 @@ export default function RestaurantDetailScreen() {
             ))}
           </View>
         </View>
+
+        {/* Similar restaurants */}
+        {similarRestaurants.length > 0 && (
+          <View style={[styles.similarSection, { borderTopColor: colors.border }]}>
+            <Text style={[styles.similarTitle, { color: colors.foreground }]}>Restaurants similaires</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.similarList}
+            >
+              {similarRestaurants.map((r) => (
+                <Pressable
+                  key={r.id}
+                  onPress={() => router.push(`/restaurants/${r.id}` as any)}
+                  style={[
+                    styles.similarCard,
+                    { backgroundColor: colors.card, borderColor: colors.border, borderRadius: colors.radius },
+                  ]}
+                >
+                  <Image
+                    source={{ uri: r.images[0] }}
+                    style={[styles.similarImg, { borderTopLeftRadius: colors.radius, borderTopRightRadius: colors.radius }]}
+                    contentFit="cover"
+                    transition={200}
+                  />
+                  <View style={styles.similarInfo}>
+                    <Text style={[styles.similarName, { color: colors.foreground }]} numberOfLines={1}>{r.name}</Text>
+                    <View style={styles.similarMeta}>
+                      <Ionicons name="star" size={11} color="#F59E0B" />
+                      <Text style={[styles.similarRating, { color: colors.mutedForeground }]}>{r.rating.toFixed(1)} · {r.city}</Text>
+                    </View>
+                  </View>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+        )}
       </ScrollView>
 
       {/* CTA */}
@@ -227,7 +267,7 @@ export default function RestaurantDetailScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  heroImage: { width: "100%", height: 240 },
+  heroImage: { width: "100%", height: 300 },
   backBtn: {
     position: "absolute",
     left: 16,
@@ -286,4 +326,13 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   ctaBtnText: { color: "#FFFFFF", fontSize: 16, fontFamily: "Inter_600SemiBold" },
+  similarSection: { marginTop: 24, paddingTop: 20, borderTopWidth: 1 },
+  similarTitle: { fontSize: 18, fontFamily: "Inter_700Bold", paddingHorizontal: 16, marginBottom: 12 },
+  similarList: { paddingHorizontal: 16, gap: 10, paddingBottom: 4 },
+  similarCard: { width: 150, borderWidth: 1, overflow: "hidden" },
+  similarImg: { width: 150, height: 100 },
+  similarInfo: { padding: 8, gap: 4 },
+  similarName: { fontSize: 13, fontFamily: "Inter_600SemiBold" },
+  similarMeta: { flexDirection: "row", alignItems: "center", gap: 4 },
+  similarRating: { fontSize: 11, fontFamily: "Inter_400Regular" },
 });

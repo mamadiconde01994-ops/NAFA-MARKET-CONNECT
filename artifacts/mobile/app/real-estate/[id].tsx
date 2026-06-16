@@ -31,6 +31,9 @@ export default function PropertyDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const property = MOCK_PROPERTIES.find((p) => p.id === id);
+  const similarProperties = property
+    ? MOCK_PROPERTIES.filter((p) => p.id !== property.id && (p.type === property.type || p.city === property.city)).slice(0, 4)
+    : [];
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 + 84 : 100;
@@ -150,6 +153,43 @@ export default function PropertyDetailScreen() {
             </View>
           </View>
         </View>
+
+        {/* Similar properties */}
+        {similarProperties.length > 0 && (
+          <View style={[styles.similarSection, { borderTopColor: colors.border }]}>
+            <Text style={[styles.similarTitle, { color: colors.foreground }]}>Biens similaires</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.similarList}
+            >
+              {similarProperties.map((p) => (
+                <Pressable
+                  key={p.id}
+                  onPress={() => router.push(`/real-estate/${p.id}` as any)}
+                  style={[
+                    styles.similarCard,
+                    { backgroundColor: colors.card, borderColor: colors.border, borderRadius: colors.radius },
+                  ]}
+                >
+                  <Image
+                    source={{ uri: p.images[0] }}
+                    style={[styles.similarImg, { borderTopLeftRadius: colors.radius, borderTopRightRadius: colors.radius }]}
+                    contentFit="cover"
+                    transition={200}
+                  />
+                  <View style={styles.similarInfo}>
+                    <Text style={[styles.similarName, { color: colors.foreground }]} numberOfLines={2}>{p.title}</Text>
+                    <Text style={[styles.similarPrice, { color: "#2563EB" }]}>
+                      {formatPrice(p.price)}{p.priceType === "rent" ? "/mois" : ""}
+                    </Text>
+                    <Text style={[styles.similarCity, { color: colors.mutedForeground }]}>{p.city}</Text>
+                  </View>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+        )}
       </ScrollView>
 
       {/* CTA */}
@@ -170,7 +210,7 @@ export default function PropertyDetailScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  heroImage: { width: "100%", height: 260 },
+  heroImage: { width: "100%", height: 320 },
   backBtn: {
     position: "absolute",
     left: 16,
@@ -241,4 +281,13 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   ctaBtnText: { color: "#FFFFFF", fontSize: 16, fontFamily: "Inter_600SemiBold" },
+  similarSection: { marginTop: 12, marginHorizontal: 0, paddingTop: 20, borderTopWidth: 1 },
+  similarTitle: { fontSize: 18, fontFamily: "Inter_700Bold", paddingHorizontal: 16, marginBottom: 12 },
+  similarList: { paddingHorizontal: 16, gap: 10, paddingBottom: 4 },
+  similarCard: { width: 160, borderWidth: 1, overflow: "hidden" },
+  similarImg: { width: 160, height: 110 },
+  similarInfo: { padding: 8, gap: 4 },
+  similarName: { fontSize: 12, fontFamily: "Inter_600SemiBold", lineHeight: 17 },
+  similarPrice: { fontSize: 13, fontFamily: "Inter_700Bold" },
+  similarCity: { fontSize: 11, fontFamily: "Inter_400Regular" },
 });

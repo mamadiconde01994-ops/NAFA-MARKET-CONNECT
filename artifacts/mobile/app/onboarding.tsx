@@ -67,13 +67,13 @@ export default function OnboardingScreen() {
       listRef.current?.scrollToIndex({ index: activeIndex + 1, animated: true });
     } else {
       await setOnboardingDone();
-      router.replace("/(auth)/login");
+      router.replace("/(tabs)");
     }
   };
 
   const handleSkip = async () => {
     await setOnboardingDone();
-    router.replace("/(auth)/login");
+    router.replace("/(tabs)");
   };
 
   return (
