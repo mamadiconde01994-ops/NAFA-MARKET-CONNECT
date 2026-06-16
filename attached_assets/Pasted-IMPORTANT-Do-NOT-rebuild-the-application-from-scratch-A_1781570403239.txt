@@ -1,0 +1,289 @@
+IMPORTANT: Do NOT rebuild the application from scratch.
+
+Analyze the current NAFA application and preserve all screens, components, navigation flows and UI elements that are already well designed and functional.
+
+The current foundation is good and should remain the base of the project.
+
+Your mission is to improve, extend and professionalize the existing application without breaking the current architecture.
+
+==================================================== KEEP EXISTING FEATURES
+If the following are already implemented, keep them:
+
+Home Screen
+Product Cards
+Product Details
+Categories
+Orders
+Profile
+Navigation
+Existing Mock Data
+Existing UI Components
+Only improve them where necessary.
+
+Do not remove existing functionality.
+
+==================================================== MAIN IMPROVEMENTS
+THEME SYSTEM
+Add a complete theme system.
+
+Keep the existing green identity.
+
+Add:
+
+Green Theme (current improved version)
+Light Theme (white dominant)
+Dark Theme
+Allow users to switch themes from settings.
+
+==================================================== 2. HOME SCREEN IMPROVEMENTS
+Keep the current Home structure.
+
+Improve only where necessary.
+
+Add:
+
+Current city selector
+Notifications shortcut
+Better search experience
+Daily market prices section
+Featured restaurants section
+Featured properties section
+Nearby services section
+Better visual hierarchy
+The home screen must remain simple and easy to understand.
+
+Avoid clutter.
+
+==================================================== 3. CATEGORY SYSTEM
+Keep Agriculture as the primary category.
+
+Agriculture must always appear first.
+
+Expand categories:
+
+Agriculture
+Restaurants
+Real Estate
+Vehicles
+Electronics
+Fashion
+Home & Furniture
+Construction
+Services
+Jobs
+Logistics
+Other
+Categories should be visually organized and easy to browse.
+
+==================================================== 4. RESTAURANT MODULE
+The restaurant section is currently missing.
+
+Create the frontend structure only.
+
+Add:
+
+Restaurant Listing Screen
+Restaurant Details Screen
+Food Categories
+Restaurant Cards
+Featured Restaurants
+Use mock data.
+
+No backend required yet.
+
+
+
+
+
+====================================================
+1.5 BRAND IDENTITY & PREMIUM COLOR SYSTEM
+
+====================================================
+IMPORTANT:
+
+Do not use green as the global application color.
+
+The current green identity is good for agriculture, but NAFA is becoming a complete marketplace ecosystem including agriculture, restaurants, real estate, logistics, services and commerce.
+
+The overall brand must feel premium, modern, trustworthy and investment-ready.
+
+Green should only represent agriculture-related content.
+
+PRIMARY NAFA BRAND COLORS
+
+NAFA Navy: #1E293B
+
+NAFA Gold: #F59E0B
+
+White: #FFFFFF
+
+Light Background: #F8FAFC
+
+Primary Text: #0F172A
+
+Secondary Text: #64748B
+
+COLOR STRATEGY
+
+Agriculture: #16A34A
+
+Restaurants: #EA580C
+
+Real Estate: #2563EB
+
+Services: #7C3AED
+
+Logistics: #DC2626
+
+Jobs: #0891B2
+
+Vehicles: #475569
+
+DESIGN DIRECTION
+
+The application should feel closer to:
+
+Airbnb
+Stripe
+Uber Eats
+Notion
+Modern fintech applications
+Avoid the visual style of a traditional agricultural marketplace.
+
+HOME SCREEN COLORS
+
+Use mostly:
+
+White backgrounds
+Clean cards
+Soft shadows
+Premium spacing
+Navy headers
+Gold accents
+Agriculture sections may use green accents only where relevant.
+
+CATEGORY COLORS
+
+Each major category should have its own color identity.
+
+This helps users quickly recognize sections and improves usability.
+
+The application must remain extremely simple and readable.
+
+The color system should help navigation without creating visual overload.
+
+FINAL GOAL
+
+Users should immediately feel that NAFA is:
+
+Professional
+Premium
+Modern
+Local to Guinea
+Built for long-term growth
+
+The platform must look like the future digital marketplace of Guinea, not only an agriculture application.
+
+==================================================== 5. REAL ESTATE MODULE
+Create NAFA Immo.
+
+Add:
+
+Property Listings
+Property Details
+Featured Properties
+Favorite Properties
+Property types:
+
+Houses
+Apartments
+Land
+Commercial Buildings
+Warehouses
+Use mock data.
+
+==================================================== 6. LOCATION ARCHITECTURE
+Prepare location-based architecture.
+
+Add placeholders for:
+
+Nearby Products
+Nearby Restaurants
+Nearby Properties
+Nearby Services
+Do not implement live GPS yet.
+
+Only prepare the structure.
+
+==================================================== 7. SERVICES MODULE
+Create a services marketplace.
+
+Examples:
+
+Mechanics
+Electricians
+Plumbers
+Technicians
+Freelancers
+Users should be able to browse service providers.
+
+Use mock data.
+
+==================================================== 8. WAREHOUSE MODULE
+Prepare future warehouse functionality.
+
+Create:
+
+Warehouse Listing Screen
+Warehouse Details Screen
+Do not implement inventory management yet.
+
+Only create scalable UI foundations.
+
+==================================================== 9. PROFESSIONAL DESIGN IMPROVEMENTS
+Improve:
+
+Typography
+Spacing
+Card design
+Icons
+Empty states
+Loading states
+Section hierarchy
+The application should feel like a serious startup product.
+
+==================================================== 10. GUINEA FIRST
+The application is designed specifically for Guinea.
+
+Use realistic examples from:
+
+Conakry
+Kindia
+Labé
+Kankan
+Mamou
+Boké
+Faranah
+Nzérékoré
+Use realistic GNF pricing.
+
+==================================================== FINAL OBJECTIVE
+Do not redesign everything.
+
+Keep what is already good.
+
+Improve weak areas.
+
+Add missing modules.
+
+Create a clean, scalable and investment-ready product that can evolve into:
+
+NAFA Market
+NAFA Food
+NAFA Immo
+NAFA Services
+NAFA Logistics
+NAFA Warehouses
+NAFA Pay
+Agriculture must remain the flagship sector and receive the most visibility throughout the application.
+
