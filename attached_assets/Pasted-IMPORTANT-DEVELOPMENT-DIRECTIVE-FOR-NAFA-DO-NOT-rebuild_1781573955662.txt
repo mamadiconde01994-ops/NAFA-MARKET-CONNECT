@@ -1,0 +1,276 @@
+IMPORTANT DEVELOPMENT DIRECTIVE FOR NAFA
+DO NOT rebuild, redesign or replace screens that are already working well.
+
+The current NAFA application already has a solid foundation.
+
+Several screens are already good:
+
+Home Screen
+Agriculture Section
+Product Cards
+Product Details
+Orders
+Profile
+Navigation
+Search Bar
+Market Prices Section
+These screens should remain the base of the application.
+
+Improve only where necessary.
+
+The objective is EVOLUTION, not REDESIGN.
+
+==================================================== CRITICAL RULE
+Before modifying any existing screen ask:
+
+"Is this screen already working and visually good?"
+
+If YES:
+
+Keep it.
+
+Only improve details.
+
+Do not redesign it.
+
+Do not change navigation unnecessarily.
+
+Do not replace existing components.
+
+==================================================== HOME SCREEN
+The current Home Screen is good.
+
+Keep the existing structure.
+
+Do not redesign it.
+
+The Agriculture section is already the strongest part of the application.
+
+Keep Agriculture as the flagship category.
+
+Improve only:
+
+Better icons
+Better spacing
+Larger images
+Better typography
+Better category visibility
+==================================================== GUEST MODE
+After Splash Screen, users should arrive directly on Home Screen.
+
+Do NOT force Login or Register first.
+
+Users must be able to explore:
+
+Agriculture
+Restaurants
+Real Estate
+Services
+Vehicles
+Products
+without creating an account.
+
+Require authentication only for:
+
+Buying
+Selling
+Messaging
+Publishing
+Favorites
+Orders
+This is important for adoption.
+
+==================================================== FIX EMPTY MODULES
+Currently Agriculture contains content.
+
+However:
+
+Restaurants
+Real Estate
+Services
+Vehicles
+Jobs
+Warehouses
+feel empty after opening.
+
+This must be fixed.
+
+Every module must immediately contain realistic mock content.
+
+==================================================== RESTAURANTS MODULE
+Populate with:
+
+Featured Restaurants
+Popular Restaurants
+Nearby Restaurants
+Traditional Guinean Food
+Fast Food
+BBQ
+Cafes
+Desserts
+Add realistic restaurant cards.
+
+Add realistic restaurant images.
+
+Add mock menus.
+
+The section must feel complete.
+
+==================================================== REAL ESTATE MODULE
+Populate with:
+
+Featured Properties
+Houses
+Apartments
+Land
+Commercial Buildings
+Warehouses
+Rentals
+Use realistic Guinea-focused mock properties.
+
+The page should never feel empty.
+
+==================================================== SERVICES MODULE
+Populate with:
+
+Mechanics
+Electricians
+Plumbers
+Technicians
+Welders
+Freelancers
+Builders
+Cleaning Services
+Add provider cards.
+
+Add ratings.
+
+Add locations.
+
+==================================================== VEHICLES MODULE
+Populate with:
+
+Cars
+Motorcycles
+Trucks
+Spare Parts
+Add realistic vehicle listings.
+
+==================================================== JOBS MODULE
+Populate with:
+
+Agriculture Jobs
+Restaurant Jobs
+Driver Jobs
+Construction Jobs
+Temporary Jobs
+Use realistic mock data.
+
+==================================================== NO EMPTY PAGES
+No page should feel unfinished.
+
+No page should contain large empty spaces.
+
+No page should appear as a placeholder.
+
+Every page must contain:
+
+Content
+Recommendations
+Categories
+Cards
+Actions
+==================================================== ICONS BUG
+Many icons currently appear as empty squares or crosses.
+
+This is a critical bug.
+
+Audit the entire icon system.
+
+Replace unsupported icons.
+
+Use:
+
+Expo Vector Icons
+Lucide React Native
+Material Community Icons
+Every icon must display correctly inside Expo Go.
+
+No missing icons.
+
+No square placeholders.
+
+==================================================== READABILITY
+Increase readability across the application.
+
+Use:
+
+Larger titles
+Larger section headings
+Larger product names
+Larger buttons
+Larger icons
+Better spacing
+The application is designed for users who may not be highly familiar with technology.
+
+Everything must be easy to read and understand.
+
+==================================================== IMAGES
+Increase image quality and visibility.
+
+Do not use random placeholder images.
+
+Images must match the content.
+
+Examples:
+
+Mangos → mango images
+
+Tomatoes → tomato images
+
+Restaurants → restaurant food images
+
+Properties → real property images
+
+Services → relevant service images
+
+==================================================== ACCOUNT CREATION FLOW
+Do not push users directly into registration.
+
+Allow exploration first.
+
+Show login/register only when needed.
+
+Examples:
+
+Buying product
+
+Adding favorite
+
+Publishing listing
+
+Sending message
+
+Creating order
+
+This creates a more modern marketplace experience.
+
+==================================================== FINAL OBJECTIVE
+Keep everything that is already good.
+
+Fix weak areas.
+
+Populate empty modules.
+
+Fix icon rendering.
+
+Improve readability.
+
+Improve image quality.
+
+Make every section feel active and complete.
+
+NAFA should feel like a real startup already operating in Guinea, not a prototype.
+
+Agriculture remains the most important and most visible category across the entire platform.
+
