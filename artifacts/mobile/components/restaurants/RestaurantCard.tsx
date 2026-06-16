@@ -155,14 +155,14 @@ export function RestaurantCard({ restaurant, horizontal = false }: Props) {
 
 const styles = StyleSheet.create({
   vCard: { flex: 1, borderWidth: 1, overflow: "hidden" },
-  vImage: { width: "100%", height: 140 },
-  vInfo: { padding: 10, gap: 4 },
+  vImage: { width: "100%", height: 165 },
+  vInfo: { padding: 12, gap: 5 },
   hCard: { flexDirection: "row", borderWidth: 1, overflow: "hidden", marginBottom: 10 },
-  hImage: { width: 110, height: 110 },
-  hInfo: { flex: 1, padding: 12, gap: 4, justifyContent: "center" },
-  name: { fontSize: 13, fontFamily: "Inter_500Medium", lineHeight: 18 },
-  cuisine: { fontSize: 11, fontFamily: "Inter_500Medium" },
-  meta: { fontSize: 11, fontFamily: "Inter_400Regular" },
+  hImage: { width: 120, height: 120 },
+  hInfo: { flex: 1, padding: 12, gap: 5, justifyContent: "center" },
+  name: { fontSize: 14, fontFamily: "Inter_500Medium", lineHeight: 20 },
+  cuisine: { fontSize: 12, fontFamily: "Inter_500Medium" },
+  meta: { fontSize: 12, fontFamily: "Inter_400Regular" },
   dot: { fontSize: 11 },
   row: { flexDirection: "row", alignItems: "center", gap: 4 },
   featuredBadge: {

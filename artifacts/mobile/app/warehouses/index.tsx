@@ -129,14 +129,24 @@ export default function WarehousesScreen() {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: bottomPad }}>
-        {/* Coming soon banner */}
-        <View style={[styles.comingSoonBanner, { backgroundColor: "#FEF3C7", borderRadius: colors.radius }]}>
-          <Ionicons name="construct-outline" size={18} color="#F59E0B" />
-          <View style={{ flex: 1 }}>
-            <Text style={styles.comingSoonTitle}>Module en développement</Text>
-            <Text style={styles.comingSoonText}>
-              La gestion d'inventaire complète sera disponible prochainement. Parcourez les entrepôts disponibles dès maintenant.
+        {/* Stats banner */}
+        <View style={styles.statsRow}>
+          <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <Ionicons name="cube" size={22} color="#DC2626" />
+            <Text style={[styles.statNum, { color: colors.foreground }]}>{MOCK_WAREHOUSES.length}</Text>
+            <Text style={[styles.statLbl, { color: colors.mutedForeground }]}>Entrepôts</Text>
+          </View>
+          <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <Ionicons name="checkmark-circle" size={22} color="#16A34A" />
+            <Text style={[styles.statNum, { color: colors.foreground }]}>{MOCK_WAREHOUSES.filter((w) => w.available).length}</Text>
+            <Text style={[styles.statLbl, { color: colors.mutedForeground }]}>Disponibles</Text>
+          </View>
+          <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <Ionicons name="location" size={22} color="#2563EB" />
+            <Text style={[styles.statNum, { color: colors.foreground }]}>
+              {[...new Set(MOCK_WAREHOUSES.map((w) => w.city))].length}
             </Text>
+            <Text style={[styles.statLbl, { color: colors.mutedForeground }]}>Villes</Text>
           </View>
         </View>
 
@@ -190,15 +200,22 @@ const styles = StyleSheet.create({
   headerTextWrap: { flex: 1 },
   headerTitle: { fontSize: 20, fontFamily: "Inter_700Bold", color: "#FFFFFF", letterSpacing: -0.3 },
   headerSub: { fontSize: 13, color: "rgba(255,255,255,0.75)", fontFamily: "Inter_400Regular" },
-  comingSoonBanner: {
+  statsRow: {
     flexDirection: "row",
-    alignItems: "flex-start",
     gap: 10,
-    margin: 16,
-    padding: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
   },
-  comingSoonTitle: { fontSize: 13, fontFamily: "Inter_600SemiBold", color: "#92400E", marginBottom: 2 },
-  comingSoonText: { fontSize: 12, fontFamily: "Inter_400Regular", color: "#92400E", lineHeight: 17 },
+  statCard: {
+    flex: 1,
+    alignItems: "center",
+    gap: 4,
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingVertical: 14,
+  },
+  statNum: { fontSize: 20, fontFamily: "Inter_700Bold" },
+  statLbl: { fontSize: 11, fontFamily: "Inter_400Regular" },
   section: { marginBottom: 24 },
   sectionHeader: {
     flexDirection: "row",

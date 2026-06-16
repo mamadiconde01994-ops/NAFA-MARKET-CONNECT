@@ -129,7 +129,11 @@ export default function ServicesScreen() {
           </View>
           <View style={{ paddingHorizontal: 16 }}>
             {filtered.map((s) => (
-              <ServiceCard key={s.id} provider={s} />
+              <ServiceCard
+                key={s.id}
+                provider={s}
+                onPress={() => router.push(`/services/${s.id}` as any)}
+              />
             ))}
             {filtered.length === 0 && (
               <View style={styles.empty}>
