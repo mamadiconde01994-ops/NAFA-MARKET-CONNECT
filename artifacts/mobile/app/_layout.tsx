@@ -8,15 +8,21 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { ErrorBoundary } from "@/lib/error-handler";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { FavoritesProvider } from "@/context/FavoritesContext";
+import { LanguageProvider } from "@/context/LanguageContext";
+import { NotificationsProvider } from "@/context/NotificationsContext";
+import { ToastProvider } from "@/context/ToastContext";
+import { NetworkProvider } from "@/context/NetworkContext";
+import { SplashScreenWrapper } from "@/components/branding/SplashScreenWrapper";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -38,8 +44,24 @@ function RootLayoutNav() {
       <Stack.Screen name="services/index" options={{ headerShown: false }} />
       <Stack.Screen name="services/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="warehouses/index" options={{ headerShown: false }} />
+      <Stack.Screen name="warehouses/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="vehicles/index" options={{ headerShown: false }} />
+      <Stack.Screen name="vehicles/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="jobs/index" options={{ headerShown: false }} />
+      <Stack.Screen name="jobs/[id]" options={{ headerShown: false }} />
+      <Stack.Screen name="partners/index" options={{ headerShown: false }} />
+      <Stack.Screen name="checkout" options={{ headerShown: false }} />
+      <Stack.Screen name="partners/opportunities" options={{ headerShown: false }} />
+      <Stack.Screen name="language" options={{ headerShown: false }} />
+      <Stack.Screen name="terms" options={{ headerShown: false }} />
+      <Stack.Screen name="privacy" options={{ headerShown: false }} />
+      <Stack.Screen name="chat" options={{ headerShown: false }} />
+      <Stack.Screen name="notifications" options={{ headerShown: false }} />
+      <Stack.Screen name="partners/referrals" options={{ headerShown: false }} />
+      <Stack.Screen name="partners/sales" options={{ headerShown: false }} />
+      <Stack.Screen name="partners/earnings" options={{ headerShown: false }} />
+      <Stack.Screen name="partners/leaderboard" options={{ headerShown: false }} />
+      <Stack.Screen name="partners/statistics" options={{ headerShown: false }} />
     </Stack>
   );
 }
@@ -52,6 +74,8 @@ export default function RootLayout() {
     Inter_700Bold,
   });
 
+  const [splashDone, setSplashDone] = useState(false);
+
   useEffect(() => {
     if (fontsLoaded || fontError) {
       SplashScreen.hideAsync();
@@ -61,22 +85,34 @@ export default function RootLayout() {
   if (!fontsLoaded && !fontError) return null;
 
   return (
-    <SafeAreaProvider>
-      <ThemeProvider>
-        <ErrorBoundary>
-          <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-              <CartProvider>
-                <GestureHandlerRootView style={{ flex: 1 }}>
-                  <KeyboardProvider>
-                    <RootLayoutNav />
-                  </KeyboardProvider>
-                </GestureHandlerRootView>
-              </CartProvider>
-            </AuthProvider>
-          </QueryClientProvider>
-        </ErrorBoundary>
-      </ThemeProvider>
-    </SafeAreaProvider>
+    <SplashScreenWrapper onReady={() => setSplashDone(true)} minDuration={2500}>
+      <SafeAreaProvider>
+        <NetworkProvider>
+          <ThemeProvider>
+            <ErrorBoundary>
+              <QueryClientProvider client={queryClient}>
+                <AuthProvider>
+                  <LanguageProvider>
+                    <CartProvider>
+                      <FavoritesProvider>
+                        <NotificationsProvider>
+                          <ToastProvider>
+                          <GestureHandlerRootView style={{ flex: 1 }}>
+                            <KeyboardProvider>
+                              <RootLayoutNav />
+                            </KeyboardProvider>
+                          </GestureHandlerRootView>
+                        </ToastProvider>
+                      </NotificationsProvider>
+                    </FavoritesProvider>
+                  </CartProvider>
+                </LanguageProvider>
+                </AuthProvider>
+              </QueryClientProvider>
+            </ErrorBoundary>
+          </ThemeProvider>
+        </NetworkProvider>
+      </SafeAreaProvider>
+    </SplashScreenWrapper>
   );
 }

@@ -15,6 +15,7 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useAuth } from "@/context/AuthContext";
 
 import { Button } from "@/components/common/Button";
 import { CATEGORIES } from "@/constants/mockData";
@@ -44,6 +45,7 @@ export default function CreateProductScreen() {
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const { user } = useAuth();
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
@@ -71,6 +73,27 @@ export default function CreateProductScreen() {
       { text: "OK", onPress: () => router.back() },
     ]);
   };
+
+  if (!user) {
+    return (
+      <View
+        style={[
+          styles.guestContainer,
+          { paddingTop: topPad + 24, backgroundColor: colors.background },
+        ]}
+      >
+        <Text style={[styles.guestTitle, { color: colors.foreground }]}>Connexion requise</Text>
+        <Text style={[styles.guestSubtitle, { color: colors.mutedForeground }]}>Vous devez vous connecter pour publier une annonce sur NAFA Marché.</Text>
+        <View style={styles.guestActions}>
+          <Button label="Connexion" onPress={() => router.push("/(auth)/login" as any)} fullWidth />
+          <Button label="Créer un compte" onPress={() => router.push("/(auth)/register" as any)} variant="outline" fullWidth />
+          <Pressable onPress={() => router.replace("/(tabs)")} style={styles.guestContinueBtn}>
+            <Text style={[styles.guestContinueText, { color: colors.primary }]}>Retour à l'exploration</Text>
+          </Pressable>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <KeyboardAvoidingView
@@ -403,5 +426,33 @@ const styles = StyleSheet.create({
     height: 44,
     alignItems: "center",
     justifyContent: "center",
+  },
+  guestContainer: {
+    flex: 1,
+    justifyContent: "center",
+    paddingHorizontal: 24,
+    gap: 18,
+  },
+  guestTitle: {
+    fontSize: 22,
+    fontFamily: "Inter_700Bold",
+  },
+  guestSubtitle: {
+    fontSize: 15,
+    lineHeight: 22,
+    fontFamily: "Inter_400Regular",
+    marginTop: 8,
+  },
+  guestActions: {
+    gap: 12,
+    marginTop: 24,
+  },
+  guestContinueBtn: {
+    alignItems: "center",
+    paddingVertical: 14,
+  },
+  guestContinueText: {
+    fontSize: 15,
+    fontFamily: "Inter_600SemiBold",
   },
 });

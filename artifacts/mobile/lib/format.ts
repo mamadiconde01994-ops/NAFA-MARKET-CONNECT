@@ -25,6 +25,8 @@ export function formatRole(role: UserRole): string {
     restaurant: "Restaurant",
     delivery: "Livreur",
     customer: "Client",
+    partner: "Partenaire",
+    "business-ambassador": "Ambassadeur",
   };
   return map[role];
 }

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200" role="img" aria-label="NAFA Marché Connect - Logo principal">
+  <defs>
+    <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a472a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d7c5f;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fdb913;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+    <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="0" dy="2" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.15"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="600" cy="600" r="580" fill="#ffffff"/>
+
+  <!-- Main mark: interconnected nodes representing market connectivity -->
+  <g transform="translate(600, 600)">
+    <!-- Central hub -->
+    <circle cx="0" cy="0" r="60" fill="url(#mainGradient)" filter="url(#softShadow)"/>
+    
+    <!-- Connecting lines (subtle) -->
+    <g stroke="url(#mainGradient)" stroke-width="3" stroke-linecap="round" opacity="0.4">
+      <line x1="0" y1="0" x2="-180" y2="-120"/>
+      <line x1="0" y1="0" x2="180" y2="-120"/>
+      <line x1="0" y1="0" x2="180" y2="120"/>
+      <line x1="0" y1="0" x2="-180" y2="120"/>
+    </g>
+
+    <!-- Outer nodes -->
+    <g fill="#ffffff" filter="url(#softShadow)">
+      <!-- Top Left: Agriculture -->
+      <circle cx="-180" cy="-120" r="45" fill="url(#mainGradient)"/>
+      <path d="M-195,-110 L-165,-110 L-180,-130 Z" fill="#fdb913" opacity="0.9"/>
+      
+      <!-- Top Right: Technology -->
+      <circle cx="180" cy="-120" r="45" fill="url(#accentGradient)"/>
+      <rect x="165" y="-135" width="30" height="30" fill="#1a472a" rx="4"/>
+      
+      <!-- Bottom Right: Commerce -->
+      <circle cx="180" cy="120" r="45" fill="url(#mainGradient)"/>
+      <path d="M165,105 L195,105 L190,135 L170,135 Z" fill="#fdb913" opacity="0.9"/>
+      
+      <!-- Bottom Left: Services -->
+      <circle cx="-180" cy="120" r="45" fill="url(#accentGradient)"/>
+      <path d="M-185,110 L-175,110 L-175,130 L-185,130 Z M-185,105 L-185,95 L-175,95" stroke="#1a472a" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </g>
+
+    <!-- Center circle accent -->
+    <circle cx="0" cy="0" r="55" fill="none" stroke="url(#accentGradient)" stroke-width="2" opacity="0.6"/>
+  </g>
+
+  <!-- Brand name: NAFA (primary) -->
+  <text x="600" y="920" font-family="'Segoe UI', 'Roboto', 'Poppins', sans-serif" font-size="140" font-weight="700" text-anchor="middle" fill="#1a472a" letter-spacing="-2">NAFA</text>
+
+  <!-- Tagline: Marché Connect (secondary) -->
+  <text x="600" y="1020" font-family="'Segoe UI', 'Roboto', 'Inter', sans-serif" font-size="52" font-weight="400" text-anchor="middle" fill="#0d7c5f" letter-spacing="0.5">Marché Connect</text>
+
+  <!-- Subtle accent line -->
+  <line x1="300" y1="1060" x2="900" y2="1060" stroke="url(#accentGradient)" stroke-width="2" opacity="0.6"/>
+</svg>

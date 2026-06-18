@@ -11,6 +11,10 @@ import type {
   User,
   Vehicle,
   Warehouse,
+  PartnerOpportunity,
+  PartnerReferral,
+  PartnerSale,
+  PartnerLeaderboardEntry,
 } from "@/types";
 
 export const CATEGORIES: Category[] = [
@@ -339,6 +343,161 @@ export const MOCK_PRODUCTS: Product[] = [
     createdAt: "2024-06-14",
   },
 ];
+
+export const PARTNER_OPPORTUNITIES: PartnerOpportunity[] = [
+  {
+    id: "po1",
+    title: "Riz local - Commission 5%",
+    sellerName: "Mamadou Diallo",
+    sector: "Agriculture",
+    city: "Kindia",
+    price: 450000,
+    commissionRate: 5,
+    estimatedEarnings: 22500,
+    badge: "Agriculture",
+    campaignType: "Livraison de 1 sac",
+  },
+  {
+    id: "po2",
+    title: "Tomates fraîches - Commission 8%",
+    sellerName: "Fatoumata Bah",
+    sector: "Agriculture",
+    city: "Conakry",
+    price: 5000,
+    commissionRate: 8,
+    estimatedEarnings: 400,
+    badge: "Agriculture",
+    campaignType: "1 kg acheté",
+  },
+  {
+    id: "po3",
+    title: "20 clients restaurant - 5 000 GNF",
+    sellerName: "Restaurant Le Marché",
+    sector: "Restaurants",
+    city: "Conakry",
+    price: 50000,
+    commissionRate: 10,
+    estimatedEarnings: 5000,
+    badge: "Restaurants",
+    campaignType: "Commande complétée",
+  },
+  {
+    id: "po4",
+    title: "Appartement location - 200 000 GNF",
+    sellerName: "Alpha Barry",
+    sector: "Immobilier",
+    city: "Labé",
+    price: 1000000,
+    commissionRate: 20,
+    estimatedEarnings: 200000,
+    badge: "Immobilier",
+    campaignType: "Signature de bail",
+  },
+  {
+    id: "po5",
+    title: "Électricien - 10 000 GNF",
+    sellerName: "Service Pro Guinée",
+    sector: "Services",
+    city: "Conakry",
+    price: 20000,
+    commissionRate: 50,
+    estimatedEarnings: 10000,
+    badge: "Services",
+    campaignType: "Mission réussie",
+  },
+  {
+    id: "po6",
+    title: "Mangues Kent - Commission 7%",
+    sellerName: "Mamadou Diallo",
+    sector: "Agriculture",
+    city: "Labé",
+    price: 8000,
+    commissionRate: 7,
+    estimatedEarnings: 560,
+    badge: "Agriculture",
+    campaignType: "1 kg vendu",
+  },
+];
+
+export const PARTNER_REFERRALS: PartnerReferral[] = [
+  {
+    id: "pr1",
+    clientName: "Aïssatou Camara",
+    campaign: "Commande restaurant",
+    referredAt: "2024-06-12",
+    status: "Complétée",
+    reward: 5000,
+  },
+  {
+    id: "pr2",
+    clientName: "Ibrahima Traoré",
+    campaign: "Riz local",
+    referredAt: "2024-06-10",
+    status: "En attente",
+    reward: 22500,
+  },
+  {
+    id: "pr3",
+    clientName: "Mariama Sow",
+    campaign: "Location appartement",
+    referredAt: "2024-06-09",
+    status: "Complétée",
+    reward: 200000,
+  },
+];
+
+export const PARTNER_SALES: PartnerSale[] = [
+  {
+    id: "ps1",
+    product: "Riz local - 1 sac",
+    buyerName: "Kadia Bah",
+    amount: 450000,
+    commission: 22500,
+    date: "2024-06-14",
+    status: "Payé",
+  },
+  {
+    id: "ps2",
+    product: "Tomates fraîches - 2 kg",
+    buyerName: "Oumar Camara",
+    amount: 10000,
+    commission: 800,
+    date: "2024-06-13",
+    status: "Payé",
+  },
+  {
+    id: "ps3",
+    product: "Électricien - mission",
+    buyerName: "Fodè Sylla",
+    amount: 20000,
+    commission: 10000,
+    date: "2024-06-11",
+    status: "En attente",
+  },
+];
+
+export const PARTNER_LEADERBOARD: PartnerLeaderboardEntry[] = [
+  { id: "pl1", name: "Aminata Diallo", role: "Ambassadeur", earnings: 750000, rank: 1, badge: "Top Ambassador" },
+  { id: "pl2", name: "Ousmane Keita", role: "Partenaire", earnings: 620000, rank: 2, badge: "Top Seller" },
+  { id: "pl3", name: "Hawa Camara", role: "Partenaire", earnings: 510000, rank: 3, badge: "Trusted Farmer" },
+  { id: "pl4", name: "Mamadou Traoré", role: "Partenaire", earnings: 420000, rank: 4, badge: "Trusted Business" },
+  { id: "pl5", name: "Fatoumata Bah", role: "Partenaire", earnings: 390000, rank: 5, badge: "Verified Partner" },
+];
+
+export const PARTNER_EARNINGS_HISTORY = [
+  { id: "eh1", label: "Semaine 1", amount: 120000 },
+  { id: "eh2", label: "Semaine 2", amount: 90000 },
+  { id: "eh3", label: "Semaine 3", amount: 145000 },
+  { id: "eh4", label: "Semaine 4", amount: 170000 },
+];
+
+export const PARTNER_STATS = {
+  totalSales: 12,
+  totalReferrals: 8,
+  totalEarnings: 780000,
+  ranking: "Top Ambassador",
+  verifiedStatus: true,
+};
 
 export const MOCK_ORDERS: Order[] = [
   {
@@ -1464,5 +1623,184 @@ export const MOCK_JOBS: Job[] = [
     contactPhone: "+224 621 00 00 02",
     contactName: "Responsable marchés",
     urgent: false,
+  },
+];
+
+export const MOCK_OPPORTUNITIES = [
+  {
+    id: "opp1",
+    title: "Devenir Vendeur NAFA Agriculture",
+    description: "Rejoignez notre plateforme en tant que vendeur spécialisé en produits agricoles. Marges attractives et support marketing.",
+    sector: "Agriculture",
+    commission: 8,
+    estimatedEarnings: 150000,
+  },
+  {
+    id: "opp2",
+    title: "Partenaire Restaurants Premium",
+    description: "Restaurateurs: distribuez vos plats via NAFA. Visibilité accrue et clientèle prête à commander.",
+    sector: "Restauration",
+    commission: 12,
+    estimatedEarnings: 200000,
+  },
+  {
+    id: "opp3",
+    title: "Agent Immobilier NAFA",
+    description: "Commercialisez des propriétés sur notre plateforme. Commission intéressante par vente conclue.",
+    sector: "Immobilier",
+    commission: 5,
+    estimatedEarnings: 250000,
+  },
+  {
+    id: "opp4",
+    title: "Prestataire de Services Certifié",
+    description: "Menuisier, électricien, plombier... Listez vos services et toucheznos milliers de clients en quête de qualité.",
+    sector: "Services",
+    commission: 10,
+    estimatedEarnings: 180000,
+  },
+];
+
+export const MOCK_REFERRALS = [
+  {
+    id: "ref1",
+    name: "Mamadou Touré",
+    joinDate: "Juillet 2024",
+    commissions: "12",
+    sales: "45",
+    status: "Actif",
+  },
+  {
+    id: "ref2",
+    name: "Aissatou Diallo",
+    joinDate: "Juin 2024",
+    commissions: "8",
+    sales: "32",
+    status: "Actif",
+  },
+  {
+    id: "ref3",
+    name: "Boubacar Bah",
+    joinDate: "Août 2024",
+    commissions: "15",
+    sales: "58",
+    status: "Actif",
+  },
+  {
+    id: "ref4",
+    name: "Fatou Kone",
+    joinDate: "Septembre 2024",
+    commissions: "6",
+    sales: "18",
+    status: "Inactif",
+  },
+];
+
+export const MOCK_PARTNER_SALES = [
+  {
+    id: "ps1",
+    orderId: "12345",
+    date: "15 Sep 2024",
+    productName: "Tomates fraîches (50kg)",
+    quantity: 50,
+    amount: 250000,
+    status: "Complétée",
+  },
+  {
+    id: "ps2",
+    orderId: "12346",
+    date: "14 Sep 2024",
+    productName: "Riz local (100kg)",
+    quantity: 100,
+    amount: 4500000,
+    status: "Complétée",
+  },
+  {
+    id: "ps3",
+    orderId: "12347",
+    date: "14 Sep 2024",
+    productName: "Mangues Kent (30kg)",
+    quantity: 30,
+    amount: 240000,
+    status: "En attente",
+  },
+  {
+    id: "ps4",
+    orderId: "12348",
+    date: "13 Sep 2024",
+    productName: "Oignons violets (60kg)",
+    quantity: 60,
+    amount: 360000,
+    status: "Complétée",
+  },
+];
+
+export const MOCK_EARNINGS = [
+  {
+    id: "earn1",
+    month: "Septembre 2024",
+    source: "Ventes produits",
+    amount: 1200000,
+    period: "month",
+  },
+  {
+    id: "earn2",
+    month: "Août 2024",
+    source: "Commissions",
+    amount: 950000,
+    period: "month",
+  },
+  {
+    id: "earn3",
+    month: "Juillet 2024",
+    source: "Bonus partenaire",
+    amount: 1050000,
+    period: "month",
+  },
+  {
+    id: "earn4",
+    month: "Juin 2024",
+    source: "Ventes produits",
+    amount: 850000,
+    period: "month",
+  },
+];
+
+export const MOCK_LEADERBOARD = [
+  {
+    id: "lb1",
+    name: "Alpha Diallo",
+    role: "Vendeur Premium",
+    earnings: 5200000,
+  },
+  {
+    id: "lb2",
+    name: "Fatoumata Bah",
+    role: "Vendeur",
+    earnings: 4850000,
+  },
+  {
+    id: "lb3",
+    name: "Mamadou Sow",
+    role: "Vendeur",
+    earnings: 4120000,
+  },
+  {
+    id: "lb4",
+    name: "Aissatou Kone",
+    role: "Vendeur",
+    earnings: 3650000,
+  },
+  {
+    id: "lb5",
+    name: "Boubacar Camara",
+    role: "Partenaire",
+    earnings: 3200000,
+  },
+  {
+    id: "lb6",
+    name: "Mariama Touré",
+    role: "Partenaire",
+    earnings: 2950000,
   },
 ];

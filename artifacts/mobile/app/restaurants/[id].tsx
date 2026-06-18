@@ -3,6 +3,7 @@ import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import {
+  Linking,
   Platform,
   Pressable,
   ScrollView,
@@ -39,6 +40,12 @@ export default function RestaurantDetailScreen() {
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 + 84 : 100;
+
+  const handleCall = () => {
+    if (!restaurant) return;
+    const phone = restaurant.phone.replace(/\s/g, "");
+    Linking.openURL(`tel:${phone}`);
+  };
 
   if (!restaurant) {
     return (
@@ -251,8 +258,7 @@ export default function RestaurantDetailScreen() {
 
       {/* CTA */}
       <View style={[styles.ctaBar, { backgroundColor: colors.card, borderTopColor: colors.border, paddingBottom: Platform.OS === "web" ? 34 : insets.bottom + 16 }]}>
-        <Pressable
-          style={({ pressed }) => [
+        <Pressable          onPress={handleCall}          style={({ pressed }) => [
             styles.ctaBtn,
             { backgroundColor: "#EA580C", opacity: pressed ? 0.85 : 1 },
           ]}

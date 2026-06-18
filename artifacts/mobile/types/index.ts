@@ -4,7 +4,9 @@ export type UserRole =
   | "warehouse"
   | "restaurant"
   | "delivery"
-  | "customer";
+  | "customer"
+  | "partner"
+  | "business-ambassador";
 
 export interface User {
   id: string;
@@ -22,6 +24,47 @@ export interface User {
     orders: number;
     rating: number;
   };
+}
+
+export interface PartnerOpportunity {
+  id: string;
+  title: string;
+  sellerName: string;
+  sector: "Agriculture" | "Restaurants" | "Immobilier" | "Services" | "Commerce";
+  city: string;
+  price: number;
+  commissionRate: number;
+  estimatedEarnings: number;
+  badge: string;
+  campaignType: string;
+}
+
+export interface PartnerReferral {
+  id: string;
+  clientName: string;
+  campaign: string;
+  referredAt: string;
+  status: "En attente" | "Complétée" | "Annulée";
+  reward: number;
+}
+
+export interface PartnerSale {
+  id: string;
+  product: string;
+  buyerName: string;
+  amount: number;
+  commission: number;
+  date: string;
+  status: "Payé" | "En attente";
+}
+
+export interface PartnerLeaderboardEntry {
+  id: string;
+  name: string;
+  role: string;
+  earnings: number;
+  rank: number;
+  badge: string;
 }
 
 export type ProductCategory =

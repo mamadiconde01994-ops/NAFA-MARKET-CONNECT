@@ -24,6 +24,14 @@ function NativeTabLayout() {
         <Icon sf={{ default: "bag", selected: "bag.fill" }} />
         <Label>Commandes</Label>
       </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="favorites">
+        <Icon sf={{ default: "heart", selected: "heart.fill" }} />
+        <Label>Favoris</Label>
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="notifications">
+        <Icon sf={{ default: "bell", selected: "bell.fill" }} />
+        <Label>Notifications</Label>
+      </NativeTabs.Trigger>
       <NativeTabs.Trigger name="profile">
         <Icon sf={{ default: "person", selected: "person.fill" }} />
         <Label>Profil</Label>
@@ -74,7 +82,7 @@ function ClassicTabLayout() {
         name="index"
         options={{
           title: "Accueil",
-          tabBarIcon: ({ color }) =>
+          tabBarIcon: ({ color }: { color?: string }) =>
             isIOS ? (
               <SymbolView name="house" tintColor={color} size={24} />
             ) : (
@@ -86,7 +94,7 @@ function ClassicTabLayout() {
         name="search"
         options={{
           title: "Rechercher",
-          tabBarIcon: ({ color }) =>
+          tabBarIcon: ({ color }: { color?: string }) =>
             isIOS ? (
               <SymbolView name="magnifyingglass" tintColor={color} size={24} />
             ) : (
@@ -98,7 +106,7 @@ function ClassicTabLayout() {
         name="orders"
         options={{
           title: "Commandes",
-          tabBarIcon: ({ color }) =>
+          tabBarIcon: ({ color }: { color?: string }) =>
             isIOS ? (
               <SymbolView name="bag" tintColor={color} size={24} />
             ) : (
@@ -107,10 +115,34 @@ function ClassicTabLayout() {
         }}
       />
       <Tabs.Screen
+        name="favorites"
+        options={{
+          title: "Favoris",
+          tabBarIcon: ({ color }: { color?: string }) =>
+            isIOS ? (
+              <SymbolView name="heart" tintColor={color} size={24} />
+            ) : (
+              <Ionicons name="heart-outline" size={22} color={color} />
+            ),
+        }}
+      />
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          title: "Notifications",
+          tabBarIcon: ({ color }: { color?: string }) =>
+            isIOS ? (
+              <SymbolView name="bell" tintColor={color} size={24} />
+            ) : (
+              <Ionicons name="notifications-outline" size={22} color={color} />
+            ),
+        }}
+      />
+      <Tabs.Screen
         name="profile"
         options={{
           title: "Profil",
-          tabBarIcon: ({ color }) =>
+          tabBarIcon: ({ color }: { color?: string }) =>
             isIOS ? (
               <SymbolView name="person" tintColor={color} size={24} />
             ) : (

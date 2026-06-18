@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
+  Alert,
   Platform,
   Pressable,
   ScrollView,
@@ -135,8 +136,7 @@ function JobCard({ job }: { job: Job }) {
         <Text style={[styles.postedAt, { color: colors.mutedForeground }]}>
           Publié le {new Date(job.postedAt).toLocaleDateString("fr-GN", { day: "numeric", month: "short" })}
         </Text>
-        <Pressable
-          style={({ pressed }) => [
+        <Pressable          onPress={() => Alert.alert("Postuler", "Votre candidature a été envoyée. Le recruteur vous contactera bientôt.")}          style={({ pressed }) => [
             styles.applyBtn,
             { backgroundColor: catColor, opacity: pressed ? 0.8 : 1 },
           ]}

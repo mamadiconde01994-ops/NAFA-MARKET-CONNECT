@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TextInput,
   View,
+  type ViewStyle,
 } from "react-native";
 
 import { useColors } from "@/hooks/useColors";
@@ -18,6 +19,7 @@ interface SearchBarProps {
   editable?: boolean;
   autoFocus?: boolean;
   onSubmit?: () => void;
+  style?: ViewStyle | ViewStyle[];
 }
 
 export function SearchBar({
@@ -28,6 +30,7 @@ export function SearchBar({
   editable = true,
   autoFocus = false,
   onSubmit,
+  style,
 }: SearchBarProps) {
   const colors = useColors();
 
@@ -40,6 +43,7 @@ export function SearchBar({
           borderColor: colors.border,
           borderRadius: colors.radius,
         },
+        style,
       ]}
     >
       <Ionicons name="search-outline" size={18} color={colors.mutedForeground} />
@@ -70,7 +74,7 @@ export function SearchBar({
 
   if (!editable && onPress) {
     return (
-      <Pressable onPress={onPress} style={{ flex: 1 }}>
+      <Pressable onPress={onPress} style={style}>
         {inner}
       </Pressable>
     );

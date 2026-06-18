@@ -1,6 +1,7 @@
 const colors = {
   light: {
     text: "#0F172A",
+    textSecondary: "#64748B",
     tint: "#1E293B",
     background: "#F8FAFC",
     foreground: "#0F172A",
@@ -28,6 +29,7 @@ const colors = {
   },
   dark: {
     text: "#F8FAFC",
+    textSecondary: "#94A3B8",
     tint: "#F59E0B",
     background: "#0F172A",
     foreground: "#F8FAFC",
@@ -55,6 +57,7 @@ const colors = {
   },
   green: {
     text: "#0D1F0E",
+    textSecondary: "#6B7A6C",
     tint: "#16A34A",
     background: "#F0FDF4",
     foreground: "#0D1F0E",

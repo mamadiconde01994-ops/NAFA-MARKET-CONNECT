@@ -3,6 +3,8 @@ import { Image } from "expo-image";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
+  Alert,
+  Linking,
   Platform,
   Pressable,
   ScrollView,
@@ -38,12 +40,13 @@ const CONDITION_LABELS: Record<string, string> = {
   refurbished: "Reconditionné",
 };
 
-function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
+function VehicleCard({ vehicle, onPress }: { vehicle: Vehicle; onPress?: () => void }) {
   const colors = useColors();
   const condColor = CONDITION_COLORS[vehicle.condition] ?? "#64748B";
 
   return (
     <Pressable
+      onPress={onPress}
       style={({ pressed }) => [
         styles.card,
         {
@@ -115,7 +118,7 @@ function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
             <Ionicons name="person" size={13} color="#FFFFFF" />
           </View>
           <Text style={[styles.sellerName, { color: colors.foreground }]}>{vehicle.sellerName}</Text>
-          <Pressable style={[styles.contactBtn, { backgroundColor: "#475569" + "18", borderColor: "#475569" + "40" }]}>
+          <Pressable onPress={onPress} hitSlop={8} style={[styles.contactBtn, { backgroundColor: "#475569" + "18", borderColor: "#475569" + "40" }]}>
             <Ionicons name="call-outline" size={13} color="#475569" />
             <Text style={[styles.contactText, { color: "#475569" }]}>Appeler</Text>
           </Pressable>
@@ -133,6 +136,24 @@ export default function VehiclesScreen() {
 
   const topPad = Platform.OS === "web" ? 67 + 16 : insets.top + 16;
   const bottomPad = Platform.OS === "web" ? 34 + 84 : 100;
+
+  const handleContact = (vehicle: Vehicle) => {
+    const phone = vehicle.sellerPhone.replace(/\s/g, "");
+    Alert.alert(
+      "Contacter le vendeur",
+      `Appelez ${vehicle.sellerName} au ${vehicle.sellerPhone} pour en savoir plus sur ce véhicule.`,
+      [
+        {
+          text: "Appeler",
+          onPress: () => Linking.openURL(`tel:${phone}`),
+        },
+        {
+          text: "Fermer",
+          style: "cancel",
+        },
+      ]
+    );
+  };
 
   const filtered = MOCK_VEHICLES.filter((v) => {
     const matchSearch =
@@ -234,7 +255,7 @@ export default function VehiclesScreen() {
             >
               {featured.map((v) => (
                 <View key={v.id} style={{ width: 280 }}>
-                  <VehicleCard vehicle={v} />
+                  <VehicleCard vehicle={v} onPress={() => handleContact(v)} />
                 </View>
               ))}
             </ScrollView>
@@ -253,7 +274,7 @@ export default function VehiclesScreen() {
           </View>
           <View style={{ paddingHorizontal: 16, gap: 12 }}>
             {filtered.map((v) => (
-              <VehicleCard key={v.id} vehicle={v} />
+              <VehicleCard key={v.id} vehicle={v} onPress={() => handleContact(v)} />
             ))}
             {filtered.length === 0 && (
               <View style={styles.empty}>

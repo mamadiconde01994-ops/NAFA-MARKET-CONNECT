@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="NAFA Market Connect logo">
+  <defs>
+    <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#0B8A5F"/>
+      <stop offset="100%" stop-color="#18B28A"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#FFD166"/>
+      <stop offset="100%" stop-color="#F69E1D"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="100%" height="100%" rx="160" fill="#ffffff"/>
+
+  <!-- Circle badge -->
+  <g transform="translate(128 128)">
+    <circle cx="384" cy="384" r="384" fill="url(#g1)" opacity="0.98"/>
+
+    <!-- Growth bars (commerce & growth) -->
+    <g transform="translate(220 200)" fill="#fff">
+      <rect x="0" y="200" width="70" height="220" rx="12" fill="url(#g2)"/>
+      <rect x="110" y="120" width="70" height="300" rx="12" fill="#ffffff" opacity="0.14"/>
+      <rect x="220" y="0" width="70" height="420" rx="12" fill="#ffffff" opacity="0.12"/>
+    </g>
+
+    <!-- Leaf + tech lines (agri + tech) -->
+    <g transform="translate(420 260)">
+      <path d="M34 2c48 12 124 66 136 148 12 86-44 184-120 236-16 10-38-6-26-24 38-64 46-134 20-190C64 156 18 94 2 68-8 52 8 30 26 36c6 2 20 6 32 10z" fill="#ffffff" opacity="0.96"/>
+      <!-- circuit accents -->
+      <g stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.85">
+        <path d="M-30 220 L40 160" stroke-linejoin="round"/>
+        <circle cx="-30" cy="220" r="8" fill="#ffffff"/>
+        <circle cx="40" cy="160" r="6" fill="#ffffff"/>
+      </g>
+    </g>
+
+    <!-- Brand wordmark (subtle) -->
+    <text x="384" y="740" font-family="Inter, Roboto, sans-serif" font-weight="700" font-size="56" text-anchor="middle" fill="#ffffff">NAFA Market Connect</text>
+  </g>
+</svg>

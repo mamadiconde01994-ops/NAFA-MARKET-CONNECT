@@ -4,6 +4,7 @@ import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import {
+  Alert,
   Platform,
   Pressable,
   ScrollView,
@@ -17,6 +18,7 @@ import { Badge } from "@/components/common/Badge";
 import { Button } from "@/components/common/Button";
 import { UserAvatar } from "@/components/profile/UserAvatar";
 import { CATEGORIES, MOCK_PRODUCTS } from "@/constants/mockData";
+import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 import { useColors } from "@/hooks/useColors";
 import { formatDate, formatPrice, formatRole, formatUnit } from "@/lib/format";
@@ -25,6 +27,7 @@ export default function ProductDetailScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { user } = useAuth();
   const { addItem } = useCart();
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
@@ -58,6 +61,21 @@ export default function ProductDetailScreen() {
   }
 
   const handleAddToCart = async () => {
+    if (!user) {
+      Alert.alert(
+        "Connexion requise",
+        "Vous devez vous connecter pour commander ce produit.",
+        [
+          { text: "Annuler", style: "cancel" },
+          {
+            text: "Se connecter",
+            onPress: () => router.push("/(auth)/login" as any),
+          },
+        ],
+      );
+      return;
+    }
+
     addItem(product, qty);
     if (Platform.OS !== "web") {
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);

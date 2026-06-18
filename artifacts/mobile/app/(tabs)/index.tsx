@@ -4,12 +4,14 @@ import React, { useState } from "react";
 import {
   Platform,
   Pressable,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SearchBar } from "@/components/common/SearchBar";
 
 import { CategoryChip } from "@/components/products/CategoryChip";
 import { ProductCard } from "@/components/products/ProductCard";
@@ -181,7 +183,7 @@ export default function HomeScreen() {
             <Pressable style={[styles.iconBtn]} hitSlop={8}>
               <Ionicons name="notifications-outline" size={21} color="rgba(255,255,255,0.85)" />
             </Pressable>
-            <Pressable onPress={() => router.push("/(tabs)/profile" as any)}>
+            <Pressable onPress={() => router.push("/profile")}>
               <UserAvatar name={user?.name ?? "Visiteur"} size={38} />
             </Pressable>
           </View>
@@ -203,21 +205,41 @@ export default function HomeScreen() {
           <Text style={styles.greetingSub}>
             Que cherchez-vous aujourd'hui ?
           </Text>
-          <Pressable
-            onPress={() => router.push("/(tabs)/search" as any)}
+          <SearchBar
+            value=""
+            onChangeText={() => undefined}
+            placeholder="Produits, restaurants, immobilier..."
+            editable={false}
+            onPress={() => router.push("/search")}
             style={[
               styles.searchBlock,
               { backgroundColor: "rgba(255,255,255,0.12)", borderColor: "rgba(255,255,255,0.2)" },
             ]}
-          >
-            <Ionicons name="search-outline" size={18} color="rgba(255,255,255,0.7)" />
-            <Text style={styles.searchPlaceholder}>Produits, restaurants, immobilier...</Text>
-            <View style={[styles.searchBtn, { backgroundColor: colors.goldAccent }]}>
-              <Ionicons name="arrow-forward" size={14} color="#FFFFFF" />
-            </View>
-          </Pressable>
+          />
         </View>
-
+        {/* ── PARTNER PROGRAM BANNER ── */}
+        <Pressable
+          onPress={() => router.push("/partners" as any)}
+          style={({ pressed }) => [
+            styles.partnerBanner,
+            {
+              backgroundColor: colors.card,
+              borderColor: colors.border,
+              opacity: pressed ? 0.9 : 1,
+            },
+          ]}
+        >
+          <View style={styles.partnerBannerIcon}>
+            <Ionicons name="cash-outline" size={24} color="#10B981" />
+          </View>
+          <View style={styles.partnerBannerText}>
+            <Text style={[styles.partnerBannerTitle, { color: colors.foreground }]}>Gagnez de l'argent avec NAFA</Text>
+            <Text style={[styles.partnerBannerSubtitle, { color: colors.mutedForeground }]}>Rejoignez le programme partenaire et transformez vos réseaux en revenu.</Text>
+          </View>
+          <View style={[styles.ctaBadge, { backgroundColor: colors.primary }]}> 
+            <Text style={[styles.ctaBadgeText, { color: colors.primaryForeground }]}>Rejoindre</Text>
+          </View>
+        </Pressable>
         {/* ── MAIN CATEGORIES ── */}
         <View style={[styles.categoriesGrid, { backgroundColor: colors.background }]}>
           <SectionHeader title="Explorer NAFA" colors={colors} />
@@ -344,20 +366,16 @@ export default function HomeScreen() {
 
         {/* ── AGRICULTURE ── */}
         <View style={[styles.agriSection, { backgroundColor: colors.background }]}>
-          <View style={[styles.agriHeader, { paddingHorizontal: 16, marginBottom: 12 }]}>
-            <View style={styles.agriTitleRow}>
-              <View style={[styles.agriDot, { backgroundColor: "#16A34A" }]} />
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                🌿 Agriculture
-              </Text>
-            </View>
-            <Pressable
-              onPress={() => router.push("/(tabs)/search" as any)}
-              hitSlop={8}
-            >
-              <Text style={[styles.seeAll, { color: "#16A34A" }]}>Voir tout</Text>
-            </Pressable>
-          </View>
+          <SectionHeader
+            title="🌿 Agriculture"
+            onSeeAll={() => router.push("/search")}
+            colors={colors}
+          />
+          <Text style={[styles.sectionDescription, { color: colors.mutedForeground }]}> 
+            {selectedCategory === null
+              ? "Produits agricoles populaires et offres locales."
+              : `Produits filtrés par ${CATEGORIES.find((cat) => cat.id === selectedCategory)?.name ?? "cette catégorie"}.`} 
+          </Text>
 
           {/* Ag sub-categories */}
           <ScrollView
@@ -389,7 +407,7 @@ export default function HomeScreen() {
           </ScrollView>
 
           {/* Featured ag products */}
-          {selectedCategory === null && (
+          {selectedCategory === null ? (
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -401,10 +419,7 @@ export default function HomeScreen() {
                 </View>
               ))}
             </ScrollView>
-          )}
-
-          {/* Grid */}
-          {selectedCategory !== null && (
+          ) : filteredProducts.length > 0 ? (
             <View style={{ paddingHorizontal: 16 }}>
               {(() => {
                 const rows: typeof filteredProducts[] = [];
@@ -422,6 +437,10 @@ export default function HomeScreen() {
                   </View>
                 ));
               })()}
+            </View>
+          ) : (
+            <View style={styles.emptyCategory}>
+              <Text style={[styles.emptyCategoryText, { color: colors.mutedForeground }]}>Aucun produit trouvé pour cette catégorie.</Text>
             </View>
           )}
         </View>
@@ -647,6 +666,7 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  innerWrapper: { flex: 1 },
 
   /* Header */
   header: {
@@ -697,13 +717,9 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   searchBlock: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
     borderWidth: 1,
     borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 11,
+    marginTop: 4,
   },
   searchPlaceholder: {
     flex: 1,
@@ -717,6 +733,17 @@ const styles = StyleSheet.create({
     borderRadius: 13,
     alignItems: "center",
     justifyContent: "center",
+  },
+  ctaBadge: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 999,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  ctaBadgeText: {
+    fontSize: 12,
+    fontFamily: "Inter_600SemiBold",
   },
 
   /* City picker */
@@ -794,6 +821,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   sectionTitle: { fontSize: 17, fontFamily: "Inter_700Bold" },
+  sectionDescription: { fontSize: 13, fontFamily: "Inter_400Regular", marginHorizontal: 16, marginBottom: 12 },
   seeAll: { fontSize: 13, fontFamily: "Inter_600SemiBold" },
 
   /* Market prices */
@@ -834,6 +862,17 @@ const styles = StyleSheet.create({
   },
   svcIconWrap: { width: 44, height: 44, alignItems: "center", justifyContent: "center" },
   svcLabel: { fontSize: 11, fontFamily: "Inter_500Medium", textAlign: "center" },
+  emptyCategory: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  emptyCategoryText: {
+    fontSize: 14,
+    fontFamily: "Inter_400Regular",
+    textAlign: "center",
+  },
 
   /* Banners */
   jobsBanner: {
@@ -852,4 +891,25 @@ const styles = StyleSheet.create({
   },
   warehouseBannerTitle: { fontSize: 16, fontFamily: "Inter_700Bold", color: "#FFFFFF" },
   warehouseBannerSub: { fontSize: 12, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.8)", marginTop: 2 },
+  partnerBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 16,
+    gap: 12,
+    borderWidth: 1,
+    borderRadius: 18,
+    marginHorizontal: 16,
+    marginBottom: 16,
+  },
+  partnerBannerIcon: {
+    width: 46,
+    height: 46,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(16,185,129,0.12)",
+  },
+  partnerBannerText: { flex: 1, gap: 4 },
+  partnerBannerTitle: { fontSize: 15, fontFamily: "Inter_700Bold" },
+  partnerBannerSubtitle: { fontSize: 12, fontFamily: "Inter_400Regular", lineHeight: 18 },
 });

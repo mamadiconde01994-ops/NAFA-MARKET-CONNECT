@@ -3,6 +3,8 @@ import { Image } from "expo-image";
 import { router } from "expo-router";
 import React from "react";
 import {
+  Alert,
+  Linking,
   Platform,
   Pressable,
   ScrollView,
@@ -17,11 +19,12 @@ import { useColors } from "@/hooks/useColors";
 import { formatPrice } from "@/lib/format";
 import type { Warehouse } from "@/types";
 
-function WarehouseCard({ warehouse }: { warehouse: Warehouse }) {
+function WarehouseCard({ warehouse, onPress }: { warehouse: Warehouse; onPress?: () => void }) {
   const colors = useColors();
 
   return (
     <Pressable
+      onPress={onPress}
       style={({ pressed }) => [
         styles.card,
         {
@@ -111,6 +114,24 @@ export default function WarehousesScreen() {
   const topPad = Platform.OS === "web" ? 67 + 16 : insets.top + 16;
   const bottomPad = Platform.OS === "web" ? 34 + 84 : 100;
 
+  const handleContact = (warehouse: Warehouse) => {
+    const phone = warehouse.ownerPhone.replace(/\s/g, "");
+    Alert.alert(
+      "Contacter le propriétaire",
+      `Appelez ${warehouse.ownerName} au ${warehouse.ownerPhone} pour réserver ou visiter cet entrepôt.`,
+      [
+        {
+          text: "Appeler",
+          onPress: () => Linking.openURL(`tel:${phone}`),
+        },
+        {
+          text: "Fermer",
+          style: "cancel",
+        },
+      ]
+    );
+  };
+
   const available = MOCK_WAREHOUSES.filter((w) => w.available);
   const occupied = MOCK_WAREHOUSES.filter((w) => !w.available);
 
@@ -162,7 +183,7 @@ export default function WarehousesScreen() {
           </View>
           <View style={{ paddingHorizontal: 16, gap: 12 }}>
             {available.map((w) => (
-              <WarehouseCard key={w.id} warehouse={w} />
+              <WarehouseCard key={w.id} warehouse={w} onPress={() => handleContact(w)} />
             ))}
           </View>
         </View>
@@ -177,7 +198,7 @@ export default function WarehousesScreen() {
             </View>
             <View style={{ paddingHorizontal: 16, gap: 12 }}>
               {occupied.map((w) => (
-                <WarehouseCard key={w.id} warehouse={w} />
+                <WarehouseCard key={w.id} warehouse={w} onPress={() => handleContact(w)} />
               ))}
             </View>
           </View>

@@ -1,0 +1,46 @@
+﻿app/checkout/index.tsx(228,21): error TS2551: Property 'textSecondary' does not exist on type '{ text: string; tint: string; background: string; foreground: string; card: string; cardForeground: string; primary: string; primaryForeground: string; secondary: string; secondaryForeground: string; ... 14 more ...; goldAccent: string; }'. Did you mean 'secondary'?
+app/checkout/index.tsx(261,21): error TS2551: Property 'textSecondary' does not exist on type '{ text: string; tint: string; background: string; foreground: string; card: string; cardForeground: string; primary: string; primaryForeground: string; secondary: string; secondaryForeground: string; ... 14 more ...; goldAccent: string; }'. Did you mean 'secondary'?
+app/checkout/index.tsx(272,21): error TS2551: Property 'textSecondary' does not exist on type '{ text: string; tint: string; background: string; foreground: string; card: string; cardForeground: string; primary: string; primaryForeground: string; secondary: string; secondaryForeground: string; ... 14 more ...; goldAccent: string; }'. Did you mean 'secondary'?
+app/checkout/index.tsx(321,21): error TS2551: Property 'textSecondary' does not exist on type '{ text: string; tint: string; background: string; foreground: string; card: string; cardForeground: string; primary: string; primaryForeground: string; secondary: string; secondaryForeground: string; ... 14 more ...; goldAccent: string; }'. Did you mean 'secondary'?
+app/checkout/index.tsx(339,21): error TS2551: Property 'textSecondary' does not exist on type '{ text: string; tint: string; background: string; foreground: string; card: string; cardForeground: string; primary: string; primaryForeground: string; secondary: string; secondaryForeground: string; ... 14 more ...; goldAccent: string; }'. Did you mean 'secondary'?
+app/checkout/index.tsx(407,71): error TS2551: Property 'textSecondary' does not exist on type '{ text: string; tint: string; background: string; foreground: string; card: string; cardForeground: string; primary: string; primaryForeground: string; secondary: string; secondaryForeground: string; ... 14 more ...; goldAccent: string; }'. Did you mean 'secondary'?
+components/common/BottomSheet.tsx(37,5): error TS2322: Type 'string | number' is not assignable to type 'DimensionValue | undefined'.
+  Type 'string' is not assignable to type 'DimensionValue | undefined'.
+components/common/Tabs.tsx(56,21): error TS2551: Property 'textSecondary' does not exist on type '{ text: string; tint: string; background: string; foreground: string; card: string; cardForeground: string; primary: string; primaryForeground: string; secondary: string; secondaryForeground: string; ... 14 more ...; goldAccent: string; }'. Did you mean 'secondary'?
+context/NetworkContext.tsx(2,21): error TS2307: Cannot find module '@react-native-community/netinfo' or its corresponding type declarations.
+context/NetworkContext.tsx(16,52): error TS7006: Parameter 'state' implicitly has an 'any' type.
+context/NotificationsContext.tsx(26,25): error TS7006: Parameter 'notification' implicitly has an 'any' type.
+lib/accessibility.tsx(39,9): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: TextProps): Text', gave the following error.
+    Type 'ViewStyle | undefined' is not assignable to type 'TextStyle | Falsy | RegisteredStyle<TextStyle> | RecursiveArray<TextStyle | Falsy | RegisteredStyle<TextStyle>> | readonly (TextStyle | ... 1 more ... | RegisteredStyle<...>)[]'.
+      Type 'ViewStyle' is not assignable to type 'TextStyle | Falsy | RegisteredStyle<TextStyle> | RecursiveArray<TextStyle | Falsy | RegisteredStyle<TextStyle>> | readonly (TextStyle | ... 1 more ... | RegisteredStyle<...>)[]'.
+        Type 'ViewStyle' is not assignable to type 'TextStyle'.
+          Types of property 'userSelect' are incompatible.
+            Type 'string | undefined' is not assignable to type '"none" | "auto" | "contain" | "text" | "all" | undefined'.
+              Type 'string' is not assignable to type '"none" | "auto" | "contain" | "text" | "all" | undefined'.
+  Overload 2 of 2, '(props: TextProps, context: any): Text', gave the following error.
+    Type 'ViewStyle | undefined' is not assignable to type 'TextStyle | Falsy | RegisteredStyle<TextStyle> | RecursiveArray<TextStyle | Falsy | RegisteredStyle<TextStyle>> | readonly (TextStyle | ... 1 more ... | RegisteredStyle<...>)[]'.
+      Type 'ViewStyle' is not assignable to type 'TextStyle | Falsy | RegisteredStyle<TextStyle> | RecursiveArray<TextStyle | Falsy | RegisteredStyle<TextStyle>> | readonly (TextStyle | ... 1 more ... | RegisteredStyle<...>)[]'.
+        Type 'ViewStyle' is not assignable to type 'TextStyle'.
+          Types of property 'userSelect' are incompatible.
+            Type 'string | undefined' is not assignable to type '"none" | "auto" | "contain" | "text" | "all" | undefined'.
+              Type 'string' is not assignable to type '"none" | "auto" | "contain" | "text" | "all" | undefined'.
+lib/accessibility.tsx(89,39): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: ViewProps): View', gave the following error.
+    Object literal may only specify known properties, and 'focused' does not exist in type 'AccessibilityState'.
+  Overload 2 of 2, '(props: ViewProps, context: any): View', gave the following error.
+    Object literal may only specify known properties, and 'focused' does not exist in type 'AccessibilityState'.
+lib/accessibility.tsx(91,41): error TS2349: This expression is not callable.
+  Type 'never' has no call signatures.
+lib/accessibility.tsx(114,7): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: ViewProps): View', gave the following error.
+    Type '"alert" | "status"' is not assignable to type 'AccessibilityRole | undefined'.
+      Type '"status"' is not assignable to type 'AccessibilityRole | undefined'.
+  Overload 2 of 2, '(props: ViewProps, context: any): View', gave the following error.
+    Type '"alert" | "status"' is not assignable to type 'AccessibilityRole | undefined'.
+      Type '"status"' is not assignable to type 'AccessibilityRole | undefined'.
+lib/error-handler.tsx(87,21): error TS2551: Property 'textSecondary' does not exist on type '{ text: string; tint: string; background: string; foreground: string; card: string; cardForeground: string; primary: string; primaryForeground: string; secondary: string; secondaryForeground: string; ... 14 more ...; goldAccent: string; }'. Did you mean 'secondary'?
+lib/performance.tsx(77,28): error TS2554: Expected 1 arguments, but got 0.
+lib/performance.tsx(84,7): error TS2322: Type 'number' is not assignable to type 'Timeout'.
+lib/performance.tsx(100,28): error TS2554: Expected 1 arguments, but got 0.
+lib/performance.tsx(114,9): error TS2322: Type 'number' is not assignable to type 'Timeout'.

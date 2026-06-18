@@ -3,6 +3,7 @@ import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import {
+  Linking,
   Platform,
   Pressable,
   ScrollView,
@@ -37,6 +38,12 @@ export default function PropertyDetailScreen() {
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 + 84 : 100;
+
+  const handleContactAgent = () => {
+    if (!property) return;
+    const phone = property.agentPhone.replace(/\s/g, "");
+    Linking.openURL(`tel:${phone}`);
+  };
 
   if (!property) {
     return (
@@ -194,8 +201,7 @@ export default function PropertyDetailScreen() {
 
       {/* CTA */}
       <View style={[styles.ctaBar, { backgroundColor: colors.card, borderTopColor: colors.border, paddingBottom: Platform.OS === "web" ? 34 : insets.bottom + 16 }]}>
-        <Pressable
-          style={({ pressed }) => [
+        <Pressable          onPress={handleContactAgent}          style={({ pressed }) => [
             styles.ctaBtn,
             { backgroundColor: "#2563EB", opacity: pressed ? 0.85 : 1 },
           ]}

@@ -22,24 +22,31 @@ const { width: W } = Dimensions.get("window");
 const SLIDES = [
   {
     id: "1",
-    icon: "leaf-outline" as const,
-    title: "Agriculteurs locaux",
+    icon: "layers-outline" as const,
+    title: "Marketplace multi-services",
     subtitle:
-      "Connectez-vous directement avec les agriculteurs guinéens et achetez des produits frais issus de nos terroirs.",
+      "Explorez Agriculture, Produits, Restaurants, Immobilier, Services et Commerce local dans une seule application.",
   },
   {
     id: "2",
-    icon: "basket-outline" as const,
-    title: "Produits de qualité",
+    icon: "restaurant-outline" as const,
+    title: "Produits & Restaurants",
     subtitle:
-      "Des légumes, fruits, céréales et bien plus — sourcés localement et livrés dans les meilleurs délais.",
+      "Achetez des produits frais, découvrez des restaurants et soutenez le commerce local proche de vous.",
   },
   {
     id: "3",
-    icon: "bicycle-outline" as const,
-    title: "Livraison rapide",
+    icon: "home-outline" as const,
+    title: "Immobilier & Services",
     subtitle:
-      "Nos partenaires de livraison vous apportent vos commandes directement chez vous, partout en Guinée.",
+      "Recherchez logements, offres immobilières, artisans et services professionnels en quelques clics.",
+  },
+  {
+    id: "4",
+    icon: "person-outline" as const,
+    title: "Sans compte pour commencer",
+    subtitle:
+      "Parcourez librement. Connectez-vous seulement pour commander, réserver, publier ou envoyer un message.",
   },
 ];
 

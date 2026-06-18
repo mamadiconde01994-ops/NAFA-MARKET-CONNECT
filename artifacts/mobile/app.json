@@ -1,24 +1,32 @@
 {
   "expo": {
-    "name": "NAFA Marche",
-    "slug": "mobile",
+    "name": "NAFA Marché Connect",
+    "slug": "nafa-market-connect",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "mobile",
+    "icon": "./assets/branding/app-icon-v2.svg",
+    "scheme": "nafa",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#1B4332"
+      "image": "./assets/branding/splash-light.svg",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": false
+      "supportsTablet": false,
+      "bundleIdentifier": "com.nafa.market.connect",
+      "buildNumber": "1"
     },
-    "android": {},
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/branding/app-icon-v2.svg",
+        "backgroundColor": "#1a472a"
+      },
+      "package": "com.nafa.market.connect"
+    },
     "web": {
-      "favicon": "./assets/images/icon.png"
+      "favicon": "./assets/branding/logo-mark-v2.svg"
     },
     "plugins": [
       [
