@@ -76,9 +76,9 @@ function JobCard({ job }: { job: Job }) {
       <View style={styles.cardHeader}>
         <View style={{ flex: 1, gap: 4 }}>
           {job.urgent && (
-            <View style={[styles.urgentBadge, { backgroundColor: "#FEF2F2" }]}>
-              <Ionicons name="time-outline" size={10} color="#DC2626" />
-              <Text style={[styles.urgentText, { color: "#DC2626" }]}>URGENT</Text>
+            <View style={[styles.urgentBadge, { backgroundColor: colors.destructive + "18" }]}>
+              <Ionicons name="time-outline" size={10} color={colors.destructive} />
+              <Text style={[styles.urgentText, { color: colors.destructive }]}>URGENT</Text>
             </View>
           )}
           <Text style={[styles.jobTitle, { color: colors.foreground }]} numberOfLines={2}>

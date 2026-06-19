@@ -70,7 +70,7 @@ function VehicleCard({ vehicle, onPress }: { vehicle: Vehicle; onPress?: () => v
           </Text>
         </View>
         {vehicle.featured && (
-          <View style={[styles.featBadge, { backgroundColor: "#475569" }]}>
+          <View style={[styles.featBadge, { backgroundColor: colors.primary }]}>
             <Text style={styles.featText}>⭐ Vedette</Text>
           </View>
         )}
@@ -102,7 +102,7 @@ function VehicleCard({ vehicle, onPress }: { vehicle: Vehicle; onPress?: () => v
           </View>
         </View>
         <View style={styles.priceRow}>
-          <Text style={[styles.price, { color: "#475569" }]}>
+          <Text style={[styles.price, { color: colors.primary }]}>
             {formatPrice(vehicle.price)}
             {vehicle.priceType === "rent" && (
               <Text style={[styles.priceType, { color: colors.mutedForeground }]}> /jour</Text>
@@ -114,13 +114,13 @@ function VehicleCard({ vehicle, onPress }: { vehicle: Vehicle; onPress?: () => v
           </View>
         </View>
         <View style={styles.sellerRow}>
-          <View style={[styles.sellerAvatar, { backgroundColor: "#475569" }]}>
+          <View style={[styles.sellerAvatar, { backgroundColor: colors.primary }]}>
             <Ionicons name="person" size={13} color="#FFFFFF" />
           </View>
           <Text style={[styles.sellerName, { color: colors.foreground }]}>{vehicle.sellerName}</Text>
-          <Pressable onPress={onPress} hitSlop={8} style={[styles.contactBtn, { backgroundColor: "#475569" + "18", borderColor: "#475569" + "40" }]}>
-            <Ionicons name="call-outline" size={13} color="#475569" />
-            <Text style={[styles.contactText, { color: "#475569" }]}>Appeler</Text>
+          <Pressable onPress={onPress} hitSlop={8} style={[styles.contactBtn, { backgroundColor: colors.primary + "18", borderColor: colors.primary + "40" }]}>
+            <Ionicons name="call-outline" size={13} color={colors.primary} />
+            <Text style={[styles.contactText, { color: colors.primary }]}>Appeler</Text>
           </Pressable>
         </View>
       </View>
@@ -169,7 +169,7 @@ export default function VehiclesScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={[styles.header, { paddingTop: topPad, backgroundColor: "#475569" }]}>
+      <View style={[styles.header, { paddingTop: topPad, backgroundColor: colors.primary }]}>
         <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
           <Ionicons name="arrow-back" size={22} color="#FFFFFF" />
         </Pressable>
@@ -184,19 +184,19 @@ export default function VehiclesScreen() {
         {/* Stats */}
         <View style={styles.statsRow}>
           <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <Ionicons name="car" size={22} color="#475569" />
+            <Ionicons name="car" size={22} color={colors.primary} />
             <Text style={[styles.statNum, { color: colors.foreground }]}>{MOCK_VEHICLES.length}</Text>
             <Text style={[styles.statLbl, { color: colors.mutedForeground }]}>Annonces</Text>
           </View>
           <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <Ionicons name="bicycle" size={22} color="#475569" />
+            <Ionicons name="bicycle" size={22} color={colors.primary} />
             <Text style={[styles.statNum, { color: colors.foreground }]}>
               {MOCK_VEHICLES.filter((v) => v.type === "motorcycle").length}
             </Text>
             <Text style={[styles.statLbl, { color: colors.mutedForeground }]}>Motos</Text>
           </View>
           <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-            <Ionicons name="location" size={22} color="#475569" />
+            <Ionicons name="location" size={22} color={colors.primary} />
             <Text style={[styles.statNum, { color: colors.foreground }]}>
               {[...new Set(MOCK_VEHICLES.map((v) => v.city))].length}
             </Text>
@@ -231,7 +231,7 @@ export default function VehiclesScreen() {
               onPress={() => setType(f.id)}
               style={[
                 styles.filterChip,
-                type === f.id ? { backgroundColor: "#475569" } : { backgroundColor: colors.muted },
+                type === f.id ? { backgroundColor: colors.primary } : { backgroundColor: colors.muted },
               ]}
             >
               <Ionicons name={f.icon} size={14} color={type === f.id ? "#FFFFFF" : colors.mutedForeground} />

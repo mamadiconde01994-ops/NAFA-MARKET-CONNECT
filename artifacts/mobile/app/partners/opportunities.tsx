@@ -1,5 +1,7 @@
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import React from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { OpportunityCard } from "@/components/partners/OpportunityCard";
@@ -13,62 +15,149 @@ export default function PartnerOpportunitiesScreen() {
   const insets = useSafeAreaInsets();
   const [activeFilter, setActiveFilter] = React.useState("Tous");
 
-  const opportunities = activeFilter === "Tous"
-    ? PARTNER_OPPORTUNITIES
-    : PARTNER_OPPORTUNITIES.filter((item) => item.sector === activeFilter);
+  const opportunities =
+    activeFilter === "Tous"
+      ? PARTNER_OPPORTUNITIES
+      : PARTNER_OPPORTUNITIES.filter((item) => item.sector === activeFilter);
 
   return (
-    <ScrollView
-      style={[styles.container, { backgroundColor: colors.background, paddingTop: insets.top + 16 }]}
-      contentContainerStyle={{ paddingBottom: insets.bottom + 24 }}
-      showsVerticalScrollIndicator={false}
-    >
-      <View style={styles.header}>
-        <Text style={[styles.title, { color: colors.foreground }]}>Opportunités NAFA Partners</Text>
-        <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>Choisissez les campagnes les plus adaptées à votre réseau local.</Text>
+    <View style={[styles.root, { backgroundColor: colors.background }]}>
+      {/* Header */}
+      <View
+        style={[
+          styles.header,
+          { paddingTop: insets.top + 8, backgroundColor: colors.card, borderBottomColor: colors.border },
+        ]}
+      >
+        <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
+          <Ionicons name="arrow-back" size={22} color={colors.foreground} />
+        </Pressable>
+        <Text style={[styles.headerTitle, { color: colors.foreground }]}>Opportunités</Text>
+        <View style={{ width: 38 }} />
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterRow}>
-        {FILTERS.map((filter) => (
-          <Text
-            key={filter}
-            onPress={() => setActiveFilter(filter)}
-            style={[
-              styles.filterLabel,
-              {
-                color: activeFilter === filter ? colors.foreground : colors.mutedForeground,
-                backgroundColor: activeFilter === filter ? colors.primary : colors.card,
-                borderColor: colors.border,
-              },
-            ]}
-          >
-            {filter}
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: insets.bottom + 24 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Subtitle */}
+        <View style={styles.intro}>
+          <Text style={[styles.introText, { color: colors.mutedForeground }]}>
+            Choisissez les campagnes les plus adaptées à votre réseau local et gagnez des commissions.
           </Text>
-        ))}
-      </ScrollView>
+        </View>
 
-      <View style={styles.list}> 
-        {opportunities.map((opportunity) => (
-          <OpportunityCard key={opportunity.id} opportunity={opportunity} />
-        ))}
-      </View>
-    </ScrollView>
+        {/* Filters */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filterRow}
+        >
+          {FILTERS.map((filter) => {
+            const active = activeFilter === filter;
+            return (
+              <Pressable
+                key={filter}
+                onPress={() => setActiveFilter(filter)}
+                style={[
+                  styles.filterChip,
+                  {
+                    backgroundColor: active ? colors.primary : colors.card,
+                    borderColor: active ? colors.primary : colors.border,
+                  },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.filterLabel,
+                    { color: active ? colors.primaryForeground : colors.mutedForeground },
+                  ]}
+                >
+                  {filter}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+
+        {/* Count */}
+        <Text style={[styles.count, { color: colors.mutedForeground }]}>
+          {opportunities.length} opportunité{opportunities.length !== 1 ? "s" : ""}
+        </Text>
+
+        {/* Opportunity list */}
+        <View style={styles.list}>
+          {opportunities.length === 0 ? (
+            <View style={[styles.emptyBox, { backgroundColor: colors.muted, borderColor: colors.border }]}>
+              <Ionicons name="search-outline" size={32} color={colors.mutedForeground} />
+              <Text style={[styles.emptyText, { color: colors.mutedForeground }]}>
+                Aucune opportunité dans ce secteur pour le moment.
+              </Text>
+            </View>
+          ) : (
+            opportunities.map((opportunity) => (
+              <OpportunityCard key={opportunity.id} opportunity={opportunity} />
+            ))
+          )}
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  header: { paddingHorizontal: 16, gap: 8, marginBottom: 16 },
-  title: { fontSize: 24, fontFamily: "Inter_700Bold" },
-  subtitle: { fontSize: 13, fontFamily: "Inter_400Regular", lineHeight: 20 },
-  filterRow: { paddingLeft: 16, paddingRight: 16, gap: 10, marginBottom: 16 },
-  filterLabel: {
-    paddingVertical: 10,
-    paddingHorizontal: 14,
+  root: { flex: 1 },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+  },
+  backBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  headerTitle: { fontSize: 17, fontFamily: "Inter_700Bold" },
+  intro: { paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8 },
+  introText: { fontSize: 13, fontFamily: "Inter_400Regular", lineHeight: 20 },
+  filterRow: {
+    paddingLeft: 16,
+    paddingRight: 16,
+    gap: 8,
+    paddingVertical: 12,
+  },
+  filterChip: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
     borderRadius: 999,
     borderWidth: 1,
-    fontSize: 12,
+  },
+  filterLabel: {
+    fontSize: 13,
     fontFamily: "Inter_600SemiBold",
   },
-  list: { paddingHorizontal: 16, gap: 12 },
+  count: {
+    fontSize: 12,
+    fontFamily: "Inter_500Medium",
+    marginHorizontal: 16,
+    marginBottom: 12,
+  },
+  list: { paddingHorizontal: 16, gap: 12, paddingBottom: 8 },
+  emptyBox: {
+    borderWidth: 1,
+    borderRadius: 16,
+    padding: 32,
+    alignItems: "center",
+    gap: 12,
+  },
+  emptyText: {
+    fontSize: 14,
+    fontFamily: "Inter_500Medium",
+    textAlign: "center",
+  },
 });
