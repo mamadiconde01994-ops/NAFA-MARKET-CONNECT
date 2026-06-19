@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
-import { View, StyleSheet, Text, Animated } from "react-native";
+import { Platform, View, StyleSheet, Text, Animated } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useColors } from "@/hooks/useColors";
 
@@ -104,11 +104,16 @@ function ToastContainer({
       paddingVertical: 12,
       borderRadius: 8,
       marginBottom: 8,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
       elevation: 3,
+      ...Platform.select({
+        web: { boxShadow: "0px 2px 4px rgba(0,0,0,0.10)" },
+        default: {
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 4,
+        },
+      }),
     },
     text: {
       flex: 1,

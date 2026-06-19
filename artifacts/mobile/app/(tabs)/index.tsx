@@ -759,11 +759,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     overflow: "hidden",
     zIndex: 101,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
     elevation: 6,
+    ...Platform.select({
+      web: { boxShadow: "0px 4px 8px rgba(0,0,0,0.12)" },
+      default: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.12,
+        shadowRadius: 8,
+      },
+    }),
   },
   cityOption: {
     flexDirection: "row",

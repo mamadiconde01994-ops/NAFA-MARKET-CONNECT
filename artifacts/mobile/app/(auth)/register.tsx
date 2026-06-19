@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -12,7 +13,6 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Button } from "@/components/common/Button";
 import { Input } from "@/components/common/Input";
 import { useAuth } from "@/context/AuthContext";
 import { useColors } from "@/hooks/useColors";
@@ -21,14 +21,12 @@ import { formatRole } from "@/lib/format";
 import { validateRegistrationForm, getPasswordStrength } from "@/lib/validators";
 import type { UserRole } from "@/types";
 
-const ROLES: UserRole[] = [
-  "customer",
-  "farmer",
-  "trader",
-  "restaurant",
-  "warehouse",
-  "delivery",
-];
+const BRAND_DARK = "#0A2318";
+const BRAND_MID = "#1B4332";
+const BRAND_LIGHT = "#2D6A4F";
+const BRAND_ACCENT = "#52B788";
+
+const ROLES: UserRole[] = ["customer", "farmer", "trader", "restaurant", "warehouse", "delivery"];
 
 const ROLE_ICONS: Record<UserRole, keyof typeof Ionicons.glyphMap> = {
   customer: "person-outline",
@@ -40,6 +38,50 @@ const ROLE_ICONS: Record<UserRole, keyof typeof Ionicons.glyphMap> = {
   partner: "people-outline",
   "business-ambassador": "megaphone-outline",
 };
+
+const ROLE_EMOJIS: Record<string, string> = {
+  customer: "👤",
+  farmer: "🌿",
+  trader: "🏪",
+  restaurant: "🍽️",
+  warehouse: "🏢",
+  delivery: "🚚",
+};
+
+function PasswordStrengthBar({ password }: { password: string }) {
+  const strength = getPasswordStrength(password);
+  const levels = { weak: 1, medium: 2, strong: 3 };
+  const level = password ? (levels[strength] ?? 0) : 0;
+  const colors = ["#EF4444", "#F59E0B", "#10B981"];
+  const labels = ["Faible", "Moyen", "Fort"];
+
+  if (!password) return null;
+  return (
+    <View style={strengthStyles.wrap}>
+      <View style={strengthStyles.barRow}>
+        {[1, 2, 3].map((i) => (
+          <View
+            key={i}
+            style={[
+              strengthStyles.segment,
+              { backgroundColor: i <= level ? colors[level - 1] : "#E5E7EB" },
+            ]}
+          />
+        ))}
+      </View>
+      <Text style={[strengthStyles.label, { color: colors[level - 1] }]}>
+        {labels[level - 1]}
+      </Text>
+    </View>
+  );
+}
+
+const strengthStyles = StyleSheet.create({
+  wrap: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 6 },
+  barRow: { flex: 1, flexDirection: "row", gap: 4 },
+  segment: { flex: 1, height: 3, borderRadius: 2 },
+  label: { fontSize: 11, fontFamily: "Inter_600SemiBold", minWidth: 36 },
+});
 
 export default function RegisterScreen() {
   const colors = useColors();
@@ -58,24 +100,19 @@ export default function RegisterScreen() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
-  const passwordStrength = getPasswordStrength(password);
 
-  const topPad = Platform.OS === "web" ? 67 : insets.top;
-  const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const topPad = Platform.OS === "web" ? 0 : insets.top;
 
   const handleRegister = async () => {
-    // Validate form
     const validation = validateRegistrationForm(name, email, phone, password, confirmPassword);
     if (!validation.isValid) {
       setErrors(validation.errors);
       return;
     }
-
     if (!agreeToTerms) {
       setErrors({ terms: t("registerTermsError") });
       return;
     }
-
     setIsLoading(true);
     try {
       await register(name.trim(), email.trim(), phone.trim(), role, password);
@@ -87,300 +124,293 @@ export default function RegisterScreen() {
     }
   };
 
-  const getStrengthColor = () => {
-    if (!password) return colors.mutedForeground;
-    if (passwordStrength === "weak") return "#EF4444";
-    if (passwordStrength === "medium") return "#F59E0B";
-    return "#10B981";
-  };
-
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <ScrollView
-        style={{ flex: 1, backgroundColor: colors.background }}
-        contentContainerStyle={[
-          styles.content,
-          { paddingTop: topPad + 24, paddingBottom: bottomPad + 32 },
-        ]}
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
+        bounces={false}
       >
-        {/* Back */}
-        <Pressable onPress={() => router.back()} style={styles.backBtn} hitSlop={8}>
-          <Ionicons name="arrow-back" size={22} color={colors.foreground} />
-        </Pressable>
+        {/* ── COMPACT HEADER ── */}
+        <LinearGradient
+          colors={[BRAND_DARK, BRAND_MID, BRAND_LIGHT]}
+          start={{ x: 0.1, y: 0 }}
+          end={{ x: 0.9, y: 1 }}
+          style={[styles.hero, { paddingTop: topPad + 16 }]}
+        >
+          <View style={styles.blobTopRight} />
 
-        {/* Heading */}
-        <View style={styles.headingWrap}>
-          <Text style={[styles.heading, { color: colors.foreground }]}>{t("registerTitle")}</Text>
-          <Text style={[styles.subheading, { color: colors.mutedForeground }]}>{t("registerSubtitle")}</Text>
-        </View>
+          <View style={styles.headerRow}>
+            <Pressable
+              onPress={() => router.back()}
+              style={({ pressed }) => [styles.backBtn, { opacity: pressed ? 0.6 : 1 }]}
+              hitSlop={8}
+            >
+              <View style={styles.backBtnInner}>
+                <Ionicons name="chevron-back" size={20} color="#fff" />
+              </View>
+            </Pressable>
 
-        {/* Role selector */}
-        <View>
-          <Text style={[styles.label, { color: colors.mutedForeground }]}>
-            Je suis un(e)...
-          </Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ gap: 8, paddingBottom: 4 }}
-          >
-            {ROLES.map((r) => (
-              <Pressable
-                key={r}
-                onPress={() => setRole(r)}
-                style={[
-                  styles.roleChip,
-                  {
-                    backgroundColor: role === r ? colors.primary : colors.card,
-                    borderColor: role === r ? colors.primary : colors.border,
-                    borderRadius: colors.radius,
-                  },
-                ]}
-              >
-                <Ionicons
-                  name={ROLE_ICONS[r]}
-                  size={16}
-                  color={role === r ? colors.primaryForeground : colors.mutedForeground}
-                />
-                <Text
+            <View style={styles.headerTitleWrap}>
+              <View style={styles.logoSmallRing}>
+                <LinearGradient
+                  colors={[BRAND_ACCENT, BRAND_LIGHT]}
+                  style={styles.logoSmallInner}
+                >
+                  <Text style={styles.logoSmallLetter}>N</Text>
+                </LinearGradient>
+                <View style={styles.logoSmallDot} />
+              </View>
+              <View>
+                <View style={styles.brandTagRow}>
+                  <View style={[styles.tagDot, { backgroundColor: BRAND_ACCENT }]} />
+                  <Text style={styles.brandTag}>NAFA Marché</Text>
+                </View>
+                <Text style={styles.headerTitle}>{t("registerTitle")}</Text>
+              </View>
+            </View>
+          </View>
+        </LinearGradient>
+
+        {/* ── FORM CARD ── */}
+        <View style={[styles.card, { backgroundColor: colors.background }]}>
+          {/* Role Selector */}
+          <View style={styles.section}>
+            <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>
+              Je suis...
+            </Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ gap: 8, paddingBottom: 2 }}
+            >
+              {ROLES.map((r) => (
+                <Pressable
+                  key={r}
+                  onPress={() => setRole(r)}
                   style={[
-                    styles.roleLabel,
+                    styles.roleChip,
                     {
-                      color: role === r
-                        ? colors.primaryForeground
-                        : colors.foreground,
+                      backgroundColor: role === r ? BRAND_MID : colors.card,
+                      borderColor: role === r ? BRAND_MID : colors.border,
                     },
                   ]}
                 >
-                  {formatRole(r)}
+                  <Text style={styles.roleEmoji}>{ROLE_EMOJIS[r] ?? "👤"}</Text>
+                  <Text
+                    style={[
+                      styles.roleLabel,
+                      { color: role === r ? "#fff" : colors.foreground },
+                    ]}
+                  >
+                    {formatRole(r)}
+                  </Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+
+          {/* Form Fields */}
+          <View style={styles.form}>
+            {errors.general ? (
+              <View
+                style={[
+                  styles.errorBox,
+                  {
+                    backgroundColor: colors.destructive + "18",
+                    borderColor: colors.destructive + "40",
+                  },
+                ]}
+              >
+                <Ionicons name="alert-circle-outline" size={15} color={colors.destructive} />
+                <Text style={[styles.errorText, { color: colors.destructive }]}>
+                  {errors.general}
                 </Text>
-              </Pressable>
-            ))}
-          </ScrollView>
-        </View>
+              </View>
+            ) : null}
 
-        {/* Form fields */}
-        <View style={styles.form}>
-          {/* General Error */}
-          {errors.general && (
-            <View style={[styles.errorBox, { backgroundColor: "#FEE2E2", borderColor: "#EF4444" }]}>
-              <Ionicons name="alert-circle" size={16} color="#EF4444" />
-              <Text style={{ color: "#EF4444", fontSize: 12, fontWeight: "500", flex: 1 }}>
-                {errors.general}
-              </Text>
-            </View>
-          )}
-
-          {/* Name */}
-          <Input
-            label={t("registerNameLabel")}
-            required
-            value={name}
-            onChangeText={setName}
-            placeholder={t("registerNamePlaceholder")}
-            icon="person-outline"
-            error={errors.fullName}
-            borderColor={colors.border}
-            backgroundColor={colors.card}
-            textColor={colors.text}
-            labelColor={colors.mutedForeground}
-            errorColor="#EF4444"
-          />
-
-          {/* Email */}
-          <Input
-            label={t("registerEmailLabel")}
-            required
-            value={email}
-            onChangeText={setEmail}
-            placeholder={t("emailPlaceholder")}
-            icon="mail-outline"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            error={errors.email}
-            borderColor={colors.border}
-            backgroundColor={colors.card}
-            textColor={colors.text}
-            labelColor={colors.mutedForeground}
-            errorColor="#EF4444"
-          />
-
-          {/* Phone */}
-          <Input
-            label={t("registerPhoneLabel")}
-            required
-            value={phone}
-            onChangeText={setPhone}
-            placeholder={t("registerPhonePlaceholder")}
-            icon="call-outline"
-            keyboardType="phone-pad"
-            error={errors.phone}
-            borderColor={colors.border}
-            backgroundColor={colors.card}
-            textColor={colors.text}
-            labelColor={colors.mutedForeground}
-            errorColor="#EF4444"
-          />
-
-          {/* Password */}
-          <View>
             <Input
-              label={t("registerPasswordLabel")}
+              label={t("registerNameLabel")}
               required
-              value={password}
-              onChangeText={setPassword}
-              placeholder={t("registerPasswordPlaceholder")}
+              value={name}
+              onChangeText={setName}
+              placeholder={t("registerNamePlaceholder")}
+              icon="person-outline"
+              error={errors.fullName}
+              borderColor={colors.border}
+              backgroundColor={colors.card}
+              textColor={colors.text}
+              labelColor={colors.mutedForeground}
+              errorColor={colors.destructive}
+            />
+            <Input
+              label={t("registerEmailLabel")}
+              required
+              value={email}
+              onChangeText={setEmail}
+              placeholder={t("emailPlaceholder")}
+              icon="mail-outline"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              error={errors.email}
+              borderColor={colors.border}
+              backgroundColor={colors.card}
+              textColor={colors.text}
+              labelColor={colors.mutedForeground}
+              errorColor={colors.destructive}
+            />
+            <Input
+              label={t("registerPhoneLabel")}
+              required
+              value={phone}
+              onChangeText={setPhone}
+              placeholder={t("registerPhonePlaceholder")}
+              icon="call-outline"
+              keyboardType="phone-pad"
+              error={errors.phone}
+              borderColor={colors.border}
+              backgroundColor={colors.card}
+              textColor={colors.text}
+              labelColor={colors.mutedForeground}
+              errorColor={colors.destructive}
+            />
+
+            {/* Password with strength */}
+            <View>
+              <Input
+                label={t("registerPasswordLabel")}
+                required
+                value={password}
+                onChangeText={setPassword}
+                placeholder={t("registerPasswordPlaceholder")}
+                icon="lock-closed-outline"
+                rightIcon={
+                  <Pressable onPress={() => setShowPassword(!showPassword)} hitSlop={8}>
+                    <Ionicons
+                      name={showPassword ? "eye-off-outline" : "eye-outline"}
+                      size={18}
+                      color={colors.mutedForeground}
+                    />
+                  </Pressable>
+                }
+                secureTextEntry={!showPassword}
+                autoCapitalize="none"
+                error={errors.password}
+                borderColor={colors.border}
+                backgroundColor={colors.card}
+                textColor={colors.text}
+                labelColor={colors.mutedForeground}
+                errorColor={colors.destructive}
+              />
+              <PasswordStrengthBar password={password} />
+            </View>
+
+            <Input
+              label={t("registerConfirmPasswordLabel")}
+              required
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              placeholder={t("registerConfirmPasswordPlaceholder")}
               icon="lock-closed-outline"
               rightIcon={
-                <Pressable onPress={() => setShowPassword(!showPassword)}>
+                <Pressable onPress={() => setShowConfirmPassword(!showConfirmPassword)} hitSlop={8}>
                   <Ionicons
-                    name={showPassword ? "eye-off-outline" : "eye-outline"}
+                    name={showConfirmPassword ? "eye-off-outline" : "eye-outline"}
                     size={18}
                     color={colors.mutedForeground}
                   />
                 </Pressable>
               }
-              secureTextEntry={!showPassword}
+              secureTextEntry={!showConfirmPassword}
               autoCapitalize="none"
-              error={errors.password}
+              error={errors.confirmPassword}
               borderColor={colors.border}
               backgroundColor={colors.card}
               textColor={colors.text}
               labelColor={colors.mutedForeground}
-              errorColor="#EF4444"
+              errorColor={colors.destructive}
             />
-            {/* Password strength indicator */}
-            {password && (
-              <View style={styles.strengthContainer}>
-                <View style={styles.strengthBar}>
-                  <View
-                    style={[
-                      styles.strengthFill,
-                      {
-                        backgroundColor: getStrengthColor(),
-                        width: passwordStrength === "weak" ? "33%" : passwordStrength === "medium" ? "66%" : "100%",
-                      },
-                    ]}
-                  />
-                </View>
-                <Text
-                  style={[
-                    styles.strengthText,
-                    {
-                      color: getStrengthColor(),
-                    },
-                  ]}
-                >
-                  {passwordStrength === "weak"
-                    ? t("passwordStrengthWeak")
-                    : passwordStrength === "medium"
-                    ? t("passwordStrengthMedium")
-                    : t("passwordStrengthStrong")}
-                </Text>
-              </View>
-            )}
-          </View>
 
-          {/* Confirm Password */}
-          <Input
-            label={t("registerConfirmPasswordLabel")}
-            required
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            placeholder={t("registerConfirmPasswordPlaceholder")}
-            icon="lock-closed-outline"
-            rightIcon={
-              <Pressable onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-                <Ionicons
-                  name={showConfirmPassword ? "eye-off-outline" : "eye-outline"}
-                  size={18}
-                  color={colors.mutedForeground}
-                />
-              </Pressable>
-            }
-            secureTextEntry={!showConfirmPassword}
-            autoCapitalize="none"
-            error={errors.confirmPassword}
-            borderColor={colors.border}
-            backgroundColor={colors.card}
-            textColor={colors.text}
-            labelColor={colors.mutedForeground}
-            errorColor="#EF4444"
-          />
-
-          {/* Terms checkbox */}
-          <View style={styles.termsContainer}>
+            {/* Terms */}
             <Pressable
               onPress={() => setAgreeToTerms(!agreeToTerms)}
-              style={styles.checkboxWrapper}
+              style={styles.termsRow}
               hitSlop={8}
             >
               <View
                 style={[
                   styles.checkbox,
                   {
-                    backgroundColor: agreeToTerms ? colors.primary : colors.card,
-                    borderColor: agreeToTerms ? colors.primary : colors.border,
+                    backgroundColor: agreeToTerms ? BRAND_MID : colors.card,
+                    borderColor: agreeToTerms ? BRAND_MID : colors.border,
                   },
                 ]}
               >
                 {agreeToTerms && (
-                  <Ionicons name="checkmark" size={12} color={colors.card} />
+                  <Ionicons name="checkmark" size={13} color="#fff" />
                 )}
               </View>
-            </Pressable>
-            <Text style={[styles.termsText, { color: colors.text }]}>
-              {t("registerTermsNotice")} 
-              <Text onPress={() => router.push("/terms")} style={{ color: colors.primary, fontWeight: "600" }}>
-                {t("loginPolicyTerms")}
+              <Text style={[styles.termsText, { color: colors.foreground }]}>
+                {t("registerTermsNotice")}{" "}
+                <Text
+                  onPress={() => router.push("/terms")}
+                  style={{ color: BRAND_MID, fontFamily: "Inter_700Bold" }}
+                >
+                  {t("loginPolicyTerms")}
+                </Text>
+                {" "}{t("loginPolicyAnd")}{" "}
+                <Text
+                  onPress={() => router.push("/privacy")}
+                  style={{ color: BRAND_MID, fontFamily: "Inter_700Bold" }}
+                >
+                  {t("loginPolicyPrivacy")}
+                </Text>
               </Text>
-              {" "}{t("loginPolicyAnd")} {" "}
-              <Text onPress={() => router.push("/privacy")} style={{ color: colors.primary, fontWeight: "600" }}>
-                {t("loginPolicyPrivacy")}
+            </Pressable>
+            {errors.terms ? (
+              <Text style={[styles.fieldError, { color: colors.destructive }]}>
+                {errors.terms}
               </Text>
-            </Text>
-          </View>
-          {errors.terms && (
-            <Text style={{ color: "#EF4444", fontSize: 12, fontWeight: "500" }}>
-              {errors.terms}
-            </Text>
-          )}
+            ) : null}
 
-          <View style={styles.legalLinksRow}>
-            <Pressable onPress={() => router.push("/terms")}> 
-              <Text style={[styles.legalLink, { color: colors.primary }]}>{t("loginPolicyTerms")}</Text>
+            {/* CTA */}
+            <Pressable
+              onPress={handleRegister}
+              disabled={isLoading}
+              style={({ pressed }) => [
+                styles.ctaWrap,
+                { opacity: pressed || isLoading ? 0.8 : agreeToTerms ? 1 : 0.55 },
+              ]}
+            >
+              <LinearGradient
+                colors={[BRAND_LIGHT, BRAND_MID, BRAND_DARK]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.cta}
+              >
+                <Text style={styles.ctaText}>
+                  {isLoading ? "Création..." : `${t("registerSubmit")} →`}
+                </Text>
+              </LinearGradient>
             </Pressable>
-            <Text style={[styles.legalLinkSeparator, { color: colors.mutedForeground }]}>•</Text>
-            <Pressable onPress={() => router.push("/privacy")}> 
-              <Text style={[styles.legalLink, { color: colors.primary }]}>{t("loginPolicyPrivacy")}</Text>
-            </Pressable>
           </View>
 
-          {/* Submit Button */}
-          <Button
-            label={t("registerSubmit")}
-            onPress={handleRegister}
-            loading={isLoading}
-            fullWidth
-            size="lg"
-          />
-        </View>
-
-        {/* Login link */}
-        <View style={styles.loginRow}>
-          <Text style={[styles.loginLabel, { color: colors.mutedForeground }]}>
-            Déjà inscrit ?
-          </Text>
-          <Pressable onPress={() => router.replace("/(auth)/login")}>
-            <Text style={[styles.loginLink, { color: colors.primary }]}>
-              Se connecter
+          {/* Login link */}
+          <View style={styles.loginRow}>
+            <Text style={[styles.loginLabel, { color: colors.mutedForeground }]}>
+              Déjà inscrit ?
             </Text>
-          </Pressable>
+            <Pressable onPress={() => router.replace("/(auth)/login")} hitSlop={8}>
+              <Text style={[styles.loginLink, { color: BRAND_MID }]}>
+                Se connecter
+              </Text>
+            </Pressable>
+          </View>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -388,59 +418,116 @@ export default function RegisterScreen() {
 }
 
 const styles = StyleSheet.create({
-  content: { paddingHorizontal: 24, gap: 24 },
-  backBtn: { marginBottom: 8 },
-  headingWrap: { gap: 6 },
-  heading: { fontSize: 28, fontFamily: "Inter_700Bold", letterSpacing: -0.5 },
-  subheading: { fontSize: 15, fontFamily: "Inter_400Regular" },
-  label: { fontSize: 13, fontFamily: "Inter_500Medium", marginBottom: 8 },
-  errorBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 8,
-    borderWidth: 1,
-  },
-  strengthContainer: {
-    marginTop: 8,
-    gap: 6,
-  },
-  strengthBar: {
-    height: 4,
-    backgroundColor: "#E5E7EB",
-    borderRadius: 2,
+  hero: {
+    paddingBottom: 34,
     overflow: "hidden",
+    minHeight: 140,
   },
-  strengthFill: {
-    height: "100%",
-    borderRadius: 2,
+  blobTopRight: {
+    position: "absolute",
+    top: -40,
+    right: -40,
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    backgroundColor: "#52B788",
+    opacity: 0.12,
   },
-  strengthText: {
-    fontSize: 11,
-    fontWeight: "500",
-  },
-  termsContainer: {
+  headerRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    gap: 14,
+    paddingHorizontal: 16,
+    paddingTop: 8,
   },
-  checkboxWrapper: {
-    padding: 4,
-  },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderRadius: 4,
+  backBtn: {},
+  backBtnInner: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: "rgba(255,255,255,0.15)",
     borderWidth: 1,
-    justifyContent: "center",
+    borderColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
+    justifyContent: "center",
   },
-  termsText: {
-    fontSize: 13,
-    fontWeight: "400",
+  headerTitleWrap: {
     flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  logoSmallRing: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderWidth: 1.5,
+    borderColor: "rgba(255,255,255,0.25)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  logoSmallInner: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  logoSmallLetter: {
+    fontSize: 17,
+    color: "#fff",
+    fontFamily: "Inter_700Bold",
+  },
+  logoSmallDot: {
+    position: "absolute",
+    bottom: 2,
+    right: 2,
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: "#FCD34D",
+    borderWidth: 1.5,
+    borderColor: "rgba(255,255,255,0.9)",
+  },
+  brandTagRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    marginBottom: 1,
+  },
+  tagDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  brandTag: {
+    fontSize: 10,
+    fontFamily: "Inter_600SemiBold",
+    color: "rgba(255,255,255,0.6)",
+    letterSpacing: 0.8,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontFamily: "Inter_700Bold",
+    color: "#fff",
+    letterSpacing: -0.3,
+  },
+  card: {
+    flex: 1,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    marginTop: -16,
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 40,
+  },
+  section: { marginBottom: 20 },
+  sectionLabel: {
+    fontSize: 11,
+    fontFamily: "Inter_700Bold",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+    marginBottom: 10,
   },
   roleChip: {
     flexDirection: "row",
@@ -448,41 +535,83 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingHorizontal: 14,
     paddingVertical: 10,
-    borderWidth: 1,
+    borderRadius: 24,
+    borderWidth: 1.5,
   },
-  roleLabel: { fontSize: 13, fontFamily: "Inter_500Medium" },
-  form: { gap: 14 },
-  inputWrap: {
+  roleEmoji: { fontSize: 14 },
+  roleLabel: { fontSize: 12, fontFamily: "Inter_600SemiBold" },
+  form: { gap: 18 },
+  errorBox: {
     flexDirection: "row",
     alignItems: "center",
+    gap: 8,
+    padding: 12,
+    borderRadius: 12,
     borderWidth: 1,
-    paddingHorizontal: 14,
-    paddingVertical: Platform.OS === "ios" ? 14 : 12,
-    gap: 10,
   },
-  input: {
-    flex: 1,
-    fontSize: 15,
+  errorText: { fontSize: 13, fontFamily: "Inter_400Regular", flex: 1 },
+  fieldError: {
+    fontSize: 12,
     fontFamily: "Inter_400Regular",
-    padding: 0,
-    margin: 0,
+    marginTop: 4,
+    marginLeft: 4,
   },
-  errorText: { fontSize: 13, fontFamily: "Inter_400Regular" },
+  termsRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 12,
+    marginTop: 4,
+  },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 7,
+    borderWidth: 1.5,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 1,
+    flexShrink: 0,
+  },
+  termsText: {
+    fontSize: 13,
+    fontFamily: "Inter_400Regular",
+    lineHeight: 19,
+    flex: 1,
+  },
+  ctaWrap: {
+    borderRadius: 16,
+    overflow: "hidden",
+    marginTop: 6,
+    ...Platform.select({
+      web: { boxShadow: "0px 8px 20px rgba(27,67,50,0.35)" },
+      default: {
+        shadowColor: BRAND_MID,
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.35,
+        shadowRadius: 16,
+        elevation: 8,
+      },
+    }),
+  },
+  cta: {
+    height: 56,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 16,
+  },
+  ctaText: {
+    fontSize: 17,
+    fontFamily: "Inter_700Bold",
+    color: "#fff",
+    letterSpacing: 0.2,
+  },
   loginRow: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     gap: 6,
+    marginTop: 28,
   },
   loginLabel: { fontSize: 14, fontFamily: "Inter_400Regular" },
-  loginLink: { fontSize: 14, fontFamily: "Inter_600SemiBold" },
-  legalLinksRow: {
-    marginTop: 18,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 10,
-  },
-  legalLink: { fontSize: 12, fontFamily: "Inter_500Medium" },
-  legalLinkSeparator: { fontSize: 12 },
+  loginLink: { fontSize: 14, fontFamily: "Inter_700Bold" },
 });

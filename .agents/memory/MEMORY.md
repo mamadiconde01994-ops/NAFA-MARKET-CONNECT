@@ -1,0 +1,2 @@
+- [NAFA Marché Expo setup](nafa-expo-setup.md) — Expo SDK 54 mobile app running at port 18115; artifact not registered in Replit system but workflow works.
+- [NAFA shadow fix](nafa-shadow-fix.md) — RN Web `shadow*` deprecation: use Platform.select with boxShadow on web.

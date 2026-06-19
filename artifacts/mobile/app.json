@@ -32,7 +32,8 @@
       [
         "expo-router",
         {
-          "origin": "https://replit.com/"
+          "origin": "https://replit.com/",
+          "headOrigin": "https://replit.com/"
         }
       ],
       "expo-font",

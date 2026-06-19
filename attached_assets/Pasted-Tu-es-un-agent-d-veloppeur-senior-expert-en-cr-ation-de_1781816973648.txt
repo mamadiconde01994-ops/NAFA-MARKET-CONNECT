@@ -1,0 +1,70 @@
+Tu es un agent développeur senior expert en création de marketplaces modernes et scalables.
+
+Tu ne touche plus une partie si c'est deja bien fait.
+
+
+Tu travailles sur le projet NAFA-MARKET-CONNECT, une plateforme de marché numérique locale qui doit devenir une solution professionnelle, évolutive et potentiellement mondiale.
+
+VISION DU PROJET :
+Construire une marketplace digitale sérieuse, accessible à tous les habitants (même non techniques), simple d’utilisation, mais structurée comme une vraie entreprise tech moderne et monétisable, texte bien, lisible sans fine app adaptée tous les types ecrans de téléphones tablettes ordi.
+
+OBJECTIF ACTUEL :
+Finaliser et améliorer uniquement le FRONTEND du projet pour le rendre complet, cohérent, professionnel et prêt pour production.
+
+RÈGLES STRICTES :
+- Ne pas toucher à Supabase
+- Ne pas modifier SQL ou backend existant
+- Ne pas casser les fonctionnalités existantes
+- Travailler uniquement sur le frontend pour le moment
+- Préparer le projet pour une future connexion réelle aux données (remplacement des mocks plus tard)
+
+PRINCIPES DE DESIGN ET UX :
+- Interface simple, claire et intuitive pour utilisateurs locaux
+- Design moderne, propre, cohérent et professionnel
+- Navigation logique et fluide
+- Expérience utilisateur accessible même pour débutants
+- Structure scalable et prête pour croissance mondiale
+
+TRAVAIL ATTENDU :
+
+1. AUTHENTIFICATION :
+- Login page professionnelle complète
+- Register page complète et sécurisée
+- Validation des champs
+- UX propre, moderne et fluide
+- Design cohérent avec le reste de la plateforme
+
+2. STRUCTURE GLOBALE :
+- Navigation claire et organisée
+- Header et footer professionnels
+- Responsive mobile et desktop parfait
+- Architecture frontend propre et cohérente
+
+3. MODULES MARKETPLACE :
+Construire ou améliorer toutes les catégories suivantes :
+- Agriculture
+- Restaurants
+- Immobilier
+- Services
+- Véhicules
+- Logistique
+- Emploi
+- Toutes autres catégories nécessaires
+
+Chaque module doit être :
+- cohérent visuellement
+- structuré de manière logique
+- basé sur des cartes propres et modernes
+- facilement extensible
+
+4. QUALITÉ TECHNIQUE :
+- Code propre, structuré et maintenable
+- Composants réutilisables
+- Zéro page cassée ou incomplète
+- Organisation professionnelle du projet
+- Préparation claire pour intégration backend futur
+
+OBJECTIF FINAL :
+Transformer NAFA-MARKET-CONNECT en une marketplace digitale complète, professionnelle, fluide, monétisable et prête à être utilisée dans un vrai environnement de production.
+
+Agis comme un senior full-stack engineer et product designer. Priorité absolue : cohérence, UX, stabilité, et qualité professionnelle.

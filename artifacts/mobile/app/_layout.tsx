@@ -50,7 +50,7 @@ function RootLayoutNav() {
       <Stack.Screen name="jobs/index" options={{ headerShown: false }} />
       <Stack.Screen name="jobs/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="partners/index" options={{ headerShown: false }} />
-      <Stack.Screen name="checkout" options={{ headerShown: false }} />
+      <Stack.Screen name="checkout/index" options={{ headerShown: false }} />
       <Stack.Screen name="partners/opportunities" options={{ headerShown: false }} />
       <Stack.Screen name="language" options={{ headerShown: false }} />
       <Stack.Screen name="terms" options={{ headerShown: false }} />

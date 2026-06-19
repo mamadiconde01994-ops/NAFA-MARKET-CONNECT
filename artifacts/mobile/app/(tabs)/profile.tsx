@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React from "react";
 import {
@@ -24,6 +25,11 @@ import { useTheme } from "@/context/ThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { formatRole } from "@/lib/format";
 import type { ThemeKey } from "@/constants/colors";
+
+const BRAND_DARK = "#0A2318";
+const BRAND_MID = "#1B4332";
+const BRAND_LIGHT = "#2D6A4F";
+const BRAND_ACCENT = "#52B788";
 
 interface MenuItemProps {
   icon: keyof typeof Ionicons.glyphMap;
@@ -171,25 +177,105 @@ export default function ProfileScreen() {
 
   if (!user) {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
+      <View style={{ flex: 1, backgroundColor: colors.background }}>
+        {/* ── Gradient Hero ── */}
+        <LinearGradient
+          colors={[BRAND_DARK, BRAND_MID, BRAND_LIGHT]}
+          start={{ x: 0.1, y: 0 }}
+          end={{ x: 0.9, y: 1 }}
+          style={[styles.guestHero, { paddingTop: topPad + 32 }]}
+        >
+          <View style={styles.guestHeroBlob} />
+          <View style={styles.guestHeroBlobBottom} />
+          <View style={styles.guestLogoRing}>
+            <LinearGradient
+              colors={[BRAND_ACCENT, BRAND_LIGHT]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.guestLogoInner}
+            >
+              <Text style={styles.guestLogoLetter}>N</Text>
+            </LinearGradient>
+            <View style={styles.guestLogoDot} />
+          </View>
+          <Text style={styles.guestAppName}>NAFA Marché</Text>
+          <Text style={styles.guestTagline}>Guinée · Marché digital</Text>
+        </LinearGradient>
+
+        {/* ── Content ── */}
         <ScrollView
-          style={{ flex: 1, backgroundColor: colors.background }}
-          contentContainerStyle={[styles.guestContent, { paddingTop: topPad, paddingBottom: bottomPad }]}
+          style={{ flex: 1, backgroundColor: colors.background, marginTop: -20, borderTopLeftRadius: 28, borderTopRightRadius: 28, overflow: "hidden" }}
+          contentContainerStyle={[styles.guestContent, { paddingBottom: bottomPad + 24 }]}
           showsVerticalScrollIndicator={false}
         >
-          <View style={[styles.guestCard, { backgroundColor: colors.card, borderColor: colors.border }]}>            
-            <Text style={[styles.guestTitle, { color: colors.foreground }]}>{t("guestTitle")}</Text>
-            <Text style={[styles.guestSubtitle, { color: colors.mutedForeground }]}>{t("guestSubtitle")}</Text>
-            <View style={styles.guestActions}>
-              <Button label={t("loginButton")} onPress={() => router.push("/(auth)/login" as any)} fullWidth />
-              <Button label={t("registerButton")} onPress={() => router.push("/(auth)/register" as any)} variant="outline" fullWidth />
-              <Pressable onPress={() => router.replace("/(tabs)")} style={styles.guestContinueBtn}>
-                <Text style={[styles.guestContinueText, { color: colors.primary }]}>{t("continueAsGuest")}</Text>
-              </Pressable>
-            </View>
+          <View style={styles.guestHeadingRow}>
+            <View style={[styles.guestAccentBar, { backgroundColor: BRAND_MID }]} />
+            <Text style={[styles.guestHeadingTag, { color: BRAND_MID }]}>Bienvenue</Text>
+          </View>
+          <Text style={[styles.guestHeading, { color: colors.foreground }]}>
+            {t("guestTitle")}
+          </Text>
+          <Text style={[styles.guestSubtitle, { color: colors.mutedForeground }]}>
+            {t("guestSubtitle")}
+          </Text>
+
+          {/* Benefits */}
+          <View style={[styles.guestBenefits, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            {([
+              { icon: "storefront-outline", text: "Accédez à des milliers d'annonces en Guinée" },
+              { icon: "chatbubble-ellipses-outline", text: "Messagerie directe avec les vendeurs" },
+              { icon: "notifications-outline", text: "Alertes sur vos produits et recherches favoris" },
+            ] as const).map((b, i) => (
+              <View
+                key={i}
+                style={[
+                  styles.guestBenefitRow,
+                  i < 2 && { borderBottomWidth: 1, borderBottomColor: colors.border },
+                ]}
+              >
+                <View style={[styles.guestBenefitIcon, { backgroundColor: BRAND_MID + "18" }]}>
+                  <Ionicons name={b.icon} size={18} color={BRAND_MID} />
+                </View>
+                <Text style={[styles.guestBenefitText, { color: colors.foreground }]}>{b.text}</Text>
+              </View>
+            ))}
+          </View>
+
+          {/* CTAs */}
+          <View style={styles.guestActions}>
+            <Pressable
+              onPress={() => router.push("/(auth)/login" as any)}
+              style={({ pressed }) => [styles.guestCtaWrap, { opacity: pressed ? 0.85 : 1 }]}
+            >
+              <LinearGradient
+                colors={[BRAND_LIGHT, BRAND_MID, BRAND_DARK]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.guestCta}
+              >
+                <Text style={styles.guestCtaText}>{t("loginButton")} →</Text>
+              </LinearGradient>
+            </Pressable>
+
+            <Pressable
+              onPress={() => router.push("/(auth)/register" as any)}
+              style={({ pressed }) => [
+                styles.guestOutlineBtn,
+                { borderColor: BRAND_MID, opacity: pressed ? 0.7 : 1 },
+              ]}
+            >
+              <Text style={[styles.guestOutlineText, { color: BRAND_MID }]}>{t("registerButton")}</Text>
+            </Pressable>
+
+            <Pressable onPress={() => router.replace("/(tabs)" as any)} style={styles.guestGhostBtn}>
+              <Ionicons name="person-outline" size={15} color={colors.mutedForeground} />
+              <Text style={[styles.guestGhostText, { color: colors.mutedForeground }]}>
+                {t("continueAsGuest")}
+              </Text>
+            </Pressable>
           </View>
         </ScrollView>
-      </SafeAreaView>
+      </View>
     );
   }
 
@@ -200,34 +286,56 @@ export default function ProfileScreen() {
         contentContainerStyle={{ paddingBottom: bottomPad }}
         showsVerticalScrollIndicator={false}
       >
-      {/* Profile card */}
-      <View
-        style={[
-          styles.profileCard,
-          {
-            paddingTop: topPad,
-            backgroundColor: colors.navyHeader,
-          },
-        ]}
+      {/* ── Premium Profile Header ── */}
+      <LinearGradient
+        colors={[BRAND_DARK, BRAND_MID, BRAND_LIGHT]}
+        start={{ x: 0.1, y: 0 }}
+        end={{ x: 0.9, y: 1 }}
+        style={[styles.profileCard, { paddingTop: topPad + 8 }]}
       >
-        <UserAvatar name={user.name} size={80} variant="accent" />
-        <View style={styles.profileInfo}>
-          <Text style={styles.profileName}>{user.name}</Text>
-          <View style={styles.profileMeta}>
-            <Badge label={formatRole(user.role)} variant="secondary" />
-            {user.verified && (
-              <View style={styles.verifiedRow}>
-                <Ionicons name="checkmark-circle" size={14} color="#4ADE80" />
-                <Text style={styles.verifiedText}>Vérifié</Text>
-              </View>
-            )}
+        <View style={styles.profileHeaderBlob} />
+        <View style={styles.profileHeaderBlobBR} />
+
+        {/* Top row: settings shortcut */}
+        <View style={styles.profileHeaderTopRow}>
+          <View style={styles.profileBrandPill}>
+            <View style={[styles.profileBrandDot, { backgroundColor: BRAND_ACCENT }]} />
+            <Text style={styles.profileBrandPillText}>NAFA Marché</Text>
           </View>
-          <View style={styles.locationRow}>
-            <Ionicons name="location-outline" size={13} color="rgba(255,255,255,0.7)" />
-            <Text style={styles.locationText}>{user.location}</Text>
+          <Pressable
+            onPress={showComingSoon}
+            style={({ pressed }) => [styles.profileSettingsBtn, { opacity: pressed ? 0.7 : 1 }]}
+            hitSlop={8}
+          >
+            <Ionicons name="settings-outline" size={18} color="rgba(255,255,255,0.7)" />
+          </Pressable>
+        </View>
+
+        {/* Avatar + Identity */}
+        <View style={styles.profileIdentity}>
+          <View style={styles.profileAvatarRing}>
+            <UserAvatar name={user.name} size={82} variant="accent" />
+          </View>
+          <View style={styles.profileInfo}>
+            <Text style={styles.profileName}>{user.name}</Text>
+            <View style={styles.profileMeta}>
+              <View style={[styles.profileRolePill, { backgroundColor: "rgba(255,255,255,0.15)" }]}>
+                <Text style={styles.profileRolePillText}>{formatRole(user.role)}</Text>
+              </View>
+              {user.verified && (
+                <View style={styles.profileVerifiedPill}>
+                  <Ionicons name="shield-checkmark" size={12} color={BRAND_ACCENT} />
+                  <Text style={styles.profileVerifiedText}>Vérifié</Text>
+                </View>
+              )}
+            </View>
+            <View style={styles.locationRow}>
+              <Ionicons name="location-outline" size={13} color="rgba(255,255,255,0.6)" />
+              <Text style={styles.locationText}>{user.location}</Text>
+            </View>
           </View>
         </View>
-      </View>
+      </LinearGradient>
 
       {/* Stats */}
       <View
@@ -345,7 +453,7 @@ export default function ProfileScreen() {
             },
           ]}
         >
-          <MenuItem icon="person-outline" label={t("profileEditProfile")} onPress={showComingSoon} />
+          <MenuItem icon="person-outline" label={t("profileEditProfile")} onPress={() => router.push("/(auth)/edit-profile" as any)} />
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
           <MenuItem icon="heart-outline" label={t("profileFavorites")} onPress={showComingSoon} />
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
@@ -383,7 +491,7 @@ export default function ProfileScreen() {
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
           <MenuItem icon="language-outline" label={t("profileLanguage")} onPress={() => router.push("/language")} />
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
-          <MenuItem icon="shield-checkmark-outline" label={t("profileSecurity")} onPress={() => router.push("/privacy")} />
+          <MenuItem icon="shield-checkmark-outline" label={t("profileSecurity")} onPress={() => router.push("/(auth)/change-password" as any)} />
         </View>
       </View>
 
@@ -441,57 +549,310 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   profileCard: {
+    paddingBottom: 24,
+    paddingHorizontal: 20,
+    gap: 14,
+    overflow: "hidden",
+  },
+  profileHeaderBlob: {
+    position: "absolute",
+    top: -50,
+    right: -50,
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    backgroundColor: "#52B788",
+    opacity: 0.12,
+  },
+  profileHeaderBlobBR: {
+    position: "absolute",
+    bottom: -30,
+    left: -30,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: "#52B788",
+    opacity: 0.08,
+  },
+  profileHeaderTopRow: {
+    flexDirection: "row",
     alignItems: "center",
-    paddingBottom: 28,
-    paddingHorizontal: 24,
-    gap: 12,
+    justifyContent: "space-between",
+    marginTop: 4,
   },
-  guestContent: {
-    flex: 1,
-    paddingHorizontal: 16,
-    gap: 18,
+  profileBrandPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: "rgba(255,255,255,0.12)",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 20,
   },
-  guestCard: {
-    marginHorizontal: 16,
-    padding: 24,
+  profileBrandDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  profileBrandPillText: {
+    fontSize: 11,
+    fontFamily: "Inter_600SemiBold",
+    color: "rgba(255,255,255,0.75)",
+    letterSpacing: 0.5,
+  },
+  profileSettingsBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: "rgba(255,255,255,0.12)",
     borderWidth: 1,
-    borderRadius: 18,
-    gap: 18,
+    borderColor: "rgba(255,255,255,0.15)",
+    alignItems: "center",
+    justifyContent: "center",
   },
-  guestTitle: {
+  profileIdentity: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+  },
+  profileAvatarRing: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    borderWidth: 2.5,
+    borderColor: "rgba(255,255,255,0.3)",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  profileRolePill: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+  },
+  profileRolePillText: {
+    fontSize: 11,
+    fontFamily: "Inter_600SemiBold",
+    color: "rgba(255,255,255,0.9)",
+    letterSpacing: 0.3,
+  },
+  profileVerifiedPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+    borderRadius: 20,
+    backgroundColor: "rgba(82,183,136,0.2)",
+    borderWidth: 1,
+    borderColor: "rgba(82,183,136,0.4)",
+  },
+  profileVerifiedText: {
+    fontSize: 11,
+    fontFamily: "Inter_700Bold",
+    color: "#52B788",
+    letterSpacing: 0.3,
+  },
+  guestHero: {
+    alignItems: "center",
+    justifyContent: "flex-end",
+    paddingBottom: 44,
+    minHeight: 260,
+    overflow: "hidden",
+  },
+  guestHeroBlob: {
+    position: "absolute",
+    top: -50,
+    right: -50,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: "#52B788",
+    opacity: 0.12,
+  },
+  guestHeroBlobBottom: {
+    position: "absolute",
+    bottom: -30,
+    left: -40,
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: "#52B788",
+    opacity: 0.1,
+  },
+  guestLogoRing: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.25)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 12,
+  },
+  guestLogoInner: {
+    width: 62,
+    height: 62,
+    borderRadius: 31,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  guestLogoLetter: {
+    fontSize: 28,
+    color: "#fff",
+    fontFamily: "Inter_700Bold",
+  },
+  guestLogoDot: {
+    position: "absolute",
+    bottom: 2,
+    right: 2,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: "#FCD34D",
+    borderWidth: 2,
+    borderColor: "rgba(255,255,255,0.9)",
+  },
+  guestAppName: {
     fontSize: 20,
     fontFamily: "Inter_700Bold",
+    color: "#fff",
+    letterSpacing: -0.3,
+  },
+  guestTagline: {
+    fontSize: 10,
+    fontFamily: "Inter_400Regular",
+    color: "rgba(255,255,255,0.55)",
+    letterSpacing: 1.5,
+    textTransform: "uppercase",
+    marginTop: 3,
+  },
+  guestContent: {
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    gap: 20,
+  },
+  guestHeadingRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  guestAccentBar: {
+    width: 16,
+    height: 3,
+    borderRadius: 2,
+  },
+  guestHeadingTag: {
+    fontSize: 11,
+    fontFamily: "Inter_700Bold",
+    letterSpacing: 1.5,
+    textTransform: "uppercase",
+  },
+  guestHeading: {
+    fontSize: 28,
+    fontFamily: "Inter_700Bold",
+    letterSpacing: -0.6,
+    lineHeight: 34,
+    marginTop: -8,
   },
   guestSubtitle: {
     fontSize: 14,
-    lineHeight: 20,
+    lineHeight: 21,
     fontFamily: "Inter_400Regular",
+    marginTop: -8,
+  },
+  guestBenefits: {
+    borderWidth: 1,
+    borderRadius: 18,
+    overflow: "hidden",
+  },
+  guestBenefitRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  guestBenefitIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  guestBenefitText: {
+    flex: 1,
+    fontSize: 14,
+    fontFamily: "Inter_500Medium",
+    lineHeight: 20,
   },
   guestActions: {
     gap: 12,
-    marginTop: 20,
   },
-  guestContinueBtn: {
+  guestCtaWrap: {
+    borderRadius: 16,
+    overflow: "hidden",
+    ...Platform.select({
+      web: { boxShadow: "0px 8px 20px rgba(27,67,50,0.35)" },
+      default: {
+        shadowColor: BRAND_MID,
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.35,
+        shadowRadius: 16,
+        elevation: 8,
+      },
+    }),
+  },
+  guestCta: {
+    height: 56,
     alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 16,
+  },
+  guestCtaText: {
+    fontSize: 17,
+    fontFamily: "Inter_700Bold",
+    color: "#fff",
+    letterSpacing: 0.2,
+  },
+  guestOutlineBtn: {
+    height: 52,
+    borderRadius: 16,
+    borderWidth: 2,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  guestOutlineText: {
+    fontSize: 15,
+    fontFamily: "Inter_700Bold",
+  },
+  guestGhostBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
     paddingVertical: 14,
   },
-  guestContinueText: {
-    fontSize: 15,
-    fontFamily: "Inter_600SemiBold",
+  guestGhostText: {
+    fontSize: 14,
+    fontFamily: "Inter_500Medium",
   },
   profileMetaText: {
     fontSize: 13,
     color: "rgba(255,255,255,0.8)",
     fontFamily: "Inter_400Regular",
   },
-  profileInfo: { alignItems: "center", gap: 8 },
+  profileInfo: { flex: 1, gap: 7 },
   profileName: {
-    fontSize: 22,
+    fontSize: 20,
     fontFamily: "Inter_700Bold",
     color: "#FFFFFF",
     letterSpacing: -0.3,
+    lineHeight: 26,
   },
-  profileMeta: { flexDirection: "row", alignItems: "center", gap: 8 },
+  profileMeta: { flexDirection: "row", alignItems: "center", gap: 7, flexWrap: "wrap" },
   verifiedRow: { flexDirection: "row", alignItems: "center", gap: 3 },
   verifiedText: { fontSize: 12, color: "#4ADE80", fontFamily: "Inter_500Medium" },
   locationRow: { flexDirection: "row", alignItems: "center", gap: 3 },

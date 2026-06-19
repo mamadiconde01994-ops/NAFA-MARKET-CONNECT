@@ -28,7 +28,7 @@ interface AuthContextValue {
   user: User | null;
   isLoading: boolean;
   accessToken: string | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (identifier: string, password: string, mode?: "email" | "phone") => Promise<void>;
   register: (
     name: string,
     email: string,
@@ -36,6 +36,7 @@ interface AuthContextValue {
     role: UserRole,
     password: string,
   ) => Promise<void>;
+  updateProfile: (updates: Partial<Pick<User, "name" | "phone" | "location" | "role">>) => Promise<void>;
   logout: () => Promise<void>;
   refreshToken: () => Promise<boolean>;
 }
@@ -89,11 +90,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })();
   }, []);
 
-  const login = useCallback(async (email: string, _password: string) => {
-    const found = MOCK_USERS.find(
-      (u) => u.email.toLowerCase() === email.toLowerCase(),
+  const login = useCallback(async (identifier: string, _password: string, mode: "email" | "phone" = "email") => {
+    const normalized = identifier.trim().replace(/\s/g, "");
+    const found = MOCK_USERS.find((u) =>
+      mode === "phone"
+        ? u.phone.replace(/\s/g, "") === normalized || u.phone.replace(/[\s\-\.]/g, "") === normalized
+        : u.email.toLowerCase() === identifier.trim().toLowerCase()
     );
-    const authedUser: User = found ?? { ...MOCK_CURRENT_USER, email };
+    const authedUser: User = found ?? {
+      ...MOCK_CURRENT_USER,
+      ...(mode === "email" ? { email: identifier.trim() } : {}),
+    };
     
     // Generate tokens
     const tokens = generateTokens(authedUser.id, authedUser.email, authedUser.role);
@@ -137,6 +144,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [],
   );
 
+  const updateProfile = useCallback(
+    async (updates: Partial<Pick<User, "name" | "phone" | "location" | "role">>) => {
+      setUser((prev) => {
+        if (!prev) return prev;
+        const updated = { ...prev, ...updates };
+        setStoredUser(JSON.stringify(updated));
+        return updated;
+      });
+    },
+    [],
+  );
+
   const logout = useCallback(async () => {
     await clearStoredUser();
     await clearStoredTokens();
@@ -173,6 +192,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         accessToken,
         login,
         register,
+        updateProfile,
         logout,
         refreshToken,
       }}

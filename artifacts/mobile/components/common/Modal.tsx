@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Modal as RNModal, StyleSheet, Text, TouchableOpacity, Pressable } from "react-native";
+import { Platform, View, Modal as RNModal, StyleSheet, Text, TouchableOpacity, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useColors } from "@/hooks/useColors";
 import { Button } from "./Button";
@@ -43,11 +43,16 @@ export function Modal({
       borderRadius: 16,
       marginHorizontal: 20,
       maxWidth: 400,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.15,
-      shadowRadius: 8,
       elevation: 8,
+      ...Platform.select({
+        web: { boxShadow: "0px 4px 8px rgba(0,0,0,0.15)" },
+        default: {
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.15,
+          shadowRadius: 8,
+        },
+      }),
     },
     header: {
       paddingHorizontal: 20,

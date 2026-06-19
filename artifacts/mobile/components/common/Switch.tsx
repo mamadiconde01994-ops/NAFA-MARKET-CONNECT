@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity, StyleSheet, Text, Animated } from "react-native";
+import { Platform, View, TouchableOpacity, StyleSheet, Text, Animated } from "react-native";
 import { useColors } from "@/hooks/useColors";
 
 export interface SwitchProps {
@@ -38,11 +38,16 @@ export function Switch({ label, value, onChange, disabled = false }: SwitchProps
       height: 24,
       borderRadius: 12,
       backgroundColor: colors.card,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 2,
       elevation: 2,
+      ...Platform.select({
+        web: { boxShadow: "0px 2px 2px rgba(0,0,0,0.10)" },
+        default: {
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 2,
+        },
+      }),
     },
   });
 
