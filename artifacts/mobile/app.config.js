@@ -1,5 +1,6 @@
+const port = process.env.PORT || "5000";
 const replitDevDomain = process.env.REPLIT_DEV_DOMAIN
-  ? `https://${process.env.REPLIT_DEV_DOMAIN}:3000`
+  ? `https://${process.env.REPLIT_DEV_DOMAIN}:${port}`
   : "https://replit.com/";
 
 module.exports = {
