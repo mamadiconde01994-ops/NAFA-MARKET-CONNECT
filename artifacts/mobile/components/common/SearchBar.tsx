@@ -46,7 +46,7 @@ export function SearchBar({
         style,
       ]}
     >
-      <Ionicons name="search-outline" size={18} color={colors.mutedForeground} />
+      <Ionicons name="search-outline" size={20} color={colors.mutedForeground} />
       <TextInput
         style={[styles.input, { color: colors.foreground }]}
         value={value}
@@ -88,13 +88,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    paddingHorizontal: 14,
-    paddingVertical: Platform.OS === "ios" ? 12 : 10,
+    paddingHorizontal: 16,
+    paddingVertical: Platform.OS === "ios" ? 14 : 13,
     borderWidth: 1,
   },
   input: {
     flex: 1,
-    fontSize: 15,
+    fontSize: 16,
     fontFamily: "Inter_400Regular",
     padding: 0,
     margin: 0,

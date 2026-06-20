@@ -145,23 +145,23 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   label: {
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: "600",
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 10,
     paddingRight: 12,
-    height: 44,
+    height: 52,
   },
   leftIcon: {
-    marginLeft: 12,
+    marginLeft: 14,
   },
   input: {
     flex: 1,
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: "400",
     paddingVertical: 10,
   },
@@ -175,11 +175,11 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   error: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: "500",
   },
   hint: {
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 6,
     fontWeight: "400",
   },

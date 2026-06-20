@@ -10,6 +10,7 @@ import {
 } from "react-native";
 
 import { useColors } from "@/hooks/useColors";
+import { rf, rs } from "@/lib/scale";
 
 type Variant =
   | "primary"
@@ -66,8 +67,9 @@ export function Button({
     destructive: undefined,
   };
 
-  const height: Record<Size, number> = { sm: 36, md: 48, lg: 56 };
-  const fontSize: Record<Size, number> = { sm: 13, md: 15, lg: 17 };
+  const height: Record<Size, number> = { sm: rs(44), md: rs(52), lg: rs(60) };
+  const fontSize: Record<Size, number> = { sm: rf(14), md: rf(16), lg: rf(18) };
+  const hPad: Record<Size, number> = { sm: rs(16), md: rs(22), lg: rs(28) };
 
   const handlePress = async () => {
     if (Platform.OS !== "web") {
@@ -92,7 +94,7 @@ export function Button({
           borderRadius: colors.radius,
           opacity: pressed ? 0.75 : isDisabled ? 0.45 : 1,
           width: fullWidth ? "100%" : undefined,
-          paddingHorizontal: size === "sm" ? 14 : size === "lg" ? 24 : 20,
+          paddingHorizontal: hPad[size],
         },
         style,
       ]}

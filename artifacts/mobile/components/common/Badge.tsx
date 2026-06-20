@@ -50,15 +50,15 @@ export function Badge({ label, variant = "default", small = false }: BadgeProps)
           borderWidth: variant === "outline" ? 1 : 0,
           borderColor: variant === "outline" ? colors.primary : undefined,
           borderRadius: 100,
-          paddingHorizontal: small ? 8 : 10,
-          paddingVertical: small ? 2 : 4,
+          paddingHorizontal: small ? 9 : 11,
+          paddingVertical: small ? 3 : 5,
         },
       ]}
     >
       <Text
         style={[
           styles.label,
-          { color: fg[variant], fontSize: small ? 10 : 12 },
+          { color: fg[variant], fontSize: small ? 12 : 13 },
         ]}
       >
         {label}

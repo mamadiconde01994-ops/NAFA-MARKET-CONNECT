@@ -90,7 +90,7 @@ function ClassicTabLayout() {
             isIOS ? (
               <SymbolView name="house" tintColor={color} size={24} />
             ) : (
-              <Ionicons name="home-outline" size={22} color={color} />
+              <Ionicons name="home-outline" size={24} color={color} />
             ),
         }}
       />
@@ -102,7 +102,7 @@ function ClassicTabLayout() {
             isIOS ? (
               <SymbolView name="magnifyingglass" tintColor={color} size={24} />
             ) : (
-              <Ionicons name="search-outline" size={22} color={color} />
+              <Ionicons name="search-outline" size={24} color={color} />
             ),
         }}
       />
@@ -114,7 +114,7 @@ function ClassicTabLayout() {
             isIOS ? (
               <SymbolView name="bag" tintColor={color} size={24} />
             ) : (
-              <Ionicons name="bag-outline" size={22} color={color} />
+              <Ionicons name="bag-outline" size={24} color={color} />
             ),
         }}
       />
@@ -126,7 +126,7 @@ function ClassicTabLayout() {
             isIOS ? (
               <SymbolView name="heart" tintColor={color} size={24} />
             ) : (
-              <Ionicons name="heart-outline" size={22} color={color} />
+              <Ionicons name="heart-outline" size={24} color={color} />
             ),
         }}
       />
@@ -138,7 +138,7 @@ function ClassicTabLayout() {
             isIOS ? (
               <SymbolView name="message" tintColor={color} size={24} />
             ) : (
-              <Ionicons name="chatbubble-outline" size={22} color={color} />
+              <Ionicons name="chatbubble-outline" size={24} color={color} />
             ),
         }}
       />
@@ -150,7 +150,7 @@ function ClassicTabLayout() {
             isIOS ? (
               <SymbolView name="bell" tintColor={color} size={24} />
             ) : (
-              <Ionicons name="notifications-outline" size={22} color={color} />
+              <Ionicons name="notifications-outline" size={24} color={color} />
             ),
         }}
       />
@@ -162,7 +162,7 @@ function ClassicTabLayout() {
             isIOS ? (
               <SymbolView name="person" tintColor={color} size={24} />
             ) : (
-              <Ionicons name="person-outline" size={22} color={color} />
+              <Ionicons name="person-outline" size={24} color={color} />
             ),
         }}
       />
