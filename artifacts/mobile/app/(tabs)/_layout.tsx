@@ -1,178 +1,252 @@
 import { BlurView } from "expo-blur";
-import { isLiquidGlassAvailable } from "expo-glass-effect";
-import { Tabs } from "expo-router";
-import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
-import { SymbolView } from "expo-symbols";
 import { Ionicons } from "@expo/vector-icons";
+import { Tabs, router } from "expo-router";
 import React from "react";
-import { Platform, StyleSheet, View, useColorScheme } from "react-native";
+import {
+  Alert,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  useColorScheme,
+} from "react-native";
 
 import { useColors } from "@/hooks/useColors";
+import { useNotifications } from "@/context/NotificationsContext";
 
-function NativeTabLayout() {
+const PRIMARY = "#1a472a";
+
+function useUnreadCounts() {
+  const { notifications } = useNotifications();
+  const unreadNotifs = notifications.filter((n) => !n.read).length;
+  return { unreadNotifs };
+}
+
+function PublishButton() {
+  const colors = useColors();
+
+  const handlePublish = () => {
+    Alert.alert(
+      "Publier une annonce",
+      "Que souhaitez-vous proposer ?",
+      [
+        {
+          text: "🌿  Produit agricole",
+          onPress: () => router.push("/product/create" as any),
+        },
+        {
+          text: "🏭  Espace / Entrepôt",
+          onPress: () => router.push("/warehouses/index" as any),
+        },
+        {
+          text: "💼  Offre d'emploi",
+          onPress: () => router.push("/jobs/index" as any),
+        },
+        {
+          text: "🔧  Service professionnel",
+          onPress: () => router.push("/services/index" as any),
+        },
+        { text: "Annuler", style: "cancel" },
+      ]
+    );
+  };
+
   return (
-    <NativeTabs>
-      <NativeTabs.Trigger name="index">
-        <Icon sf={{ default: "house", selected: "house.fill" }} />
-        <Label>Accueil</Label>
-      </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="search">
-        <Icon sf={{ default: "magnifyingglass", selected: "magnifyingglass" }} />
-        <Label>Rechercher</Label>
-      </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="orders">
-        <Icon sf={{ default: "bag", selected: "bag.fill" }} />
-        <Label>Commandes</Label>
-      </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="favorites">
-        <Icon sf={{ default: "heart", selected: "heart.fill" }} />
-        <Label>Favoris</Label>
-      </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="messages">
-        <Icon sf={{ default: "message", selected: "message.fill" }} />
-        <Label>Messages</Label>
-      </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="notifications">
-        <Icon sf={{ default: "bell", selected: "bell.fill" }} />
-        <Label>Notifications</Label>
-      </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="profile">
-        <Icon sf={{ default: "person", selected: "person.fill" }} />
-        <Label>Profil</Label>
-      </NativeTabs.Trigger>
-    </NativeTabs>
+    <Pressable
+      onPress={handlePublish}
+      style={({ pressed }) => [
+        styles.publishWrapper,
+        { opacity: pressed ? 0.82 : 1 },
+      ]}
+      accessibilityLabel="Publier une annonce"
+      accessibilityRole="button"
+    >
+      <View style={styles.publishCircle}>
+        <Ionicons name="add" size={30} color="#FFFFFF" />
+      </View>
+      <Text style={[styles.publishLabel, { color: colors.mutedForeground }]}>
+        Publier
+      </Text>
+    </Pressable>
   );
 }
 
-function ClassicTabLayout() {
+function MessageIcon({ color, unread }: { color?: string; unread: number }) {
+  return (
+    <View style={styles.iconWrap}>
+      <Ionicons name="chatbubble-outline" size={24} color={color} />
+      {unread > 0 && (
+        <View style={styles.badge}>
+          <Text style={styles.badgeText}>{unread > 9 ? "9+" : unread}</Text>
+        </View>
+      )}
+    </View>
+  );
+}
+
+export default function TabLayout() {
   const colors = useColors();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const isIOS = Platform.OS === "ios";
   const isWeb = Platform.OS === "web";
 
+  const { unreadNotifs } = useUnreadCounts();
+
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: colors.primary,
+        tabBarActiveTintColor: PRIMARY,
         tabBarInactiveTintColor: colors.mutedForeground,
         headerShown: false,
         tabBarStyle: {
           position: "absolute",
           backgroundColor: isIOS ? "transparent" : colors.background,
-          borderTopWidth: isWeb ? 1 : 0,
+          borderTopWidth: 1,
           borderTopColor: colors.border,
           elevation: 0,
-          ...(isWeb ? { height: 84 } : {}),
+          height: isWeb ? 84 : 62,
+          paddingBottom: isWeb ? 20 : 6,
+          paddingTop: 6,
+        },
+        tabBarLabelStyle: {
+          fontSize: 10,
+          fontFamily: "Inter_500Medium",
+          marginTop: -2,
         },
         tabBarBackground: () =>
           isIOS ? (
             <BlurView
-              intensity={100}
+              intensity={95}
               tint={isDark ? "dark" : "light"}
               style={StyleSheet.absoluteFill}
             />
-          ) : isWeb ? (
+          ) : (
             <View
               style={[
                 StyleSheet.absoluteFill,
                 { backgroundColor: colors.background },
               ]}
             />
-          ) : null,
+          ),
       }}
     >
+      {/* ── 1 : Accueil ── */}
       <Tabs.Screen
         name="index"
         options={{
           title: "Accueil",
-          tabBarIcon: ({ color }: { color?: string }) =>
-            isIOS ? (
-              <SymbolView name="house" tintColor={color} size={24} />
-            ) : (
-              <Ionicons name="home-outline" size={24} color={color} />
-            ),
+          tabBarIcon: ({ color }: { color: string }) => (
+            <Ionicons name="home-outline" size={24} color={color} />
+          ),
         }}
       />
+
+      {/* ── 2 : Explorer ── */}
       <Tabs.Screen
         name="search"
         options={{
-          title: "Rechercher",
-          tabBarIcon: ({ color }: { color?: string }) =>
-            isIOS ? (
-              <SymbolView name="magnifyingglass" tintColor={color} size={24} />
-            ) : (
-              <Ionicons name="search-outline" size={24} color={color} />
-            ),
+          title: "Explorer",
+          tabBarIcon: ({ color }: { color: string }) => (
+            <Ionicons name="search-outline" size={24} color={color} />
+          ),
         }}
       />
+
+      {/* ── 3 : Publier (centre élevé) ── */}
       <Tabs.Screen
-        name="orders"
+        name="publish"
         options={{
-          title: "Commandes",
-          tabBarIcon: ({ color }: { color?: string }) =>
-            isIOS ? (
-              <SymbolView name="bag" tintColor={color} size={24} />
-            ) : (
-              <Ionicons name="bag-outline" size={24} color={color} />
-            ),
+          title: "",
+          tabBarButton: () => <PublishButton />,
         }}
       />
-      <Tabs.Screen
-        name="favorites"
-        options={{
-          title: "Favoris",
-          tabBarIcon: ({ color }: { color?: string }) =>
-            isIOS ? (
-              <SymbolView name="heart" tintColor={color} size={24} />
-            ) : (
-              <Ionicons name="heart-outline" size={24} color={color} />
-            ),
-        }}
-      />
+
+      {/* ── 4 : Messages ── */}
       <Tabs.Screen
         name="messages"
         options={{
           title: "Messages",
-          tabBarIcon: ({ color }: { color?: string }) =>
-            isIOS ? (
-              <SymbolView name="message" tintColor={color} size={24} />
-            ) : (
-              <Ionicons name="chatbubble-outline" size={24} color={color} />
-            ),
+          tabBarIcon: ({ color }: { color: string }) => (
+            <MessageIcon color={color} unread={unreadNotifs} />
+          ),
         }}
       />
-      <Tabs.Screen
-        name="notifications"
-        options={{
-          title: "Notifications",
-          tabBarIcon: ({ color }: { color?: string }) =>
-            isIOS ? (
-              <SymbolView name="bell" tintColor={color} size={24} />
-            ) : (
-              <Ionicons name="notifications-outline" size={24} color={color} />
-            ),
-        }}
-      />
+
+      {/* ── 5 : Profil ── */}
       <Tabs.Screen
         name="profile"
         options={{
           title: "Profil",
-          tabBarIcon: ({ color }: { color?: string }) =>
-            isIOS ? (
-              <SymbolView name="person" tintColor={color} size={24} />
-            ) : (
-              <Ionicons name="person-outline" size={24} color={color} />
-            ),
+          tabBarIcon: ({ color }: { color: string }) => (
+            <Ionicons name="person-outline" size={24} color={color} />
+          ),
         }}
       />
+
+      {/* ── Cachés — accessibles via router.push, invisibles dans la nav ── */}
+      <Tabs.Screen name="orders" options={{ tabBarButton: () => null }} />
+      <Tabs.Screen name="favorites" options={{ tabBarButton: () => null }} />
+      <Tabs.Screen name="notifications" options={{ tabBarButton: () => null }} />
     </Tabs>
   );
 }
 
-export default function TabLayout() {
-  if (isLiquidGlassAvailable()) {
-    return <NativeTabLayout />;
-  }
-  return <ClassicTabLayout />;
-}
+const styles = StyleSheet.create({
+  publishWrapper: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: 2,
+  },
+  publishCircle: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: PRIMARY,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 2,
+    ...Platform.select({
+      web: {
+        boxShadow: `0px 4px 16px rgba(26, 71, 42, 0.45)`,
+      },
+      default: {
+        shadowColor: PRIMARY,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.4,
+        shadowRadius: 8,
+        elevation: 6,
+      },
+    }),
+  },
+  publishLabel: {
+    fontSize: 10,
+    fontFamily: "Inter_500Medium",
+  },
+  iconWrap: {
+    width: 28,
+    height: 28,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  badge: {
+    position: "absolute",
+    top: -2,
+    right: -4,
+    backgroundColor: "#DC2626",
+    borderRadius: 8,
+    minWidth: 16,
+    height: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 3,
+  },
+  badgeText: {
+    color: "#FFFFFF",
+    fontSize: 9,
+    fontFamily: "Inter_700Bold",
+    lineHeight: 14,
+  },
+});

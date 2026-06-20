@@ -185,7 +185,11 @@ export default function HomeScreen() {
           </Pressable>
 
           <View style={styles.headerActions}>
-            <Pressable style={[styles.iconBtn]} hitSlop={8}>
+            <Pressable
+              style={[styles.iconBtn]}
+              onPress={() => router.push("/notifications" as any)}
+              hitSlop={8}
+            >
               <Ionicons name="notifications-outline" size={21} color="rgba(255,255,255,0.85)" />
             </Pressable>
             <Pressable onPress={() => router.push("/profile")}>
