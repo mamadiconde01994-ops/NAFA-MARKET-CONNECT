@@ -28,6 +28,10 @@ function NativeTabLayout() {
         <Icon sf={{ default: "heart", selected: "heart.fill" }} />
         <Label>Favoris</Label>
       </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="messages">
+        <Icon sf={{ default: "message", selected: "message.fill" }} />
+        <Label>Messages</Label>
+      </NativeTabs.Trigger>
       <NativeTabs.Trigger name="notifications">
         <Icon sf={{ default: "bell", selected: "bell.fill" }} />
         <Label>Notifications</Label>
@@ -123,6 +127,18 @@ function ClassicTabLayout() {
               <SymbolView name="heart" tintColor={color} size={24} />
             ) : (
               <Ionicons name="heart-outline" size={22} color={color} />
+            ),
+        }}
+      />
+      <Tabs.Screen
+        name="messages"
+        options={{
+          title: "Messages",
+          tabBarIcon: ({ color }: { color?: string }) =>
+            isIOS ? (
+              <SymbolView name="message" tintColor={color} size={24} />
+            ) : (
+              <Ionicons name="chatbubble-outline" size={22} color={color} />
             ),
         }}
       />

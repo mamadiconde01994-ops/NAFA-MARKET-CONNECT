@@ -45,6 +45,13 @@ export default function PropertyDetailScreen() {
     Linking.openURL(`tel:${phone}`);
   };
 
+  const handleMessage = () => {
+    if (!property) return;
+    router.push(
+      `/chat?name=${encodeURIComponent(property.agentName)}&context=${encodeURIComponent(property.title)}` as any,
+    );
+  };
+
   if (!property) {
     return (
       <View style={[styles.container, { backgroundColor: colors.background, alignItems: "center", justifyContent: "center" }]}>
@@ -201,14 +208,28 @@ export default function PropertyDetailScreen() {
 
       {/* CTA */}
       <View style={[styles.ctaBar, { backgroundColor: colors.card, borderTopColor: colors.border, paddingBottom: Platform.OS === "web" ? 34 : insets.bottom + 16 }]}>
-        <Pressable          onPress={handleContactAgent}          style={({ pressed }) => [
-            styles.ctaBtn,
-            { backgroundColor: "#2563EB", opacity: pressed ? 0.85 : 1 },
-          ]}
-        >
-          <Ionicons name="call-outline" size={18} color="#FFFFFF" />
-          <Text style={styles.ctaBtnText}>Contacter l'agent</Text>
-        </Pressable>
+        <View style={styles.ctaRow}>
+          <Pressable
+            onPress={handleMessage}
+            style={({ pressed }) => [
+              styles.ctaBtnOutline,
+              { borderColor: "#2563EB", opacity: pressed ? 0.7 : 1 },
+            ]}
+          >
+            <Ionicons name="chatbubble-outline" size={18} color="#2563EB" />
+            <Text style={[styles.ctaBtnText, { color: "#2563EB" }]}>Message</Text>
+          </Pressable>
+          <Pressable
+            onPress={handleContactAgent}
+            style={({ pressed }) => [
+              styles.ctaBtn,
+              { backgroundColor: "#2563EB", flex: 1, opacity: pressed ? 0.85 : 1 },
+            ]}
+          >
+            <Ionicons name="call-outline" size={18} color="#FFFFFF" />
+            <Text style={styles.ctaBtnText}>Appeler l'agent</Text>
+          </Pressable>
+        </View>
       </View>
     </View>
   );
@@ -273,6 +294,11 @@ const styles = StyleSheet.create({
   agentAvatar: { width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center" },
   agentName: { fontSize: 15, fontFamily: "Inter_600SemiBold" },
   agentPhone: { fontSize: 13, fontFamily: "Inter_400Regular" },
+  ctaRow: { flexDirection: "row", gap: 10 },
+  ctaBtnOutline: {
+    flexDirection: "row", alignItems: "center", justifyContent: "center",
+    gap: 6, paddingVertical: 14, paddingHorizontal: 18, borderRadius: 12, borderWidth: 1.5,
+  },
   ctaBar: {
     borderTopWidth: 1,
     paddingHorizontal: 16,

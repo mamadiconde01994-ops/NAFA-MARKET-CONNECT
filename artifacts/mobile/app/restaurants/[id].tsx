@@ -47,6 +47,13 @@ export default function RestaurantDetailScreen() {
     Linking.openURL(`tel:${phone}`);
   };
 
+  const handleMessage = () => {
+    if (!restaurant) return;
+    router.push(
+      `/chat?name=${encodeURIComponent(restaurant.name)}&context=${encodeURIComponent("Réservation / Question")}` as any,
+    );
+  };
+
   if (!restaurant) {
     return (
       <View style={[styles.container, { backgroundColor: colors.background, alignItems: "center", justifyContent: "center" }]}>
@@ -258,14 +265,28 @@ export default function RestaurantDetailScreen() {
 
       {/* CTA */}
       <View style={[styles.ctaBar, { backgroundColor: colors.card, borderTopColor: colors.border, paddingBottom: Platform.OS === "web" ? 34 : insets.bottom + 16 }]}>
-        <Pressable          onPress={handleCall}          style={({ pressed }) => [
-            styles.ctaBtn,
-            { backgroundColor: "#EA580C", opacity: pressed ? 0.85 : 1 },
-          ]}
-        >
-          <Ionicons name="call-outline" size={18} color="#FFFFFF" />
-          <Text style={styles.ctaBtnText}>Appeler le restaurant</Text>
-        </Pressable>
+        <View style={styles.ctaRow}>
+          <Pressable
+            onPress={handleMessage}
+            style={({ pressed }) => [
+              styles.ctaBtnOutline,
+              { borderColor: "#EA580C", opacity: pressed ? 0.7 : 1 },
+            ]}
+          >
+            <Ionicons name="chatbubble-outline" size={18} color="#EA580C" />
+            <Text style={[styles.ctaBtnText, { color: "#EA580C" }]}>Message</Text>
+          </Pressable>
+          <Pressable
+            onPress={handleCall}
+            style={({ pressed }) => [
+              styles.ctaBtn,
+              { backgroundColor: "#EA580C", flex: 1, opacity: pressed ? 0.85 : 1 },
+            ]}
+          >
+            <Ionicons name="call-outline" size={18} color="#FFFFFF" />
+            <Text style={styles.ctaBtnText}>Appeler</Text>
+          </Pressable>
+        </View>
       </View>
     </View>
   );
@@ -318,6 +339,11 @@ const styles = StyleSheet.create({
   menuItemPrice: { fontSize: 14, fontFamily: "Inter_700Bold" },
   popularBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 6 },
   popularText: { fontSize: 10, fontFamily: "Inter_500Medium", color: "#92400E" },
+  ctaRow: { flexDirection: "row", gap: 10 },
+  ctaBtnOutline: {
+    flexDirection: "row", alignItems: "center", justifyContent: "center",
+    gap: 6, paddingVertical: 14, paddingHorizontal: 18, borderRadius: 12, borderWidth: 1.5,
+  },
   ctaBar: {
     borderTopWidth: 1,
     paddingHorizontal: 16,

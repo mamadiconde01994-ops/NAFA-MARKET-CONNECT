@@ -60,6 +60,12 @@ export default function ProductDetailScreen() {
     );
   }
 
+  const handleContact = () => {
+    router.push(
+      `/chat?name=${encodeURIComponent(product?.sellerName ?? "Vendeur")}&context=${encodeURIComponent(product?.name ?? "")}` as any,
+    );
+  };
+
   const handleAddToCart = async () => {
     if (!user) {
       Alert.alert(
@@ -332,6 +338,17 @@ export default function ProductDetailScreen() {
           </Pressable>
         </View>
 
+        {/* Contact seller button */}
+        <Pressable
+          onPress={handleContact}
+          style={({ pressed }) => [
+            styles.contactBtn,
+            { backgroundColor: colors.muted, borderColor: colors.border, opacity: pressed ? 0.7 : 1 },
+          ]}
+        >
+          <Ionicons name="chatbubble-outline" size={20} color={colors.primary} />
+        </Pressable>
+
         <View style={{ flex: 1 }}>
           <Button
             label={
@@ -428,6 +445,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   qtyBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
+  contactBtn: { width: 48, height: 48, borderRadius: 12, alignItems: "center", justifyContent: "center", borderWidth: 1 },
   qtyText: { fontSize: 17, fontFamily: "Inter_700Bold", width: 28, textAlign: "center" },
   similarCard: { width: 130, borderWidth: 1, overflow: "hidden" },
   similarImage: { width: 130, height: 100 },
