@@ -235,6 +235,7 @@ export interface Property {
   type: PropertyType;
   price: number;
   priceType: "sale" | "rent";
+  pricePerMonth?: number;
   surface: number;
   bedrooms?: number;
   bathrooms?: number;

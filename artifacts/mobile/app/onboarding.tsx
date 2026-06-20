@@ -22,31 +22,38 @@ const { width: W } = Dimensions.get("window");
 const SLIDES = [
   {
     id: "1",
-    icon: "layers-outline" as const,
-    title: "Marketplace multi-services",
+    icon: "storefront-outline" as const,
+    title: "Bienvenue sur NAFA Marché",
     subtitle:
-      "Explorez Agriculture, Produits, Restaurants, Immobilier, Services et Commerce local dans une seule application.",
+      "Le marché digital de la Guinée. Achetez, vendez et échangez en toute confiance — agriculture, restauration, immobilier, services et bien plus.",
   },
   {
     id: "2",
-    icon: "restaurant-outline" as const,
-    title: "Produits & Restaurants",
+    icon: "leaf-outline" as const,
+    title: "Produits frais du terroir",
     subtitle:
-      "Achetez des produits frais, découvrez des restaurants et soutenez le commerce local proche de vous.",
+      "Commandez directement aux agriculteurs de Kindia, Labé, Kankan et Mamou. Tomates, mangues, riz, fonio, café — frais et sans intermédiaire.",
   },
   {
     id: "3",
-    icon: "home-outline" as const,
-    title: "Immobilier & Services",
+    icon: "restaurant-outline" as const,
+    title: "Restaurants & Livraison",
     subtitle:
-      "Recherchez logements, offres immobilières, artisans et services professionnels en quelques clics.",
+      "Découvrez les meilleurs maquis et restaurants de Conakry. Commandez en ligne et faites-vous livrer à domicile ou au bureau.",
   },
   {
     id: "4",
-    icon: "person-outline" as const,
-    title: "Sans compte pour commencer",
+    icon: "home-outline" as const,
+    title: "Immobilier & Services",
     subtitle:
-      "Parcourez librement. Connectez-vous seulement pour commander, réserver, publier ou envoyer un message.",
+      "Trouvez votre logement idéal, un local commercial ou faites appel à un artisan qualifié. Des milliers d'annonces vérifiées en Guinée.",
+  },
+  {
+    id: "5",
+    icon: "shield-checkmark-outline" as const,
+    title: "Sécurisé et simple",
+    subtitle:
+      "Naviguez librement sans créer de compte. Connectez-vous uniquement pour acheter, réserver, publier ou contacter un vendeur.",
   },
 ];
 
@@ -92,7 +99,7 @@ export default function OnboardingScreen() {
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
-        scrollEnabled={scrollEnabled}
+        scrollEnabled
         onViewableItemsChanged={onViewableItemsChanged.current}
         viewabilityConfig={viewabilityConfig.current}
         renderItem={({ item }) => (
@@ -115,7 +122,6 @@ export default function OnboardingScreen() {
         )}
       />
 
-      {/* Dots */}
       <View style={styles.dots}>
         {SLIDES.map((_, i) => (
           <View
@@ -132,7 +138,6 @@ export default function OnboardingScreen() {
         ))}
       </View>
 
-      {/* Actions */}
       <View
         style={[
           styles.actions,
@@ -140,14 +145,14 @@ export default function OnboardingScreen() {
         ]}
       >
         <Button
-          label={activeIndex === SLIDES.length - 1 ? "Commencer" : "Suivant"}
+          label={activeIndex === SLIDES.length - 1 ? "Commencer maintenant" : "Suivant"}
           onPress={handleNext}
           fullWidth
         />
         {activeIndex < SLIDES.length - 1 && (
           <Pressable onPress={handleSkip} style={styles.skipBtn}>
             <Text style={[styles.skipText, { color: colors.mutedForeground }]}>
-              Passer
+              Passer l'introduction
             </Text>
           </Pressable>
         )}
@@ -155,8 +160,6 @@ export default function OnboardingScreen() {
     </View>
   );
 }
-
-const scrollEnabled = true;
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
@@ -169,8 +172,8 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   iconCircle: {
-    width: 120,
-    height: 120,
+    width: 128,
+    height: 128,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 16,
@@ -185,7 +188,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: "Inter_400Regular",
     textAlign: "center",
-    lineHeight: 22,
+    lineHeight: 23,
   },
   dots: {
     flexDirection: "row",

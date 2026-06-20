@@ -21,6 +21,8 @@ const ICON_MAP: Record<string, string> = {
   promotion: "gift-outline",
   system: "notifications-outline",
   alert: "alert-circle-outline",
+  price_drop: "trending-down-outline",
+  new_listing: "pricetag-outline",
 };
 
 const COLOR_MAP: Record<string, string> = {
@@ -29,13 +31,17 @@ const COLOR_MAP: Record<string, string> = {
   promotion: "#F59E0B",
   system: "#6B7280",
   alert: "#EF4444",
+  price_drop: "#16A34A",
+  new_listing: "#F59E0B",
 };
 
 const FILTERS = [
   { id: null as string | null, label: "Tout" },
   { id: "order" as string | null, label: "Commandes" },
   { id: "message" as string | null, label: "Messages" },
-  { id: "promotion" as string | null, label: "Promos" },
+  { id: "price_drop" as string | null, label: "Prix" },
+  { id: "new_listing" as string | null, label: "Nouveautés" },
+  { id: "system" as string | null, label: "Système" },
 ];
 
 export default function NotificationsTabScreen() {

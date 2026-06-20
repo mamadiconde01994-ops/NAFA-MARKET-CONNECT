@@ -1,2 +1,4 @@
-- [NAFA Marché Expo setup](nafa-expo-setup.md) — Expo SDK 54 mobile app running at port 18115; artifact not registered in Replit system but workflow works.
+- [NAFA Marché Expo setup](nafa-expo-setup.md) — Expo SDK 54 mobile app running at port 5000 (not 18115); workflow "Start application" runs `PORT=5000 pnpm --filter @workspace/mobile run dev`.
 - [NAFA shadow fix](nafa-shadow-fix.md) — RN Web `shadow*` deprecation: use Platform.select with boxShadow on web.
+- [NAFA color system](nafa-color-system.md) — Light theme primary is forest green #1a472a (matches branding.ts and hardcoded BRAND_MID in screens); never use Navy as primary in light theme.
+- [NAFA TS colors prop pattern](nafa-ts-colors-prop.md) — useColors() returns ColorTheme & { colors: ColorTheme; radius: number }; internal components must type their `colors` prop as `ReturnType<typeof useColors>`, NOT `Record<string, string>`.

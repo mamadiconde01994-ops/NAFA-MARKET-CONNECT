@@ -51,7 +51,18 @@ export const MARKET_PRICES: MarketPrice[] = [
   { id: "mp6", product: "Poisson fumé", category: "fish", price: 12000, unit: "kg", trend: "stable", trendPercent: 0, market: "Boulbinet" },
   { id: "mp7", product: "Piment rouge", category: "vegetables", price: 7000, unit: "kg", trend: "up", trendPercent: 15, market: "Conakry" },
   { id: "mp8", product: "Ananas", category: "fruits", price: 3000, unit: "piece", trend: "down", trendPercent: 4, market: "Kindia" },
-  { id: "mp9", product: "Huile de palme", category: "processed", price: 18000, unit: "liter", trend: "stable", trendPercent: 0, market: "Conakry" },
+  { id: "mp9", product: "Huile de palme rouge", category: "processed", price: 18000, unit: "liter", trend: "stable", trendPercent: 0, market: "Conakry" },
+  { id: "mp10", product: "Café robusta", category: "processed", price: 35000, unit: "kg", trend: "up", trendPercent: 6, market: "N'Zérékoré" },
+  { id: "mp11", product: "Maïs jaune", category: "grains", price: 8000, unit: "kg", trend: "down", trendPercent: 4, market: "Kankan" },
+  { id: "mp12", product: "Arachide décortiquée", category: "grains", price: 14000, unit: "kg", trend: "up", trendPercent: 9, market: "Labé" },
+  { id: "mp13", product: "Manioc frais", category: "vegetables", price: 2500, unit: "kg", trend: "stable", trendPercent: 0, market: "Kindia" },
+  { id: "mp14", product: "Gingembre frais", category: "vegetables", price: 22000, unit: "kg", trend: "up", trendPercent: 18, market: "Conakry" },
+  { id: "mp15", product: "Tilapia frais", category: "fish", price: 15000, unit: "kg", trend: "down", trendPercent: 6, market: "Boulbinet" },
+  { id: "mp16", product: "Banane douce", category: "fruits", price: 3500, unit: "bunch", trend: "stable", trendPercent: 0, market: "Kindia" },
+  { id: "mp17", product: "Fonio blanc", category: "grains", price: 20000, unit: "kg", trend: "up", trendPercent: 5, market: "Mamou" },
+  { id: "mp18", product: "Cacao brut", category: "processed", price: 55000, unit: "kg", trend: "up", trendPercent: 14, market: "Guéckédou" },
+  { id: "mp19", product: "Patate douce", category: "vegetables", price: 4000, unit: "kg", trend: "down", trendPercent: 3, market: "Coyah" },
+  { id: "mp20", product: "Poulet local vivant", category: "livestock", price: 120000, unit: "piece", trend: "stable", trendPercent: 0, market: "Madina, Conakry" },
 ];
 
 export const MOCK_CURRENT_USER: User = {
@@ -485,10 +496,10 @@ export const PARTNER_LEADERBOARD: PartnerLeaderboardEntry[] = [
 ];
 
 export const PARTNER_EARNINGS_HISTORY = [
-  { id: "eh1", label: "Semaine 1", amount: 120000 },
-  { id: "eh2", label: "Semaine 2", amount: 90000 },
-  { id: "eh3", label: "Semaine 3", amount: 145000 },
-  { id: "eh4", label: "Semaine 4", amount: 170000 },
+  { id: "eh1", label: "Semaine 1", amount: 120000, date: "2 – 8 Juin 2024", status: "Payé" },
+  { id: "eh2", label: "Semaine 2", amount: 90000, date: "9 – 15 Juin 2024", status: "Payé" },
+  { id: "eh3", label: "Semaine 3", amount: 145000, date: "16 – 22 Juin 2024", status: "Payé" },
+  { id: "eh4", label: "Semaine 4", amount: 170000, date: "23 – 29 Juin 2024", status: "En attente" },
 ];
 
 export const PARTNER_STATS = {

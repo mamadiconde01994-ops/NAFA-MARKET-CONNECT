@@ -243,7 +243,7 @@ export default function NotificationsScreen() {
 }
 
 /* ── Section header ── */
-function SectionHeader({ label, colors }: { label: string; colors: Record<string, string> }) {
+function SectionHeader({ label, colors }: { label: string; colors: ReturnType<typeof useColors> }) {
   return (
     <View style={sh.wrap}>
       <Text style={[sh.label, { color: colors.mutedForeground }]}>{label}</Text>
@@ -276,7 +276,7 @@ interface CardProps {
   onPress: () => void;
   onDelete: () => void;
   language: string;
-  colors: Record<string, string>;
+  colors: ReturnType<typeof useColors>;
 }
 
 function NotificationCard({ notification: n, onPress, onDelete, language, colors }: CardProps) {
@@ -469,7 +469,7 @@ const nc = StyleSheet.create({
 });
 
 /* ── Empty state ── */
-function EmptyNotifications({ colors, filter }: { colors: Record<string, string>; filter: string }) {
+function EmptyNotifications({ colors, filter }: { colors: ReturnType<typeof useColors>; filter: string }) {
   const label = CATEGORIES.find((c) => c.type === filter)?.label ?? "notifications";
   return (
     <View style={es.wrap}>

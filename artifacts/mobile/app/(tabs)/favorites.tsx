@@ -310,7 +310,7 @@ export default function FavoritesScreen() {
 }
 
 /* ── Section divider (used in "Tout" tab) ── */
-function SectionDivider({ category, count, colors }: { category: FavCategory; count: number; colors: Record<string, string> }) {
+function SectionDivider({ category, count, colors }: { category: FavCategory; count: number; colors: ReturnType<typeof useColors> }) {
   const cfg = CAT[category];
   return (
     <View style={[sd.wrap]}>
@@ -334,7 +334,7 @@ const sd = StyleSheet.create({
 });
 
 /* ── Favorite card ── */
-function FavCard({ item, onPress, onRemove, colors }: { item: FavItem; onPress: () => void; onRemove: () => void; colors: Record<string, string> }) {
+function FavCard({ item, onPress, onRemove, colors }: { item: FavItem; onPress: () => void; onRemove: () => void; colors: ReturnType<typeof useColors> }) {
   const cfg = CAT[item.category];
   return (
     <Pressable
@@ -452,7 +452,7 @@ const fc = StyleSheet.create({
 });
 
 /* ── Empty state ── */
-function EmptyCat({ tab, colors, onExplore }: { tab: TabKey; colors: Record<string, string>; onExplore: () => void }) {
+function EmptyCat({ tab, colors, onExplore }: { tab: TabKey; colors: ReturnType<typeof useColors>; onExplore: () => void }) {
   const label = tab === "all" ? "favoris" : CAT[tab as FavCategory]?.label ?? "favoris";
   const emoji = tab === "all" ? "🤍" : CAT[tab as FavCategory]?.emoji ?? "❤️";
   return (

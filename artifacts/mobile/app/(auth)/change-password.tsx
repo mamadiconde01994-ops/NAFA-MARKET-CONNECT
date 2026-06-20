@@ -325,7 +325,7 @@ interface PFProps {
   onFocus: () => void;
   onBlur: () => void;
   error?: string;
-  colors: Record<string, string>;
+  colors: ReturnType<typeof useColors>;
   showStrength?: boolean;
   matchValue?: string;
 }

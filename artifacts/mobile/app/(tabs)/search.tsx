@@ -469,7 +469,7 @@ export default function SearchScreen() {
 ────────────────────────────────────────────── */
 function ResultSectionHeader({
   category, count, colors,
-}: { category: ResultCategory; count: number; colors: Record<string, string> }) {
+}: { category: ResultCategory; count: number; colors: ReturnType<typeof useColors> }) {
   const cfg = CAT_CONFIG[category];
   return (
     <View style={[rsh.wrap, { borderBottomColor: colors.border }]}>
@@ -505,7 +505,7 @@ const rsh = StyleSheet.create({
 ────────────────────────────────────────────── */
 function ResultCard({
   result: r, query, colors, onPress,
-}: { result: SearchResult; query: string; colors: Record<string, string>; onPress: () => void }) {
+}: { result: SearchResult; query: string; colors: ReturnType<typeof useColors>; onPress: () => void }) {
   const cfg = CAT_CONFIG[r.category];
   return (
     <Pressable

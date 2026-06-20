@@ -86,7 +86,7 @@ function MenuItem({ icon, label, onPress, danger = false, rightElement }: MenuIt
 }
 
 const THEME_OPTIONS: { key: ThemeKey; label: string; icon: keyof typeof Ionicons.glyphMap; description: string }[] = [
-  { key: "light", label: "Premium", icon: "sunny-outline", description: "Blanc & Marine" },
+  { key: "light", label: "Premium", icon: "sunny-outline", description: "Vert & Doré" },
   { key: "dark", label: "Sombre", icon: "moon-outline", description: "Mode nuit" },
   { key: "green", label: "Agriculture", icon: "leaf-outline", description: "Vert nature" },
 ];
