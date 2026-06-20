@@ -455,7 +455,9 @@ export default function ProfileScreen() {
         >
           <MenuItem icon="person-outline" label={t("profileEditProfile")} onPress={() => router.push("/(auth)/edit-profile" as any)} />
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
-          <MenuItem icon="heart-outline" label={t("profileFavorites")} onPress={showComingSoon} />
+          <MenuItem icon="bag-handle-outline" label="Mes commandes" onPress={() => router.push("/(tabs)/orders" as any)} />
+          <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
+          <MenuItem icon="heart-outline" label={t("profileFavorites")} onPress={() => router.push("/(tabs)/favorites" as any)} />
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
           <MenuItem icon="storefront-outline" label={t("profileMyListings")} onPress={showComingSoon} />
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />

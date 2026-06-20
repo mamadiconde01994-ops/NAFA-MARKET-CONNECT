@@ -11,6 +11,7 @@ import {
   View,
   useColorScheme,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useColors } from "@/hooks/useColors";
 import { useNotifications } from "@/context/NotificationsContext";
@@ -23,6 +24,9 @@ function useUnreadCount() {
 }
 
 function PublishButton() {
+  const insets = useSafeAreaInsets();
+  const bottomPad = Math.max(insets.bottom, 6);
+
   const handlePublish = () => {
     Alert.alert("Publier", "Que souhaitez-vous proposer ?", [
       { text: "🌿  Produit agricole", onPress: () => router.push("/product/create" as any) },
@@ -36,12 +40,15 @@ function PublishButton() {
   return (
     <Pressable
       onPress={handlePublish}
-      style={({ pressed }) => [styles.publishBtn, { opacity: pressed ? 0.75 : 1 }]}
+      style={({ pressed }) => [
+        styles.publishBtn,
+        { paddingBottom: bottomPad, opacity: pressed ? 0.75 : 1 },
+      ]}
       accessibilityLabel="Publier une annonce"
       accessibilityRole="button"
     >
       <View style={styles.publishCircle}>
-        <Ionicons name="add" size={30} color="#FFF" />
+        <Ionicons name="add" size={28} color="#FFF" />
       </View>
       <Text style={styles.publishLabel}>Publier</Text>
     </Pressable>
@@ -58,7 +65,7 @@ function BadgeIcon({
   count: number;
 }) {
   return (
-    <View style={styles.iconWrap}>
+    <View>
       <Ionicons name={name} size={24} color={color} />
       {count > 0 && (
         <View style={styles.badge}>
@@ -72,9 +79,15 @@ function BadgeIcon({
 export default function TabLayout() {
   const colors = useColors();
   const colorScheme = useColorScheme();
+  const insets = useSafeAreaInsets();
   const isDark = colorScheme === "dark";
   const isIOS = Platform.OS === "ios";
   const unread = useUnreadCount();
+
+  // iOS safe area bottom (34px on notched phones), 0 on web/Android without nav bar
+  const safeBottom = Math.max(insets.bottom, 0);
+  const tabBarHeight = 58 + safeBottom;
+  const tabBarPaddingBottom = safeBottom > 0 ? safeBottom + 4 : 10;
 
   return (
     <Tabs
@@ -83,9 +96,9 @@ export default function TabLayout() {
         tabBarActiveTintColor: PRIMARY,
         tabBarInactiveTintColor: colors.mutedForeground,
         tabBarStyle: {
-          height: 62,
-          paddingBottom: 8,
-          paddingTop: 6,
+          height: tabBarHeight,
+          paddingBottom: tabBarPaddingBottom,
+          paddingTop: 10,
           borderTopWidth: StyleSheet.hairlineWidth,
           borderTopColor: colors.border,
           backgroundColor: isIOS ? "transparent" : colors.background,
@@ -94,7 +107,7 @@ export default function TabLayout() {
         tabBarLabelStyle: {
           fontSize: 10,
           fontFamily: "Inter_500Medium",
-          marginTop: -2,
+          marginTop: 3,
         },
         tabBarBackground: () =>
           isIOS ? (
@@ -154,7 +167,7 @@ export default function TabLayout() {
         }}
       />
 
-      {/* Écrans cachés */}
+      {/* Écrans cachés — accessibles depuis le profil ou router.push */}
       <Tabs.Screen name="orders" options={{ tabBarButton: () => null }} />
       <Tabs.Screen name="favorites" options={{ tabBarButton: () => null }} />
       <Tabs.Screen name="notifications" options={{ tabBarButton: () => null }} />
@@ -167,23 +180,24 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    paddingTop: 8,
     gap: 2,
   },
   publishCircle: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: PRIMARY,
     alignItems: "center",
     justifyContent: "center",
     ...Platform.select({
-      web: { boxShadow: "0 3px 12px rgba(26,71,42,0.35)" },
+      web: { boxShadow: "0 3px 10px rgba(26,71,42,0.35)" },
       default: {
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 5,
-        elevation: 5,
+        shadowOpacity: 0.18,
+        shadowRadius: 4,
+        elevation: 4,
       },
     }),
   },
@@ -192,16 +206,10 @@ const styles = StyleSheet.create({
     fontFamily: "Inter_500Medium",
     color: "#6B7280",
   },
-  iconWrap: {
-    width: 28,
-    height: 28,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   badge: {
     position: "absolute",
     top: -3,
-    right: -5,
+    right: -6,
     backgroundColor: "#DC2626",
     borderRadius: 8,
     minWidth: 16,
