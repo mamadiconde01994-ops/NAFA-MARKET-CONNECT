@@ -17,68 +17,52 @@ import { useNotifications } from "@/context/NotificationsContext";
 
 const PRIMARY = "#1a472a";
 
-function useUnreadCounts() {
+function useUnreadCount() {
   const { notifications } = useNotifications();
-  const unreadNotifs = notifications.filter((n) => !n.read).length;
-  return { unreadNotifs };
+  return notifications.filter((n) => !n.read).length;
 }
 
 function PublishButton() {
-  const colors = useColors();
-
   const handlePublish = () => {
-    Alert.alert(
-      "Publier une annonce",
-      "Que souhaitez-vous proposer ?",
-      [
-        {
-          text: "🌿  Produit agricole",
-          onPress: () => router.push("/product/create" as any),
-        },
-        {
-          text: "🏭  Espace / Entrepôt",
-          onPress: () => router.push("/warehouses/index" as any),
-        },
-        {
-          text: "💼  Offre d'emploi",
-          onPress: () => router.push("/jobs/index" as any),
-        },
-        {
-          text: "🔧  Service professionnel",
-          onPress: () => router.push("/services/index" as any),
-        },
-        { text: "Annuler", style: "cancel" },
-      ]
-    );
+    Alert.alert("Publier", "Que souhaitez-vous proposer ?", [
+      { text: "🌿  Produit agricole", onPress: () => router.push("/product/create" as any) },
+      { text: "🏭  Entrepôt / Espace", onPress: () => router.push("/warehouses/index" as any) },
+      { text: "💼  Offre d'emploi", onPress: () => router.push("/jobs/index" as any) },
+      { text: "🔧  Service professionnel", onPress: () => router.push("/services/index" as any) },
+      { text: "Annuler", style: "cancel" },
+    ]);
   };
 
   return (
     <Pressable
       onPress={handlePublish}
-      style={({ pressed }) => [
-        styles.publishWrapper,
-        { opacity: pressed ? 0.82 : 1 },
-      ]}
+      style={({ pressed }) => [styles.publishBtn, { opacity: pressed ? 0.75 : 1 }]}
       accessibilityLabel="Publier une annonce"
       accessibilityRole="button"
     >
       <View style={styles.publishCircle}>
-        <Ionicons name="add" size={30} color="#FFFFFF" />
+        <Ionicons name="add" size={30} color="#FFF" />
       </View>
-      <Text style={[styles.publishLabel, { color: colors.mutedForeground }]}>
-        Publier
-      </Text>
+      <Text style={styles.publishLabel}>Publier</Text>
     </Pressable>
   );
 }
 
-function MessageIcon({ color, unread }: { color?: string; unread: number }) {
+function BadgeIcon({
+  name,
+  color,
+  count,
+}: {
+  name: React.ComponentProps<typeof Ionicons>["name"];
+  color?: string;
+  count: number;
+}) {
   return (
     <View style={styles.iconWrap}>
-      <Ionicons name="chatbubble-outline" size={24} color={color} />
-      {unread > 0 && (
+      <Ionicons name={name} size={24} color={color} />
+      {count > 0 && (
         <View style={styles.badge}>
-          <Text style={styles.badgeText}>{unread > 9 ? "9+" : unread}</Text>
+          <Text style={styles.badgeText}>{count > 9 ? "9+" : count}</Text>
         </View>
       )}
     </View>
@@ -90,25 +74,22 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const isIOS = Platform.OS === "ios";
-  const isWeb = Platform.OS === "web";
-
-  const { unreadNotifs } = useUnreadCounts();
+  const unread = useUnreadCount();
 
   return (
     <Tabs
       screenOptions={{
+        headerShown: false,
         tabBarActiveTintColor: PRIMARY,
         tabBarInactiveTintColor: colors.mutedForeground,
-        headerShown: false,
         tabBarStyle: {
-          position: "absolute",
-          backgroundColor: isIOS ? "transparent" : colors.background,
-          borderTopWidth: 1,
-          borderTopColor: colors.border,
-          elevation: 0,
-          height: isWeb ? 84 : 62,
-          paddingBottom: isWeb ? 20 : 6,
+          height: 62,
+          paddingBottom: 8,
           paddingTop: 6,
+          borderTopWidth: StyleSheet.hairlineWidth,
+          borderTopColor: colors.border,
+          backgroundColor: isIOS ? "transparent" : colors.background,
+          elevation: 0,
         },
         tabBarLabelStyle: {
           fontSize: 10,
@@ -118,21 +99,13 @@ export default function TabLayout() {
         tabBarBackground: () =>
           isIOS ? (
             <BlurView
-              intensity={95}
+              intensity={90}
               tint={isDark ? "dark" : "light"}
               style={StyleSheet.absoluteFill}
             />
-          ) : (
-            <View
-              style={[
-                StyleSheet.absoluteFill,
-                { backgroundColor: colors.background },
-              ]}
-            />
-          ),
+          ) : null,
       }}
     >
-      {/* ── 1 : Accueil ── */}
       <Tabs.Screen
         name="index"
         options={{
@@ -143,7 +116,6 @@ export default function TabLayout() {
         }}
       />
 
-      {/* ── 2 : Explorer ── */}
       <Tabs.Screen
         name="search"
         options={{
@@ -154,7 +126,6 @@ export default function TabLayout() {
         }}
       />
 
-      {/* ── 3 : Publier (centre élevé) ── */}
       <Tabs.Screen
         name="publish"
         options={{
@@ -163,18 +134,16 @@ export default function TabLayout() {
         }}
       />
 
-      {/* ── 4 : Messages ── */}
       <Tabs.Screen
         name="messages"
         options={{
           title: "Messages",
           tabBarIcon: ({ color }: { color: string }) => (
-            <MessageIcon color={color} unread={unreadNotifs} />
+            <BadgeIcon name="chatbubble-outline" color={color} count={unread} />
           ),
         }}
       />
 
-      {/* ── 5 : Profil ── */}
       <Tabs.Screen
         name="profile"
         options={{
@@ -185,7 +154,7 @@ export default function TabLayout() {
         }}
       />
 
-      {/* ── Cachés — accessibles via router.push, invisibles dans la nav ── */}
+      {/* Écrans cachés */}
       <Tabs.Screen name="orders" options={{ tabBarButton: () => null }} />
       <Tabs.Screen name="favorites" options={{ tabBarButton: () => null }} />
       <Tabs.Screen name="notifications" options={{ tabBarButton: () => null }} />
@@ -194,36 +163,34 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
-  publishWrapper: {
+  publishBtn: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: 2,
+    gap: 2,
   },
   publishCircle: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     backgroundColor: PRIMARY,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 2,
     ...Platform.select({
-      web: {
-        boxShadow: `0px 4px 16px rgba(26, 71, 42, 0.45)`,
-      },
+      web: { boxShadow: "0 3px 12px rgba(26,71,42,0.35)" },
       default: {
-        shadowColor: PRIMARY,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.4,
-        shadowRadius: 8,
-        elevation: 6,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+        elevation: 5,
       },
     }),
   },
   publishLabel: {
     fontSize: 10,
     fontFamily: "Inter_500Medium",
+    color: "#6B7280",
   },
   iconWrap: {
     width: 28,
@@ -233,8 +200,8 @@ const styles = StyleSheet.create({
   },
   badge: {
     position: "absolute",
-    top: -2,
-    right: -4,
+    top: -3,
+    right: -5,
     backgroundColor: "#DC2626",
     borderRadius: 8,
     minWidth: 16,
@@ -244,7 +211,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 3,
   },
   badgeText: {
-    color: "#FFFFFF",
+    color: "#FFF",
     fontSize: 9,
     fontFamily: "Inter_700Bold",
     lineHeight: 14,
