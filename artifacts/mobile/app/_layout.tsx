@@ -9,7 +9,16 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect, useState } from "react";
+import { LogBox } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+
+LogBox.ignoreLogs([
+  "Animated: `useNativeDriver` is not supported",
+  "props.pointerEvents is deprecated",
+  "Warning: Each child in a list",
+  "Non-serializable values were found in the navigation state",
+  "Require cycle:",
+]);
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 

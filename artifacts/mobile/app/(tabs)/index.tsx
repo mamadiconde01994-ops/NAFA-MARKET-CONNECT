@@ -672,6 +672,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   innerWrapper: { flex: 1 },
+  catList: { flexDirection: "row", gap: 8, paddingHorizontal: 16, alignItems: "center", paddingVertical: 4 },
 
   /* Header */
   header: {
