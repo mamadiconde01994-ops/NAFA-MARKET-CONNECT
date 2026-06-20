@@ -113,10 +113,13 @@ export default function RestaurantsScreen() {
         {/* Featured */}
         {cuisine === "all" && search.length === 0 && (
           <View style={styles.section}>
-            <View style={[styles.sectionHeader, { paddingHorizontal: 16 }]}>
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                🔥 Populaires
-              </Text>
+            <View style={[styles.sectionHeader, { paddingHorizontal: 16, marginBottom: 14 }]}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                <Ionicons name="star" size={18} color={colors.secondary} />
+                <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+                  Populaires
+                </Text>
+              </View>
             </View>
             <ScrollView
               horizontal

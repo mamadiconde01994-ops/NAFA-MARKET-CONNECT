@@ -63,12 +63,17 @@ function SectionHeader({
 
 function navigateToCategory(id: string) {
   switch (id) {
+    case "agriculture": router.push("/agriculture/index" as any); break;
     case "restaurants": router.push("/restaurants/index" as any); break;
     case "real-estate": router.push("/real-estate/index" as any); break;
     case "services": router.push("/services/index" as any); break;
     case "logistics": router.push("/warehouses/index" as any); break;
     case "vehicles": router.push("/vehicles/index" as any); break;
     case "jobs": router.push("/jobs/index" as any); break;
+    case "electronics": router.push("/electronics/index" as any); break;
+    case "fashion": router.push("/fashion/index" as any); break;
+    case "home-furniture": router.push("/home-furniture/index" as any); break;
+    case "construction": router.push("/construction/index" as any); break;
     default: break;
   }
 }
@@ -241,8 +246,13 @@ export default function HomeScreen() {
           </View>
         </Pressable>
         {/* ── MAIN CATEGORIES ── */}
-        <View style={[styles.categoriesGrid, { backgroundColor: colors.background }]}>
-          <SectionHeader title="Explorer NAFA" colors={colors} />
+        <View style={[styles.categoriesGrid, { backgroundColor: colors.background, marginTop: 28, marginBottom: 28 }]}>
+          <View style={[styles.sectionHeader, { paddingHorizontal: 16, marginBottom: 16 }]}>
+            <View style={styles.sectionTitleRow}>
+              <Ionicons name="grid" size={20} color={colors.secondary} />
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Explorer</Text>
+            </View>
+          </View>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -294,8 +304,13 @@ export default function HomeScreen() {
         </View>
 
         {/* ── MARKET PRICES ── */}
-        <View style={styles.section}>
-          <SectionHeader title="📊 Prix du marché aujourd'hui" colors={colors} />
+        <View style={[styles.section, { marginTop: 24 }]}>
+          <View style={[styles.sectionHeader, { paddingHorizontal: 16, marginBottom: 16 }]}>
+            <View style={styles.sectionTitleRow}>
+              <Ionicons name="trending-up" size={20} color={colors.secondary} />
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Prix du marché</Text>
+            </View>
+          </View>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -365,12 +380,16 @@ export default function HomeScreen() {
         </View>
 
         {/* ── AGRICULTURE ── */}
-        <View style={[styles.agriSection, { backgroundColor: colors.background }]}>
-          <SectionHeader
-            title="🌿 Agriculture"
-            onSeeAll={() => router.push("/search")}
-            colors={colors}
-          />
+        <View style={[styles.agriSection, { backgroundColor: colors.background, marginTop: 32 }]}>
+          <View style={[styles.sectionHeader, { paddingHorizontal: 16, marginBottom: 16 }]}>
+            <View style={styles.sectionTitleRow}>
+              <Ionicons name="leaf" size={20} color="#16A34A" />
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Agriculture</Text>
+            </View>
+            <Pressable onPress={() => router.push("/agriculture/index" as any)} hitSlop={8}>
+              <Text style={[styles.seeAll, { color: colors.secondary }]}>Voir tout</Text>
+            </Pressable>
+          </View>
           <Text style={[styles.sectionDescription, { color: colors.mutedForeground }]}> 
             {selectedCategory === null
               ? "Produits agricoles populaires et offres locales."
@@ -446,19 +465,17 @@ export default function HomeScreen() {
         </View>
 
         {/* ── RESTAURANTS ── */}
-        <View style={styles.section}>
-          <View style={[styles.sectionHeader, { paddingHorizontal: 16 }]}>
-            <View style={styles.agriTitleRow}>
-              <View style={[styles.agriDot, { backgroundColor: "#EA580C" }]} />
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                🍽️ Restaurants populaires
-              </Text>
+        <View style={[styles.section, { marginTop: 32 }]}>
+          <View style={[styles.sectionHeader, { paddingHorizontal: 16, marginBottom: 16 }]}>
+            <View style={styles.sectionTitleRow}>
+              <Ionicons name="restaurant" size={20} color="#EA580C" />
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Restaurants</Text>
             </View>
             <Pressable
               onPress={() => router.push("/restaurants/index" as any)}
               hitSlop={8}
             >
-              <Text style={[styles.seeAll, { color: "#EA580C" }]}>Voir tout</Text>
+              <Text style={[styles.seeAll, { color: colors.secondary }]}>Voir tout</Text>
             </Pressable>
           </View>
           <ScrollView
@@ -475,19 +492,17 @@ export default function HomeScreen() {
         </View>
 
         {/* ── IMMOBILIER ── */}
-        <View style={styles.section}>
-          <View style={[styles.sectionHeader, { paddingHorizontal: 16 }]}>
-            <View style={styles.agriTitleRow}>
-              <View style={[styles.agriDot, { backgroundColor: "#2563EB" }]} />
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                🏠 Biens immobiliers
-              </Text>
+        <View style={[styles.section, { marginTop: 32 }]}>
+          <View style={[styles.sectionHeader, { paddingHorizontal: 16, marginBottom: 16 }]}>
+            <View style={styles.sectionTitleRow}>
+              <Ionicons name="home" size={20} color="#2563EB" />
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Immobilier</Text>
             </View>
             <Pressable
               onPress={() => router.push("/real-estate/index" as any)}
               hitSlop={8}
             >
-              <Text style={[styles.seeAll, { color: "#2563EB" }]}>Voir tout</Text>
+              <Text style={[styles.seeAll, { color: colors.secondary }]}>Voir tout</Text>
             </Pressable>
           </View>
           <ScrollView
@@ -504,19 +519,14 @@ export default function HomeScreen() {
         </View>
 
         {/* ── SERVICES ── */}
-        <View style={styles.section}>
-          <View style={[styles.sectionHeader, { paddingHorizontal: 16 }]}>
-            <View style={styles.agriTitleRow}>
-              <View style={[styles.agriDot, { backgroundColor: "#7C3AED" }]} />
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                🔧 Services à proximité
-              </Text>
+        <View style={[styles.section, { marginTop: 32 }]}>
+          <View style={[styles.sectionHeader, { paddingHorizontal: 16, marginBottom: 16 }]}>
+            <View style={styles.sectionTitleRow}>
+              <Ionicons name="hammer" size={20} color="#7C3AED" />
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Services</Text>
             </View>
-            <Pressable
-              onPress={() => router.push("/services/index" as any)}
-              hitSlop={8}
-            >
-              <Text style={[styles.seeAll, { color: "#7C3AED" }]}>Voir tout</Text>
+            <Pressable onPress={() => router.push("/services/index" as any)} hitSlop={8}>
+              <Text style={[styles.seeAll, { color: colors.secondary }]}>Voir tout</Text>
             </Pressable>
           </View>
           <ScrollView
@@ -560,19 +570,14 @@ export default function HomeScreen() {
         </View>
 
         {/* ── VÉHICULES ── */}
-        <View style={styles.section}>
-          <View style={[styles.sectionHeader, { paddingHorizontal: 16 }]}>
-            <View style={styles.agriTitleRow}>
-              <View style={[styles.agriDot, { backgroundColor: "#475569" }]} />
-              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-                🚗 Véhicules
-              </Text>
+        <View style={[styles.section, { marginTop: 32 }]}>
+          <View style={[styles.sectionHeader, { paddingHorizontal: 16, marginBottom: 16 }]}>
+            <View style={styles.sectionTitleRow}>
+              <Ionicons name="car" size={20} color="#475569" />
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Véhicules</Text>
             </View>
-            <Pressable
-              onPress={() => router.push("/vehicles/index" as any)}
-              hitSlop={8}
-            >
-              <Text style={[styles.seeAll, { color: "#475569" }]}>Voir tout</Text>
+            <Pressable onPress={() => router.push("/vehicles/index" as any)} hitSlop={8}>
+              <Text style={[styles.seeAll, { color: colors.secondary }]}>Voir tout</Text>
             </Pressable>
           </View>
           <ScrollView
@@ -818,16 +823,21 @@ const styles = StyleSheet.create({
   },
 
   /* Section header */
-  section: { marginBottom: 20 },
+  section: { marginBottom: 12 },
   sectionHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 12,
+    marginBottom: 0,
   },
-  sectionTitle: { fontSize: 19, fontFamily: "Inter_700Bold" },
+  sectionTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  sectionTitle: { fontSize: 17, fontFamily: "Inter_700Bold" },
   sectionDescription: { fontSize: 14, fontFamily: "Inter_400Regular", marginHorizontal: 16, marginBottom: 12 },
-  seeAll: { fontSize: 14, fontFamily: "Inter_700Bold" },
+  seeAll: { fontSize: 13, fontFamily: "Inter_600SemiBold" },
 
   /* Market prices */
   priceCard: {
@@ -852,7 +862,6 @@ const styles = StyleSheet.create({
   },
   agriTitleRow: { flexDirection: "row", alignItems: "center", gap: 8 },
   agriDot: { width: 8, height: 8, borderRadius: 4 },
-  catList: { paddingHorizontal: 16, gap: 8, marginBottom: 12 },
   gridRow: { flexDirection: "row", gap: 10, marginBottom: 10 },
   gridItem: { flex: 1 },
 

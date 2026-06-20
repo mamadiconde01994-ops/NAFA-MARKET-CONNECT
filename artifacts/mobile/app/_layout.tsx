@@ -35,8 +35,11 @@ function RootLayoutNav() {
       <Stack.Screen name="onboarding" options={{ headerShown: false }} />
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="product/index" options={{ headerShown: false }} />
       <Stack.Screen name="product/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="product/create" options={{ headerShown: false }} />
+      <Stack.Screen name="agriculture/index" options={{ headerShown: false }} />
+      <Stack.Screen name="agriculture/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="restaurants/index" options={{ headerShown: false }} />
       <Stack.Screen name="restaurants/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="real-estate/index" options={{ headerShown: false }} />
@@ -49,6 +52,10 @@ function RootLayoutNav() {
       <Stack.Screen name="vehicles/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="jobs/index" options={{ headerShown: false }} />
       <Stack.Screen name="jobs/[id]" options={{ headerShown: false }} />
+      <Stack.Screen name="electronics/index" options={{ headerShown: false }} />
+      <Stack.Screen name="fashion/index" options={{ headerShown: false }} />
+      <Stack.Screen name="home-furniture/index" options={{ headerShown: false }} />
+      <Stack.Screen name="construction/index" options={{ headerShown: false }} />
       <Stack.Screen name="partners/index" options={{ headerShown: false }} />
       <Stack.Screen name="checkout/index" options={{ headerShown: false }} />
       <Stack.Screen name="partners/opportunities" options={{ headerShown: false }} />
