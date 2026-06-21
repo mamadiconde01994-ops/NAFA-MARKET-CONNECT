@@ -17,20 +17,28 @@ import { useColors } from "@/hooks/useColors";
 import { useNotifications } from "@/context/NotificationsContext";
 
 const PRIMARY = "#1a472a";
+const BAR_HEIGHT = 64; // content height, not counting safe area
+
+type TabName = "index" | "search" | "messages" | "profile";
+
+const TAB_META: Record<TabName, { label: string; icon: string; iconActive: string }> = {
+  index:    { label: "Accueil",  icon: "home-outline",        iconActive: "home" },
+  search:   { label: "Explorer", icon: "search-outline",      iconActive: "search" },
+  messages: { label: "Messages", icon: "chatbubble-outline",  iconActive: "chatbubble" },
+  profile:  { label: "Profil",   icon: "person-outline",      iconActive: "person" },
+};
 
 function useUnreadCount() {
   const { notifications } = useNotifications();
   return notifications.filter((n) => !n.read).length;
 }
 
-function PublishButton() {
-  const insets = useSafeAreaInsets();
-
+function PublishFAB() {
   const handlePublish = () => {
     Alert.alert("Publier", "Que souhaitez-vous proposer ?", [
-      { text: "🌿  Produit agricole", onPress: () => router.push("/product/create" as any) },
-      { text: "🏭  Entrepôt / Espace", onPress: () => router.push("/warehouses/index" as any) },
-      { text: "💼  Offre d'emploi", onPress: () => router.push("/jobs/index" as any) },
+      { text: "🌿  Produit agricole",     onPress: () => router.push("/product/create" as any) },
+      { text: "🏭  Entrepôt / Espace",    onPress: () => router.push("/warehouses/index" as any) },
+      { text: "💼  Offre d'emploi",       onPress: () => router.push("/jobs/index" as any) },
       { text: "🔧  Service professionnel", onPress: () => router.push("/services/index" as any) },
       { text: "Annuler", style: "cancel" },
     ]);
@@ -39,175 +47,168 @@ function PublishButton() {
   return (
     <Pressable
       onPress={handlePublish}
-      style={({ pressed }) => [
-        styles.publishBtn,
-        { paddingBottom: Math.max(insets.bottom, 0), opacity: pressed ? 0.75 : 1 },
-      ]}
+      style={({ pressed }) => [styles.fabWrap, { opacity: pressed ? 0.78 : 1 }]}
       accessibilityLabel="Publier une annonce"
       accessibilityRole="button"
     >
-      <View style={styles.publishCircle}>
+      {/* Circle floats 14px above the bar top border */}
+      <View style={styles.fabCircle}>
         <Ionicons name="add" size={30} color="#FFF" />
       </View>
-      <Text style={styles.publishLabel}>Publier</Text>
+      <Text style={styles.fabLabel}>Publier</Text>
     </Pressable>
   );
 }
 
-function BadgeIcon({
-  name,
-  color,
-  count,
-}: {
-  name: React.ComponentProps<typeof Ionicons>["name"];
-  color?: string;
-  count: number;
-}) {
+type TabBarProps = Parameters<NonNullable<React.ComponentProps<typeof Tabs>["tabBar"]>>[0];
+
+function CustomTabBar({ state, navigation }: TabBarProps) {
+  const colors = useColors();
+  const insets = useSafeAreaInsets();
+  const colorScheme = useColorScheme();
+  const isIOS = Platform.OS === "ios";
+  const isDark = colorScheme === "dark";
+  const unread = useUnreadCount();
+
+  const safeBottom = insets.bottom ?? 0;
+  const barHeight = BAR_HEIGHT + safeBottom;
+
+  // Visible route names in order
+  const VISIBLE: string[] = ["index", "search", "publish", "messages", "profile"];
+  const visibleRoutes = VISIBLE.map((name) => state.routes.find((r) => r.name === name)!).filter(Boolean);
+
+  const navigate = (routeName: string) => {
+    const route = state.routes.find((r) => r.name === routeName);
+    if (!route) return;
+    const isFocused = state.routes[state.index]?.name === routeName;
+    const event = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
+    if (!isFocused && !event.defaultPrevented) {
+      navigation.navigate(routeName as never);
+    }
+  };
+
   return (
-    <View>
-      <Ionicons name={name} size={24} color={color} />
-      {count > 0 && (
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>{count > 9 ? "9+" : count}</Text>
-        </View>
+    <View
+      style={[
+        styles.barOuter,
+        {
+          height: barHeight,
+          paddingBottom: safeBottom,
+          backgroundColor: isIOS ? "transparent" : colors.background,
+          borderTopColor: colors.border,
+        },
+      ]}
+    >
+      {/* iOS blur layer */}
+      {isIOS && (
+        <BlurView
+          intensity={90}
+          tint={isDark ? "dark" : "light"}
+          style={StyleSheet.absoluteFill}
+        />
       )}
+
+      {visibleRoutes.map((route) => {
+        const isFocused = state.routes[state.index]?.name === route.name;
+        const color = isFocused ? PRIMARY : colors.mutedForeground;
+
+        // ── Centre: Publier FAB ──
+        if (route.name === "publish") {
+          return <PublishFAB key="publish" />;
+        }
+
+        // ── Regular tab item ──
+        const meta = TAB_META[route.name as TabName];
+        if (!meta) return null;
+
+        const iconName = isFocused ? meta.iconActive : meta.icon;
+        const badgeCount = route.name === "messages" ? unread : 0;
+
+        return (
+          <Pressable
+            key={route.name}
+            onPress={() => navigate(route.name)}
+            style={({ pressed }) => [styles.tabItem, { opacity: pressed ? 0.65 : 1 }]}
+            accessibilityRole="button"
+            accessibilityState={{ selected: isFocused }}
+          >
+            <View>
+              <Ionicons
+                name={iconName as React.ComponentProps<typeof Ionicons>["name"]}
+                size={24}
+                color={color}
+              />
+              {badgeCount > 0 && (
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>{badgeCount > 9 ? "9+" : badgeCount}</Text>
+                </View>
+              )}
+            </View>
+            <Text style={[styles.tabLabel, { color }]} numberOfLines={1}>
+              {meta.label}
+            </Text>
+          </Pressable>
+        );
+      })}
     </View>
   );
 }
 
 export default function TabLayout() {
-  const colors = useColors();
-  const colorScheme = useColorScheme();
-  const insets = useSafeAreaInsets();
-  const isDark = colorScheme === "dark";
-  const isIOS = Platform.OS === "ios";
-  const unread = useUnreadCount();
-
-  // Material Design: 72px content + safe area bottom padding
-  const safeBottom = insets.bottom ?? 0;
-  const tabBarHeight = 72 + safeBottom;
-  const tabPaddingBottom = safeBottom > 0 ? safeBottom + 8 : 12;
-
   return (
     <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: PRIMARY,
-        tabBarInactiveTintColor: colors.mutedForeground,
-        tabBarStyle: {
-          height: tabBarHeight,
-          paddingBottom: tabPaddingBottom,
-          paddingTop: 12,
-          borderTopWidth: StyleSheet.hairlineWidth,
-          borderTopColor: colors.border,
-          backgroundColor: isIOS ? "transparent" : colors.background,
-          elevation: 0,
-        },
-        tabBarLabelStyle: {
-          fontSize: 11,
-          fontFamily: "Inter_500Medium",
-          marginTop: 4,
-        },
-        tabBarBackground: () =>
-          isIOS ? (
-            <BlurView
-              intensity={90}
-              tint={isDark ? "dark" : "light"}
-              style={StyleSheet.absoluteFill}
-            />
-          ) : null,
-      }}
+      tabBar={(props) => <CustomTabBar {...props} />}
+      screenOptions={{ headerShown: false }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Accueil",
-          tabBarIcon: ({ color }: { color: string }) => (
-            <Ionicons name="home-outline" size={26} color={color} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="search"
-        options={{
-          title: "Explorer",
-          tabBarIcon: ({ color }: { color: string }) => (
-            <Ionicons name="search-outline" size={26} color={color} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="publish"
-        options={{
-          title: "",
-          tabBarButton: () => <PublishButton />,
-        }}
-      />
-
-      <Tabs.Screen
-        name="messages"
-        options={{
-          title: "Messages",
-          tabBarIcon: ({ color }: { color: string }) => (
-            <BadgeIcon name="chatbubble-outline" color={color} count={unread} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: "Profil",
-          tabBarIcon: ({ color }: { color: string }) => (
-            <Ionicons name="person-outline" size={26} color={color} />
-          ),
-        }}
-      />
-
-      {/* Écrans cachés — accessibles via les raccourcis home ou router.push */}
-      <Tabs.Screen name="orders" options={{ tabBarButton: () => null }} />
-      <Tabs.Screen name="favorites" options={{ tabBarButton: () => null }} />
-      <Tabs.Screen name="notifications" options={{ tabBarButton: () => null }} />
+      <Tabs.Screen name="index"    options={{ title: "Accueil" }} />
+      <Tabs.Screen name="search"   options={{ title: "Explorer" }} />
+      <Tabs.Screen name="publish"  options={{ title: "Publier" }} />
+      <Tabs.Screen name="messages" options={{ title: "Messages" }} />
+      <Tabs.Screen name="profile"  options={{ title: "Profil" }} />
+      {/* Écrans cachés */}
+      <Tabs.Screen name="orders"        options={{ href: null } as any} />
+      <Tabs.Screen name="favorites"     options={{ href: null } as any} />
+      <Tabs.Screen name="notifications" options={{ href: null } as any} />
     </Tabs>
   );
 }
 
 const styles = StyleSheet.create({
-  publishBtn: {
-    flex: 1,
+  barOuter: {
+    flexDirection: "row",
+    borderTopWidth: StyleSheet.hairlineWidth,
     alignItems: "center",
-    justifyContent: "center",
-    gap: 4,
-    paddingTop: 10,
-  },
-  publishCircle: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: PRIMARY,
-    alignItems: "center",
-    justifyContent: "center",
+    // overflow visible so the FAB circle can float above the border
+    overflow: "visible",
     ...Platform.select({
-      web: { boxShadow: "0 3px 12px rgba(26,71,42,0.35)" },
+      web: { boxShadow: "0 -1px 8px rgba(0,0,0,0.06)" },
       default: {
         shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
+        shadowOffset: { width: 0, height: -1 },
+        shadowOpacity: 0.06,
         shadowRadius: 4,
-        elevation: 5,
+        elevation: 8,
       },
     }),
   },
-  publishLabel: {
+
+  // Regular tab items — each takes equal flex space, icon + label centered
+  tabItem: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 3,
+    paddingVertical: 10,
+  },
+  tabLabel: {
     fontSize: 11,
     fontFamily: "Inter_500Medium",
-    color: "#6B7280",
   },
+
+  // Badge on messages icon
   badge: {
     position: "absolute",
-    top: -4,
+    top: -3,
     right: -7,
     backgroundColor: "#DC2626",
     borderRadius: 8,
@@ -222,5 +223,39 @@ const styles = StyleSheet.create({
     fontSize: 9,
     fontFamily: "Inter_700Bold",
     lineHeight: 14,
+  },
+
+  // Publish FAB — takes same flex space as regular tabs
+  fabWrap: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "flex-end",
+    paddingBottom: 6,
+  },
+  fabCircle: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: PRIMARY,
+    alignItems: "center",
+    justifyContent: "center",
+    // Float above the bar top border
+    marginTop: -20,
+    marginBottom: 2,
+    ...Platform.select({
+      web: { boxShadow: "0 4px 14px rgba(26,71,42,0.4)" },
+      default: {
+        shadowColor: PRIMARY,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.35,
+        shadowRadius: 8,
+        elevation: 8,
+      },
+    }),
+  },
+  fabLabel: {
+    fontSize: 11,
+    fontFamily: "Inter_500Medium",
+    color: "#6B7280",
   },
 });
