@@ -226,6 +226,29 @@ export default function HomeScreen() {
             ]}
           />
         </View>
+        {/* ── RACCOURCIS RAPIDES ── */}
+        <View style={[styles.quickRow, { backgroundColor: colors.background, borderBottomColor: colors.border }]}>
+          {([
+            { icon: "bag-handle-outline", label: "Commandes", route: "/(tabs)/orders", color: "#F59E0B" },
+            { icon: "heart-outline", label: "Favoris", route: "/(tabs)/favorites", color: "#EF4444" },
+            { icon: "notifications-outline", label: "Alertes", route: "/notifications", color: "#6366F1" },
+            { icon: "storefront-outline", label: "Mes annonces", route: null, color: "#10B981" },
+          ] as const).map((item) => (
+            <Pressable
+              key={item.label}
+              onPress={() => item.route && router.push(item.route as any)}
+              style={({ pressed }) => [styles.quickItem, { opacity: pressed ? 0.65 : 1 }]}
+            >
+              <View style={[styles.quickIconWrap, { backgroundColor: item.color + "18" }]}>
+                <Ionicons name={item.icon} size={22} color={item.color} />
+              </View>
+              <Text style={[styles.quickLabel, { color: colors.foreground }]} numberOfLines={1}>
+                {item.label}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+
         {/* ── PARTNER PROGRAM BANNER ── */}
         <Pressable
           onPress={() => router.push("/partners" as any)}
@@ -931,4 +954,30 @@ const styles = StyleSheet.create({
   partnerBannerText: { flex: 1, gap: 4 },
   partnerBannerTitle: { fontSize: 16, fontFamily: "Inter_700Bold" },
   partnerBannerSubtitle: { fontSize: 13, fontFamily: "Inter_400Regular", lineHeight: 19 },
+
+  /* Quick access row */
+  quickRow: {
+    flexDirection: "row",
+    paddingHorizontal: 8,
+    paddingVertical: 16,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    marginBottom: 4,
+  },
+  quickItem: {
+    flex: 1,
+    alignItems: "center",
+    gap: 7,
+  },
+  quickIconWrap: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  quickLabel: {
+    fontSize: 11,
+    fontFamily: "Inter_500Medium",
+    textAlign: "center",
+  },
 });
