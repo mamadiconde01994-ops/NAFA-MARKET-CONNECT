@@ -303,7 +303,7 @@ export default function ProfileScreen() {
             <Text style={styles.profileBrandPillText}>NAFA Marché</Text>
           </View>
           <Pressable
-            onPress={showComingSoon}
+            onPress={() => router.push("/(auth)/edit-profile" as any)}
             style={({ pressed }) => [styles.profileSettingsBtn, { opacity: pressed ? 0.7 : 1 }]}
             hitSlop={8}
           >
@@ -459,7 +459,7 @@ export default function ProfileScreen() {
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
           <MenuItem icon="heart-outline" label={t("profileFavorites")} onPress={() => router.push("/(tabs)/favorites" as any)} />
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
-          <MenuItem icon="storefront-outline" label={t("profileMyListings")} onPress={showComingSoon} />
+          <MenuItem icon="storefront-outline" label={t("profileMyListings")} onPress={() => router.push("/(tabs)/publish" as any)} />
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
           <MenuItem
             icon="add-circle-outline"
@@ -489,7 +489,7 @@ export default function ProfileScreen() {
             },
           ]}
         >
-          <MenuItem icon="notifications-outline" label={t("profileNotifications")} onPress={showComingSoon} />
+          <MenuItem icon="notifications-outline" label={t("profileNotifications")} onPress={() => router.push("/notifications" as any)} />
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
           <MenuItem icon="language-outline" label={t("profileLanguage")} onPress={() => router.push("/language")} />
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
@@ -517,7 +517,7 @@ export default function ProfileScreen() {
             },
           ]}
         >
-          <MenuItem icon="help-circle-outline" label={t("profileHelpCenter")} onPress={showComingSoon} />
+          <MenuItem icon="help-circle-outline" label={t("profileHelpCenter")} onPress={() => Alert.alert("Aide & Support", "Contactez-nous sur\nnafa.support@nafa.gn\nou WhatsApp : +224 620 00 00 00", [{ text: "Fermer" }])} />
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
           <MenuItem icon="document-text-outline" label={t("profileTerms")} onPress={() => router.push("/terms")} />
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />

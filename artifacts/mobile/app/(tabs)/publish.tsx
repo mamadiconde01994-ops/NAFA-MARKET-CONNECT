@@ -3,7 +3,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import React from "react";
 import {
-  Alert,
   Platform,
   Pressable,
   ScrollView,
@@ -26,7 +25,6 @@ interface PublishCategory {
   subtitle: string;
   icon: keyof typeof Ionicons.glyphMap;
   color: string;
-  comingSoon?: boolean;
   onPress?: () => void;
 }
 
@@ -45,7 +43,7 @@ const PUBLISH_CATS: PublishCategory[] = [
     subtitle: "Maison, appart, terrain…",
     icon: "home",
     color: "#2563EB",
-    onPress: () => Alert.alert("Bientôt disponible", "La publication de biens immobiliers arrive prochainement."),
+    onPress: () => router.push({ pathname: "/listing/create" as any, params: { category: "real-estate", label: "Bien immobilier" } }),
   },
   {
     id: "service",
@@ -53,7 +51,7 @@ const PUBLISH_CATS: PublishCategory[] = [
     subtitle: "Artisan, consultant…",
     icon: "construct",
     color: "#7C3AED",
-    onPress: () => Alert.alert("Bientôt disponible", "La publication de services arrive prochainement."),
+    onPress: () => router.push({ pathname: "/listing/create" as any, params: { category: "service", label: "Service professionnel" } }),
   },
   {
     id: "vehicle",
@@ -61,7 +59,7 @@ const PUBLISH_CATS: PublishCategory[] = [
     subtitle: "Voiture, moto, camion…",
     icon: "car",
     color: "#475569",
-    onPress: () => Alert.alert("Bientôt disponible", "La publication de véhicules arrive prochainement."),
+    onPress: () => router.push({ pathname: "/listing/create" as any, params: { category: "vehicle", label: "Véhicule" } }),
   },
   {
     id: "warehouse",
@@ -69,7 +67,7 @@ const PUBLISH_CATS: PublishCategory[] = [
     subtitle: "Stockage, logistique…",
     icon: "cube",
     color: "#DC2626",
-    onPress: () => Alert.alert("Bientôt disponible", "La publication d'entrepôts arrive prochainement."),
+    onPress: () => router.push({ pathname: "/listing/create" as any, params: { category: "warehouse", label: "Entrepôt / Espace" } }),
   },
   {
     id: "job",
@@ -77,7 +75,7 @@ const PUBLISH_CATS: PublishCategory[] = [
     subtitle: "CDI, CDD, freelance…",
     icon: "briefcase",
     color: "#0891B2",
-    onPress: () => Alert.alert("Bientôt disponible", "La publication d'offres d'emploi arrive prochainement."),
+    onPress: () => router.push({ pathname: "/listing/create" as any, params: { category: "job", label: "Offre d'emploi" } }),
   },
   {
     id: "restaurant",
@@ -85,7 +83,7 @@ const PUBLISH_CATS: PublishCategory[] = [
     subtitle: "Plats, livraison, résa…",
     icon: "restaurant",
     color: "#EA580C",
-    onPress: () => Alert.alert("Bientôt disponible", "La publication de restaurants arrive prochainement."),
+    onPress: () => router.push({ pathname: "/listing/create" as any, params: { category: "restaurant", label: "Restaurant / Menu" } }),
   },
   {
     id: "electronics",
@@ -93,7 +91,7 @@ const PUBLISH_CATS: PublishCategory[] = [
     subtitle: "Téléphones, ordis…",
     icon: "phone-portrait",
     color: "#6366F1",
-    comingSoon: true,
+    onPress: () => router.push({ pathname: "/listing/create" as any, params: { category: "electronics", label: "Électronique" } }),
   },
   {
     id: "fashion",
@@ -101,7 +99,7 @@ const PUBLISH_CATS: PublishCategory[] = [
     subtitle: "Vêtements, accessoires…",
     icon: "shirt",
     color: "#EC4899",
-    comingSoon: true,
+    onPress: () => router.push({ pathname: "/listing/create" as any, params: { category: "fashion", label: "Mode & Beauté" } }),
   },
   {
     id: "furniture",
@@ -109,7 +107,7 @@ const PUBLISH_CATS: PublishCategory[] = [
     subtitle: "Meubles, électroménager…",
     icon: "bed",
     color: "#0D9488",
-    comingSoon: true,
+    onPress: () => router.push({ pathname: "/listing/create" as any, params: { category: "furniture", label: "Maison & Déco" } }),
   },
   {
     id: "construction",
@@ -117,26 +115,23 @@ const PUBLISH_CATS: PublishCategory[] = [
     subtitle: "Matériaux, équipements…",
     icon: "hammer",
     color: "#92400E",
-    comingSoon: true,
+    onPress: () => router.push({ pathname: "/listing/create" as any, params: { category: "construction", label: "Construction" } }),
   },
 ];
 
 function CategoryCard({ cat, colors }: { cat: PublishCategory; colors: ReturnType<typeof useColors> }) {
-  const isDisabled = cat.comingSoon;
-
   return (
     <Pressable
-      onPress={isDisabled ? undefined : cat.onPress}
+      onPress={cat.onPress}
       style={({ pressed }) => [
         styles.card,
         {
           backgroundColor: colors.card,
           borderColor: colors.border,
           borderRadius: colors.radius,
-          opacity: isDisabled ? 0.52 : pressed ? 0.80 : 1,
+          opacity: pressed ? 0.78 : 1,
         },
       ]}
-      disabled={isDisabled}
     >
       {/* Icon circle */}
       <View style={[styles.iconCircle, { backgroundColor: cat.color + "18" }]}>
@@ -152,13 +147,7 @@ function CategoryCard({ cat, colors }: { cat: PublishCategory; colors: ReturnTyp
         </Text>
       </View>
 
-      {isDisabled ? (
-        <View style={[styles.soonBadge, { backgroundColor: colors.muted }]}>
-          <Text style={[styles.soonText, { color: colors.mutedForeground }]}>Bientôt</Text>
-        </View>
-      ) : (
-        <Ionicons name="chevron-forward" size={16} color={colors.mutedForeground} />
-      )}
+      <Ionicons name="chevron-forward" size={16} color={colors.mutedForeground} />
     </Pressable>
   );
 }
@@ -199,15 +188,9 @@ export default function PublishScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[styles.list, { paddingBottom: bottomPad }]}
       >
-        <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>CATÉGORIES ACTIVES</Text>
+        <Text style={[styles.sectionLabel, { color: colors.mutedForeground }]}>CHOISISSEZ UNE CATÉGORIE</Text>
 
-        {PUBLISH_CATS.filter((c) => !c.comingSoon).map((cat) => (
-          <CategoryCard key={cat.id} cat={cat} colors={colors} />
-        ))}
-
-        <Text style={[styles.sectionLabel, { color: colors.mutedForeground, marginTop: 20 }]}>BIENTÔT DISPONIBLE</Text>
-
-        {PUBLISH_CATS.filter((c) => c.comingSoon).map((cat) => (
+        {PUBLISH_CATS.map((cat) => (
           <CategoryCard key={cat.id} cat={cat} colors={colors} />
         ))}
 
@@ -231,8 +214,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 12,
   },
-  headerTitle: { fontSize: 22, fontWeight: "700", color: "#FFF", letterSpacing: -0.4 },
-  headerSub: { fontSize: 13, color: "rgba(255,255,255,0.6)", marginTop: 2 },
+  headerTitle: { fontSize: 22, fontFamily: "Inter_700Bold", color: "#FFF", letterSpacing: -0.4 },
+  headerSub: { fontSize: 13, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.6)", marginTop: 2 },
   headerBadge: { width: 52, height: 52, borderRadius: 26, alignItems: "center", justifyContent: "center" },
   tipStrip: {
     flexDirection: "row",
@@ -248,7 +231,7 @@ const styles = StyleSheet.create({
   list: { paddingHorizontal: 16, paddingTop: 20 },
   sectionLabel: {
     fontSize: 11,
-    fontWeight: "600",
+    fontFamily: "Inter_700Bold",
     letterSpacing: 0.6,
     marginBottom: 10,
   },
@@ -272,8 +255,8 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   cardText: { flex: 1, minWidth: 0 },
-  cardLabel: { fontSize: 15, fontWeight: "600" },
-  cardSub: { fontSize: 12, marginTop: 2 },
+  cardLabel: { fontSize: 15, fontFamily: "Inter_600SemiBold" },
+  cardSub: { fontSize: 12, fontFamily: "Inter_400Regular", marginTop: 2 },
   soonBadge: {
     paddingHorizontal: 8,
     paddingVertical: 3,
