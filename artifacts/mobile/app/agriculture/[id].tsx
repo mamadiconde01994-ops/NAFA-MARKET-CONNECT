@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Linking,
   Platform,
@@ -12,10 +12,14 @@ import {
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Share } from "react-native";
 
 import { MOCK_PRODUCTS } from "@/constants/mockData";
 import { useColors } from "@/hooks/useColors";
 import { formatPrice } from "@/lib/format";
+import { getUserLocation, getDistanceToCity, getCityCoordinates } from "@/lib/location";
+import { LocationMap } from "@/components/common/LocationMap";
+import { useFavorites } from "@/context/FavoritesContext";
 import type { ProductCategory } from "@/types";
 
 const CATEGORY_LABELS: Record<ProductCategory, string> = {
@@ -38,6 +42,7 @@ const CATEGORY_ICONS: Record<ProductCategory, keyof typeof Ionicons.glyphMap> = 
   processed: "cog-outline",
 };
 
+
 function StarRow({ rating, size = 14 }: { rating: number; size?: number }) {
   return (
     <View style={{ flexDirection: "row", gap: 2 }}>
@@ -58,6 +63,42 @@ export default function ProductDetailScreen() {
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [quantity, setQuantity] = useState(1);
+  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+  const { toggleFavorite, isFavorite } = useFavorites();
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const location = await getUserLocation();
+      if (!mounted || !location) return;
+      setUserLocation(location);
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const favoriteState = id ? isFavorite(id) : false;
+
+  const handleToggleFavorite = () => {
+    if (!id) return;
+    toggleFavorite(id, "product");
+  };
+
+  const handleShare = async () => {
+    if (!product) return;
+    try {
+      await Share.share({
+        message: `${product.name} — ${product.price} GNF — ${product.location}\nVoir sur NAFA: nafa://agriculture/${product.id}`,
+      });
+    } catch (e) {}
+  };
+
+  const handleReport = () => {
+    if (!product) return;
+    const mail = `mailto:report@nafa.gn?subject=${encodeURIComponent("Signalement produit: " + product.name)}&body=${encodeURIComponent("Produit: " + product.name + "\nID: " + product.id + "\nRaison:\n")}`;
+    Linking.openURL(mail);
+  };
 
   const product = MOCK_PRODUCTS.find((p) => p.id === id);
   const similarProducts = product
@@ -180,6 +221,17 @@ export default function ProductDetailScreen() {
               <Text style={styles.featuredBadgeText}>⭐ Vedette</Text>
             </View>
           )}
+          <View style={{ position: "absolute", right: 12, top: topPad + 12, flexDirection: "row", gap: 8 }}>
+            <Pressable onPress={handleToggleFavorite} style={({ pressed }) => [{ padding: 8, borderRadius: 8, backgroundColor: pressed ? "rgba(0,0,0,0.12)" : "transparent" }]}> 
+              <Ionicons name={favoriteState ? "heart" : "heart-outline"} size={18} color={favoriteState ? "#EF4444" : "#FFFFFF"} />
+            </Pressable>
+            <Pressable onPress={handleShare} style={({ pressed }) => [{ padding: 8, borderRadius: 8, backgroundColor: pressed ? "rgba(0,0,0,0.12)" : "transparent" }]}>
+              <Ionicons name="share-social" size={18} color="#FFFFFF" />
+            </Pressable>
+            <Pressable onPress={handleReport} style={({ pressed }) => [{ padding: 8, borderRadius: 8, backgroundColor: pressed ? "rgba(0,0,0,0.12)" : "transparent" }]}>
+              <Ionicons name="flag" size={18} color="#FFFFFF" />
+            </Pressable>
+          </View>
         </View>
 
         {/* Product info */}
@@ -264,7 +316,41 @@ export default function ProductDetailScreen() {
             <Text style={[styles.locationText, { color: colors.foreground }]}>
               {product.location}
             </Text>
+            {userLocation && getCityCoordinates(product.location) && (
+              <Pressable
+                onPress={() => {
+                  const c = getCityCoordinates(product.location);
+                  if (!c) return;
+                  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${c.latitude},${c.longitude}`;
+                  Linking.openURL(mapsUrl);
+                }}
+                style={{ marginLeft: 8 }}
+              >
+                <Text style={{ color: colors.mutedForeground }}>• Voir sur la carte</Text>
+              </Pressable>
+            )}
+            {userLocation && getDistanceToCity(userLocation, product.location) != null && (
+              <Text style={[styles.locationText, { color: colors.mutedForeground, marginLeft: 8 }]}>• {getDistanceToCity(userLocation, product.location)?.toFixed(1)} km</Text>
+            )}
           </View>
+
+          {getCityCoordinates(product.location) && (
+            <View style={{ marginTop: 16 }}>
+              <LocationMap
+                style={{ height: 180, borderRadius: 12 }}
+                userLocation={userLocation}
+                markers={[
+                  {
+                    id: product.id,
+                    title: product.name,
+                    description: product.location,
+                    coordinate: getCityCoordinates(product.location)!,
+                    pinColor: "#16A34A",
+                  },
+                ]}
+              />
+            </View>
+          )}
         </View>
 
         {/* Seller info */}

@@ -67,6 +67,19 @@ export interface PartnerLeaderboardEntry {
   badge: string;
 }
 
+export type FavCategory = "product" | "restaurant" | "property" | "service" | "warehouse";
+
+export interface FavoriteItem {
+  id: string;
+  category: FavCategory;
+  savedAt: string;
+}
+
+export interface LocationCoords {
+  latitude: number;
+  longitude: number;
+}
+
 export type ProductCategory =
   | "vegetables"
   | "fruits"

@@ -1,12 +1,9 @@
-import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-export type FavCategory = "product" | "restaurant" | "property" | "service" | "warehouse";
+import type { FavoriteItem, FavCategory } from "@/types";
+import { loadFavorites, saveFavorites } from "@/lib/favorites";
 
-export interface FavoriteItem {
-  id: string;
-  category: FavCategory;
-  savedAt: string;
-}
+export type { FavCategory };
 
 interface FavoritesContextValue {
   favorites: FavoriteItem[];
@@ -40,6 +37,26 @@ const INITIAL: FavoriteItem[] = [
 
 export function FavoritesProvider({ children }: { children: React.ReactNode }) {
   const [favorites, setFavorites] = useState<FavoriteItem[]>(INITIAL);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const storedFavorites = await loadFavorites();
+      if (!mounted) return;
+      if (storedFavorites === null) {
+        setFavorites(INITIAL);
+      } else {
+        setFavorites(storedFavorites);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    saveFavorites(favorites);
+  }, [favorites]);
 
   const addFavorite = useCallback((id: string, category: FavCategory) => {
     setFavorites((prev) =>
