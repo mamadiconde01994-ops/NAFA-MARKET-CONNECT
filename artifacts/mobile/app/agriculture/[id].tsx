@@ -20,6 +20,7 @@ import { formatPrice } from "@/lib/format";
 import { getUserLocation, getDistanceToCity, getCityCoordinates } from "@/lib/location";
 import { LocationMap } from "@/components/common/LocationMap";
 import { useFavorites } from "@/context/FavoritesContext";
+import { useMessages } from "@/context/MessagesContext";
 import type { ProductCategory } from "@/types";
 
 const CATEGORY_LABELS: Record<ProductCategory, string> = {
@@ -65,6 +66,7 @@ export default function ProductDetailScreen() {
   const [quantity, setQuantity] = useState(1);
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const { toggleFavorite, isFavorite } = useFavorites();
+  const { startConversation } = useMessages();
 
   useEffect(() => {
     let mounted = true;
@@ -118,9 +120,13 @@ export default function ProductDetailScreen() {
 
   const handleMessage = () => {
     if (!product) return;
-    router.push(
-      `/chat?name=${encodeURIComponent(product.sellerName)}&context=${encodeURIComponent(product.name)}` as any
+    const convId = startConversation(
+      { id: product.sellerId, name: product.sellerName, role: product.sellerRole, verified: true },
+      product.name,
+      "agriculture",
+      `Bonjour ${product.sellerName}, je suis intéressé(e) par votre annonce "${product.name}" à ${product.price.toLocaleString()} GNF/${product.unit}. Est-ce encore disponible ?`
     );
+    router.push(`/chat/${convId}` as any);
   };
 
   const handleAddToCart = () => {

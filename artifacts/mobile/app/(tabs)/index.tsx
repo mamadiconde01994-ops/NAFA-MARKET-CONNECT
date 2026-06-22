@@ -272,7 +272,7 @@ export default function HomeScreen() {
           {([
             { icon: "bag-handle-outline", label: "Commandes", route: "/(tabs)/orders", color: "#F59E0B" },
             { icon: "heart-outline", label: "Favoris", route: "/(tabs)/favorites", color: "#EF4444" },
-            { icon: "notifications-outline", label: "Alertes", route: "/notifications", color: "#6366F1" },
+            { icon: "chatbubbles-outline", label: "Messages", route: "/inbox", color: "#2563EB" },
             { icon: "storefront-outline", label: "Mes annonces", route: "/my-listings", color: "#10B981" },
           ] as const).map((item) => (
             <Pressable
