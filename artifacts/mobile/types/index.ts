@@ -323,6 +323,120 @@ export interface Vehicle {
   createdAt: string;
 }
 
+/* ── Electronics ── */
+export type ElectronicsCategory =
+  | "phone"
+  | "laptop"
+  | "tablet"
+  | "tv"
+  | "audio"
+  | "accessories";
+
+export interface ElectronicsItem {
+  id: string;
+  title: string;
+  description: string;
+  brand: string;
+  category: ElectronicsCategory;
+  price: number;
+  condition: "new" | "used" | "refurbished";
+  city: string;
+  images: string[];
+  sellerName: string;
+  sellerPhone: string;
+  rating?: number;
+  featured: boolean;
+  createdAt: string;
+  warranty?: string;
+  storage?: string;
+  ram?: string;
+}
+
+/* ── Fashion ── */
+export type FashionCategory =
+  | "men"
+  | "women"
+  | "children"
+  | "accessories"
+  | "shoes"
+  | "traditional";
+
+export interface FashionItem {
+  id: string;
+  title: string;
+  description: string;
+  brand?: string;
+  category: FashionCategory;
+  price: number;
+  size?: string;
+  color?: string;
+  condition: "new" | "used";
+  city: string;
+  images: string[];
+  sellerName: string;
+  sellerPhone: string;
+  rating?: number;
+  featured: boolean;
+  createdAt: string;
+}
+
+/* ── Home & Furniture ── */
+export type FurnitureCategory =
+  | "bedroom"
+  | "living"
+  | "kitchen"
+  | "office"
+  | "outdoor"
+  | "appliance"
+  | "decor";
+
+export interface FurnitureItem {
+  id: string;
+  title: string;
+  description: string;
+  category: FurnitureCategory;
+  price: number;
+  condition: "new" | "used" | "refurbished";
+  city: string;
+  images: string[];
+  sellerName: string;
+  sellerPhone: string;
+  rating?: number;
+  featured: boolean;
+  createdAt: string;
+  dimensions?: string;
+  material?: string;
+}
+
+/* ── Construction ── */
+export type ConstructionCategory =
+  | "cement"
+  | "wood"
+  | "metal"
+  | "electrical"
+  | "plumbing"
+  | "tools"
+  | "paint"
+  | "tiles";
+
+export interface ConstructionItem {
+  id: string;
+  title: string;
+  description: string;
+  category: ConstructionCategory;
+  price: number;
+  unit: string;
+  stockAvailable: boolean;
+  quantity?: number;
+  city: string;
+  images: string[];
+  sellerName: string;
+  sellerPhone: string;
+  rating?: number;
+  featured: boolean;
+  createdAt: string;
+}
+
 export type JobCategory =
   | "agriculture"
   | "restaurant"

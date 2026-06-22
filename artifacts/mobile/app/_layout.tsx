@@ -62,9 +62,13 @@ function RootLayoutNav() {
       <Stack.Screen name="jobs/index" options={{ headerShown: false }} />
       <Stack.Screen name="jobs/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="electronics/index" options={{ headerShown: false }} />
+      <Stack.Screen name="electronics/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="fashion/index" options={{ headerShown: false }} />
+      <Stack.Screen name="fashion/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="home-furniture/index" options={{ headerShown: false }} />
+      <Stack.Screen name="home-furniture/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="construction/index" options={{ headerShown: false }} />
+      <Stack.Screen name="construction/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="partners/index" options={{ headerShown: false }} />
       <Stack.Screen name="checkout/index" options={{ headerShown: false }} />
       <Stack.Screen name="partners/opportunities" options={{ headerShown: false }} />
