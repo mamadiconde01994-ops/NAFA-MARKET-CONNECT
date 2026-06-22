@@ -13,7 +13,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useColors } from "@/hooks/useColors";
 
-export default function HomeScreen() {
+export default function HomeFurnitureScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
 

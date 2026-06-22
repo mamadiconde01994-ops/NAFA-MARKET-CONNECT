@@ -3,7 +3,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { Tabs, router } from "expo-router";
 import React from "react";
 import {
-  Alert,
   Platform,
   Pressable,
   StyleSheet,
@@ -35,13 +34,7 @@ function useUnreadCount() {
 
 function PublishFAB() {
   const handlePublish = () => {
-    Alert.alert("Publier", "Que souhaitez-vous proposer ?", [
-      { text: "🌿  Produit agricole",     onPress: () => router.push("/product/create" as any) },
-      { text: "🏭  Entrepôt / Espace",    onPress: () => router.push("/warehouses/index" as any) },
-      { text: "💼  Offre d'emploi",       onPress: () => router.push("/jobs/index" as any) },
-      { text: "🔧  Service professionnel", onPress: () => router.push("/services/index" as any) },
-      { text: "Annuler", style: "cancel" },
-    ]);
+    router.push("/(tabs)/publish" as any);
   };
 
   return (
