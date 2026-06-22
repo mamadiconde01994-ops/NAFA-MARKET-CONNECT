@@ -29,6 +29,7 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import { FavoritesProvider } from "@/context/FavoritesContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { NotificationsProvider } from "@/context/NotificationsContext";
+import { PriceAlertsProvider } from "@/context/PriceAlertsContext";
 import { ToastProvider } from "@/context/ToastContext";
 import { NetworkProvider } from "@/context/NetworkContext";
 import { SplashScreenWrapper } from "@/components/branding/SplashScreenWrapper";
@@ -84,6 +85,7 @@ function RootLayoutNav() {
       <Stack.Screen name="partners/statistics" options={{ headerShown: false }} />
       <Stack.Screen name="listing/create" options={{ headerShown: false }} />
       <Stack.Screen name="my-listings" options={{ headerShown: false }} />
+      <Stack.Screen name="price-alerts" options={{ headerShown: false }} />
     </Stack>
   );
 }
@@ -118,6 +120,7 @@ export default function RootLayout() {
                     <CartProvider>
                       <FavoritesProvider>
                         <NotificationsProvider>
+                          <PriceAlertsProvider>
                           <ToastProvider>
                           <GestureHandlerRootView style={{ flex: 1 }}>
                             <KeyboardProvider>
@@ -125,6 +128,7 @@ export default function RootLayout() {
                             </KeyboardProvider>
                           </GestureHandlerRootView>
                         </ToastProvider>
+                          </PriceAlertsProvider>
                       </NotificationsProvider>
                     </FavoritesProvider>
                   </CartProvider>

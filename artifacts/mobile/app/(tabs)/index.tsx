@@ -2,12 +2,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
+  Modal,
   Platform,
   Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -27,6 +29,7 @@ import {
   MOCK_PROPERTIES,
 } from "@/constants/mockData";
 import { useAuth } from "@/context/AuthContext";
+import { usePriceAlerts } from "@/context/PriceAlertsContext";
 import { useColors } from "@/hooks/useColors";
 import { formatPrice } from "@/lib/format";
 import type { ProductCategory } from "@/types";
@@ -85,6 +88,44 @@ export default function HomeScreen() {
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory | null>(null);
   const [selectedCity, setSelectedCity] = useState("Conakry");
   const [showCityPicker, setShowCityPicker] = useState(false);
+
+  const { hasAlert, addAlert, removeAlert, getAlert } = usePriceAlerts();
+  const [alertModal, setAlertModal] = useState<{
+    visible: boolean;
+    product: (typeof MARKET_PRICES)[0] | null;
+    input: string;
+  }>({ visible: false, product: null, input: "" });
+
+  const openAlertModal = (mp: (typeof MARKET_PRICES)[0]) => {
+    const existing = getAlert(mp.id);
+    setAlertModal({
+      visible: true,
+      product: mp,
+      input: existing ? String(existing.targetPrice) : "",
+    });
+  };
+  const closeAlertModal = () => setAlertModal({ visible: false, product: null, input: "" });
+  const saveAlert = () => {
+    if (!alertModal.product) return;
+    const val = parseInt(alertModal.input.replace(/\s/g, ""), 10);
+    if (!val || val <= 0) return;
+    addAlert(
+      {
+        id: alertModal.product.id,
+        name: alertModal.product.product,
+        unit: alertModal.product.unit,
+        market: alertModal.product.market,
+        currentPrice: alertModal.product.price,
+      },
+      val
+    );
+    closeAlertModal();
+  };
+  const deleteAlertForProduct = (productId: string) => {
+    const a = getAlert(productId);
+    if (a) removeAlert(a.id);
+    closeAlertModal();
+  };
 
   const topPad = Platform.OS === "web" ? 67 + 16 : insets.top + 16;
   const bottomPad = Platform.OS === "web" ? 34 + 84 : 100;
@@ -343,21 +384,37 @@ export default function HomeScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingHorizontal: 16, gap: 10 }}
           >
-            {MARKET_PRICES.map((mp) => (
+            {MARKET_PRICES.map((mp) => {
+              const alerted = hasAlert(mp.id);
+              return (
               <View
                 key={mp.id}
                 style={[
                   styles.priceCard,
                   {
                     backgroundColor: colors.card,
-                    borderColor: colors.border,
+                    borderColor: alerted ? "#52B788" : colors.border,
                     borderRadius: colors.radius,
                   },
                 ]}
               >
-                <Text style={[styles.priceProd, { color: colors.foreground }]}>
-                  {mp.product}
-                </Text>
+                {/* Product name + bell */}
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+                  <Text style={[styles.priceProd, { color: colors.foreground, flex: 1, marginBottom: 0 }]} numberOfLines={1}>
+                    {mp.product}
+                  </Text>
+                  <Pressable
+                    onPress={() => openAlertModal(mp)}
+                    hitSlop={8}
+                    style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1, marginLeft: 6 })}
+                  >
+                    <Ionicons
+                      name={alerted ? "notifications" : "notifications-outline"}
+                      size={15}
+                      color={alerted ? "#F59E0B" : colors.mutedForeground}
+                    />
+                  </Pressable>
+                </View>
                 <Text style={[styles.priceVal, { color: colors.secondary }]}>
                   {formatPrice(mp.price)}
                   <Text style={[styles.priceUnit, { color: colors.mutedForeground }]}>
@@ -402,7 +459,8 @@ export default function HomeScreen() {
                   {mp.market}
                 </Text>
               </View>
-            ))}
+              );
+            })}
           </ScrollView>
         </View>
 
@@ -692,9 +750,162 @@ export default function HomeScreen() {
           <Ionicons name="arrow-forward" size={20} color="rgba(255,255,255,0.8)" />
         </Pressable>
       </ScrollView>
+
+      {/* ── Price Alert Modal ── */}
+      <Modal
+        visible={alertModal.visible}
+        transparent
+        animationType="fade"
+        onRequestClose={closeAlertModal}
+      >
+        <Pressable style={alertStyles.overlay} onPress={closeAlertModal}>
+          <Pressable style={[alertStyles.sheet, { backgroundColor: colors.card, borderRadius: colors.radius + 4 }]} onPress={() => {}}>
+            {/* Handle */}
+            <View style={[alertStyles.handle, { backgroundColor: colors.border }]} />
+
+            {alertModal.product && (
+              <>
+                {/* Header */}
+                <View style={alertStyles.modalHeader}>
+                  <View style={[alertStyles.modalIcon, { backgroundColor: "#1B4332" + "22" }]}>
+                    <Ionicons name="notifications" size={22} color="#52B788" />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={[alertStyles.modalTitle, { color: colors.foreground }]} numberOfLines={1}>
+                      {alertModal.product.product}
+                    </Text>
+                    <Text style={[alertStyles.modalSub, { color: colors.mutedForeground }]}>
+                      {alertModal.product.market}
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Current price */}
+                <View style={[alertStyles.currentPriceRow, { backgroundColor: colors.background, borderRadius: 10 }]}>
+                  <Text style={[alertStyles.currentLabel, { color: colors.mutedForeground }]}>Prix actuel</Text>
+                  <Text style={[alertStyles.currentPrice, { color: colors.foreground }]}>
+                    {formatPrice(alertModal.product.price)}{" "}
+                    <Text style={{ fontSize: 13, fontFamily: "Inter_400Regular", color: colors.mutedForeground }}>
+                      GNF/{alertModal.product.unit}
+                    </Text>
+                  </Text>
+                </View>
+
+                {/* Target price input */}
+                <View style={{ marginTop: 16 }}>
+                  <Text style={[alertStyles.inputLabel, { color: colors.foreground }]}>
+                    Me notifier si le prix descend sous :
+                  </Text>
+                  <View style={[alertStyles.inputRow, { backgroundColor: colors.background, borderColor: colors.border, borderRadius: 10 }]}>
+                    <TextInput
+                      value={alertModal.input}
+                      onChangeText={(v) => setAlertModal((p) => ({ ...p, input: v }))}
+                      keyboardType="numeric"
+                      placeholder={`ex: ${Math.round(alertModal.product.price * 0.8).toLocaleString()}`}
+                      placeholderTextColor={colors.mutedForeground}
+                      style={[alertStyles.input, { color: colors.foreground }]}
+                      autoFocus
+                    />
+                    <Text style={[alertStyles.inputSuffix, { color: colors.mutedForeground }]}>
+                      GNF/{alertModal.product.unit}
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Buttons */}
+                <View style={alertStyles.btnRow}>
+                  {hasAlert(alertModal.product.id) && (
+                    <Pressable
+                      onPress={() => deleteAlertForProduct(alertModal.product!.id)}
+                      style={({ pressed }) => [
+                        alertStyles.btnSecondary,
+                        { borderColor: "#DC2626", opacity: pressed ? 0.7 : 1 },
+                      ]}
+                    >
+                      <Ionicons name="trash-outline" size={15} color="#DC2626" />
+                      <Text style={[alertStyles.btnSecondaryText, { color: "#DC2626" }]}>Supprimer</Text>
+                    </Pressable>
+                  )}
+                  <Pressable
+                    onPress={saveAlert}
+                    style={({ pressed }) => [
+                      alertStyles.btnPrimary,
+                      { backgroundColor: "#1B4332", opacity: pressed ? 0.85 : 1, flex: 1 },
+                    ]}
+                  >
+                    <Ionicons name="notifications" size={15} color="#fff" />
+                    <Text style={alertStyles.btnPrimaryText}>
+                      {hasAlert(alertModal.product.id) ? "Mettre à jour" : "Créer l'alerte"}
+                    </Text>
+                  </Pressable>
+                </View>
+
+                {/* Link to manage */}
+                <Pressable
+                  onPress={() => { closeAlertModal(); router.push("/price-alerts" as any); }}
+                  style={{ alignItems: "center", marginTop: 12 }}
+                >
+                  <Text style={[alertStyles.manageLink, { color: colors.mutedForeground }]}>
+                    Gérer toutes mes alertes →
+                  </Text>
+                </Pressable>
+              </>
+            )}
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }
+
+const alertStyles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.45)",
+    justifyContent: "flex-end",
+  },
+  sheet: {
+    marginHorizontal: 0,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 20,
+    paddingBottom: 36,
+  },
+  handle: {
+    width: 36, height: 4, borderRadius: 2,
+    alignSelf: "center", marginBottom: 20,
+  },
+  modalHeader: { flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 16 },
+  modalIcon: {
+    width: 44, height: 44, borderRadius: 22,
+    alignItems: "center", justifyContent: "center",
+  },
+  modalTitle: { fontSize: 16, fontFamily: "Inter_700Bold" },
+  modalSub: { fontSize: 13, fontFamily: "Inter_400Regular", marginTop: 2 },
+  currentPriceRow: { padding: 14, gap: 4 },
+  currentLabel: { fontSize: 12, fontFamily: "Inter_400Regular" },
+  currentPrice: { fontSize: 20, fontFamily: "Inter_700Bold" },
+  inputLabel: { fontSize: 14, fontFamily: "Inter_500Medium", marginBottom: 10 },
+  inputRow: {
+    flexDirection: "row", alignItems: "center",
+    borderWidth: 1, paddingHorizontal: 14, paddingVertical: 0,
+  },
+  input: { flex: 1, fontSize: 18, fontFamily: "Inter_600SemiBold", paddingVertical: 14 },
+  inputSuffix: { fontSize: 13, fontFamily: "Inter_400Regular" },
+  btnRow: { flexDirection: "row", gap: 10, marginTop: 20 },
+  btnPrimary: {
+    flexDirection: "row", alignItems: "center", justifyContent: "center",
+    gap: 7, paddingVertical: 14, borderRadius: 12,
+  },
+  btnPrimaryText: { fontSize: 15, fontFamily: "Inter_700Bold", color: "#fff" },
+  btnSecondary: {
+    flexDirection: "row", alignItems: "center", justifyContent: "center",
+    gap: 6, paddingVertical: 14, paddingHorizontal: 14,
+    borderRadius: 12, borderWidth: 1,
+  },
+  btnSecondaryText: { fontSize: 14, fontFamily: "Inter_600SemiBold" },
+  manageLink: { fontSize: 13, fontFamily: "Inter_400Regular" },
+});
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
