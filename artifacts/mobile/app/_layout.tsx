@@ -83,6 +83,7 @@ function RootLayoutNav() {
       <Stack.Screen name="partners/leaderboard" options={{ headerShown: false }} />
       <Stack.Screen name="partners/statistics" options={{ headerShown: false }} />
       <Stack.Screen name="listing/create" options={{ headerShown: false }} />
+      <Stack.Screen name="my-listings" options={{ headerShown: false }} />
     </Stack>
   );
 }

@@ -163,10 +163,22 @@ export default function ListingCreateScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { user } = useAuth();
-  const params = useLocalSearchParams<{ category?: string; label?: string }>();
+  const params = useLocalSearchParams<{
+    category?: string;
+    label?: string;
+    id?: string;
+    isEdit?: string;
+    prefillTitle?: string;
+    prefillPrice?: string;
+    prefillDescription?: string;
+    prefillCity?: string;
+    prefillPhone?: string;
+    prefillLocation?: string;
+  }>();
 
   const category = params.category ?? "real-estate";
   const categoryLabel = params.label ?? "Annonce";
+  const isEdit = params.isEdit === "true";
   const catColor = CAT_COLOR[category] ?? BRAND_MID;
   const catIcon = CAT_ICON[category] ?? "pricetag-outline";
   const fields = CATEGORY_FIELDS[category] ?? ["title", "price", "description", "city", "phone"];
@@ -175,12 +187,12 @@ export default function ListingCreateScreen() {
   const topPad = Platform.OS === "web" ? 0 : insets.top;
   const bottomPad = Platform.OS === "web" ? 40 : insets.bottom + 32;
 
-  const [title, setTitle] = useState("");
-  const [price, setPrice] = useState("");
-  const [description, setDescription] = useState("");
-  const [location, setLocation] = useState("");
-  const [city, setCity] = useState("Conakry");
-  const [phone, setPhone] = useState(user?.phone ?? "");
+  const [title, setTitle] = useState(params.prefillTitle ?? "");
+  const [price, setPrice] = useState(params.prefillPrice ?? "");
+  const [description, setDescription] = useState(params.prefillDescription ?? "");
+  const [location, setLocation] = useState(params.prefillLocation ?? "");
+  const [city, setCity] = useState(params.prefillCity ?? "Conakry");
+  const [phone, setPhone] = useState(params.prefillPhone ?? user?.phone ?? "");
   const [image, setImage] = useState<string | null>(null);
   const [showCityPicker, setShowCityPicker] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -212,8 +224,10 @@ export default function ListingCreateScreen() {
     await new Promise((r) => setTimeout(r, 1400));
     setLoading(false);
     Alert.alert(
-      "Annonce soumise ! ✓",
-      "Votre annonce a été envoyée pour vérification.\nDélai de validation : 24h ouvrées.",
+      isEdit ? "Annonce mise à jour ✓" : "Annonce soumise ! ✓",
+      isEdit
+        ? "Vos modifications ont été enregistrées."
+        : "Votre annonce a été envoyée pour vérification.\nDélai de validation : 24h ouvrées.",
       [{ text: "OK", onPress: () => router.back() }],
     );
   };
@@ -271,8 +285,12 @@ export default function ListingCreateScreen() {
               <Ionicons name={catIcon} size={18} color={catColor === "#fff" ? BRAND_MID : catColor} />
             </View>
             <View>
-              <Text style={styles.headerTitle}>{categoryLabel}</Text>
-              <Text style={styles.headerSub}>Nouvelle annonce · Gratuit</Text>
+              <Text style={styles.headerTitle}>
+                {isEdit ? `Modifier — ${categoryLabel}` : categoryLabel}
+              </Text>
+              <Text style={styles.headerSub}>
+                {isEdit ? "Mise à jour de l'annonce" : "Nouvelle annonce · Gratuit"}
+              </Text>
             </View>
           </View>
         </View>
