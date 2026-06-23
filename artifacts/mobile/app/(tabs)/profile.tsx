@@ -464,7 +464,7 @@ export default function ProfileScreen() {
           <MenuItem
             icon="chatbubbles-outline"
             label="Messages"
-            onPress={() => router.push("/inbox" as any)}
+            onPress={() => router.push("/(tabs)/messages" as any)}
             rightElement={unreadMessages > 0 ? (
               <View style={styles.msgBadge}>
                 <Text style={styles.msgBadgeText}>{unreadMessages > 9 ? "9+" : unreadMessages}</Text>

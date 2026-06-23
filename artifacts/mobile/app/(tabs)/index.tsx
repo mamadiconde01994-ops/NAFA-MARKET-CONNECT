@@ -274,7 +274,7 @@ export default function HomeScreen() {
           {([
             { icon: "bag-handle-outline", label: "Commandes", route: "/(tabs)/orders", color: "#F59E0B" },
             { icon: "heart-outline", label: "Favoris", route: "/(tabs)/favorites", color: "#EF4444" },
-            { icon: "chatbubbles-outline", label: "Messages", route: "/inbox", color: "#2563EB" },
+            { icon: "chatbubbles-outline", label: "Messages", route: "/(tabs)/messages", color: "#2563EB" },
             { icon: "storefront-outline", label: "Mes annonces", route: "/my-listings", color: "#10B981" },
           ] as const).map((item) => {
             const badge = item.label === "Messages" && unreadMessages > 0 ? unreadMessages : 0;
