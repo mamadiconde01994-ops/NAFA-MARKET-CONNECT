@@ -13,7 +13,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useColors } from "@/hooks/useColors";
-import { useNotifications } from "@/context/NotificationsContext";
+import { useMessages } from "@/context/MessagesContext";
 
 const PRIMARY = "#1a472a";
 const BAR_HEIGHT = 64; // content height, not counting safe area
@@ -28,8 +28,8 @@ const TAB_META: Record<TabName, { label: string; icon: string; iconActive: strin
 };
 
 function useUnreadCount() {
-  const { notifications } = useNotifications();
-  return notifications.filter((n) => !n.read).length;
+  const { totalUnread } = useMessages();
+  return totalUnread;
 }
 
 function PublishFAB() {

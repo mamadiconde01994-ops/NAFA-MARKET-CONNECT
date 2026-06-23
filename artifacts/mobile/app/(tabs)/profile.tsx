@@ -21,6 +21,7 @@ import { UserAvatar } from "@/components/profile/UserAvatar";
 import { PARTNER_STATS } from "@/constants/mockData";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
+import { useMessages } from "@/context/MessagesContext";
 import { useTheme } from "@/context/ThemeContext";
 import { useColors } from "@/hooks/useColors";
 import { formatRole } from "@/lib/format";
@@ -160,6 +161,7 @@ export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const { user, logout } = useAuth();
+  const { totalUnread: unreadMessages } = useMessages();
 
   const topPad = Platform.OS === "web" ? 67 + 16 : insets.top + 16;
   const bottomPad = Platform.OS === "web" ? 34 + 84 : 100;
@@ -459,7 +461,16 @@ export default function ProfileScreen() {
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
           <MenuItem icon="heart-outline" label={t("profileFavorites")} onPress={() => router.push("/(tabs)/favorites" as any)} />
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
-          <MenuItem icon="chatbubbles-outline" label="Messages" onPress={() => router.push("/inbox" as any)} />
+          <MenuItem
+            icon="chatbubbles-outline"
+            label="Messages"
+            onPress={() => router.push("/inbox" as any)}
+            rightElement={unreadMessages > 0 ? (
+              <View style={styles.msgBadge}>
+                <Text style={styles.msgBadgeText}>{unreadMessages > 9 ? "9+" : unreadMessages}</Text>
+              </View>
+            ) : undefined}
+          />
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
           <MenuItem icon="storefront-outline" label={t("profileMyListings")} onPress={() => router.push("/my-listings" as any)} />
           <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
@@ -966,6 +977,21 @@ const styles = StyleSheet.create({
   menuIcon: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
   menuLabel: { flex: 1, fontSize: 15, fontFamily: "Inter_500Medium" },
   menuDivider: { height: 1, marginLeft: 64 },
+  msgBadge: {
+    backgroundColor: "#DC2626",
+    borderRadius: 8,
+    minWidth: 20,
+    height: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 5,
+  },
+  msgBadgeText: {
+    color: "#FFF",
+    fontSize: 11,
+    fontFamily: "Inter_700Bold",
+    lineHeight: 18,
+  },
   version: {
     textAlign: "center",
     fontSize: 11,

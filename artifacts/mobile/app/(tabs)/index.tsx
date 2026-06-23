@@ -30,6 +30,7 @@ import {
 } from "@/constants/mockData";
 import { useAuth } from "@/context/AuthContext";
 import { usePriceAlerts } from "@/context/PriceAlertsContext";
+import { useMessages } from "@/context/MessagesContext";
 import { useColors } from "@/hooks/useColors";
 import { formatPrice } from "@/lib/format";
 import type { ProductCategory } from "@/types";
@@ -90,6 +91,7 @@ export default function HomeScreen() {
   const [showCityPicker, setShowCityPicker] = useState(false);
 
   const { hasAlert, addAlert, removeAlert, getAlert } = usePriceAlerts();
+  const { totalUnread: unreadMessages } = useMessages();
   const [alertModal, setAlertModal] = useState<{
     visible: boolean;
     product: (typeof MARKET_PRICES)[0] | null;
@@ -274,20 +276,28 @@ export default function HomeScreen() {
             { icon: "heart-outline", label: "Favoris", route: "/(tabs)/favorites", color: "#EF4444" },
             { icon: "chatbubbles-outline", label: "Messages", route: "/inbox", color: "#2563EB" },
             { icon: "storefront-outline", label: "Mes annonces", route: "/my-listings", color: "#10B981" },
-          ] as const).map((item) => (
-            <Pressable
-              key={item.label}
-              onPress={() => item.route && router.push(item.route as any)}
-              style={({ pressed }) => [styles.quickItem, { opacity: pressed ? 0.65 : 1 }]}
-            >
-              <View style={[styles.quickIconWrap, { backgroundColor: item.color + "18" }]}>
-                <Ionicons name={item.icon} size={22} color={item.color} />
-              </View>
-              <Text style={[styles.quickLabel, { color: colors.foreground }]} numberOfLines={1}>
-                {item.label}
-              </Text>
-            </Pressable>
-          ))}
+          ] as const).map((item) => {
+            const badge = item.label === "Messages" && unreadMessages > 0 ? unreadMessages : 0;
+            return (
+              <Pressable
+                key={item.label}
+                onPress={() => item.route && router.push(item.route as any)}
+                style={({ pressed }) => [styles.quickItem, { opacity: pressed ? 0.65 : 1 }]}
+              >
+                <View style={[styles.quickIconWrap, { backgroundColor: item.color + "18" }]}>
+                  <Ionicons name={item.icon} size={22} color={item.color} />
+                  {badge > 0 && (
+                    <View style={styles.quickBadge}>
+                      <Text style={styles.quickBadgeText}>{badge > 9 ? "9+" : badge}</Text>
+                    </View>
+                  )}
+                </View>
+                <Text style={[styles.quickLabel, { color: colors.foreground }]} numberOfLines={1}>
+                  {item.label}
+                </Text>
+              </Pressable>
+            );
+          })}
         </View>
 
         {/* ── PARTNER PROGRAM BANNER ── */}
@@ -1190,5 +1200,23 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontFamily: "Inter_500Medium",
     textAlign: "center",
+  },
+  quickBadge: {
+    position: "absolute",
+    top: -4,
+    right: -4,
+    backgroundColor: "#DC2626",
+    borderRadius: 8,
+    minWidth: 16,
+    height: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 3,
+  },
+  quickBadgeText: {
+    color: "#FFF",
+    fontSize: 9,
+    fontFamily: "Inter_700Bold",
+    lineHeight: 14,
   },
 });
