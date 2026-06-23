@@ -4,6 +4,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
+  Modal,
   Platform,
   Pressable,
   ScrollView,
@@ -50,6 +51,8 @@ const CATEGORY_ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {
   default: "chatbubble-outline",
 };
 
+const STAR_LABELS = ["", "Très mauvais", "Mauvais", "Correct", "Bien", "Excellent !"];
+
 function formatTime(iso: string) {
   const d = new Date(iso);
   return d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
@@ -80,10 +83,16 @@ export default function ChatScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { getConversation, sendMessage, markAsRead } = useMessages();
+  const { getConversation, sendMessage, markAsRead, rateConversation } = useMessages();
   const [input, setInput] = useState("");
   const scrollRef = useRef<ScrollView>(null);
   const [isTyping, setIsTyping] = useState(false);
+
+  // Rating modal state
+  const [showRating, setShowRating] = useState(false);
+  const [selectedStars, setSelectedStars] = useState(0);
+  const [ratingComment, setRatingComment] = useState("");
+  const [ratingDone, setRatingDone] = useState(false);
 
   const conv = getConversation(id);
 
@@ -97,6 +106,14 @@ export default function ChatScreen() {
     }
   }, [conv?.messages.length]);
 
+  // Sync ratingDone with existing rating
+  useEffect(() => {
+    if (conv?.rating) {
+      setRatingDone(true);
+      setSelectedStars(conv.rating.stars);
+    }
+  }, [conv?.rating]);
+
   const topPad = Platform.OS === "web" ? 67 + 12 : insets.top + 12;
   const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
 
@@ -109,6 +126,24 @@ export default function ChatScreen() {
     setIsTyping(true);
     setTimeout(() => setIsTyping(false), 2500);
     setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 100);
+  };
+
+  const handleSubmitRating = () => {
+    if (!id || selectedStars === 0) return;
+    rateConversation(id, selectedStars, ratingComment.trim());
+    setRatingDone(true);
+    setShowRating(false);
+  };
+
+  const openRatingModal = () => {
+    if (conv?.rating) {
+      setSelectedStars(conv.rating.stars);
+      setRatingComment(conv.rating.comment);
+    } else {
+      setSelectedStars(0);
+      setRatingComment("");
+    }
+    setShowRating(true);
   };
 
   if (!conv) {
@@ -133,6 +168,7 @@ export default function ChatScreen() {
     .toUpperCase();
 
   const groups = groupByDate(conv.messages);
+  const hasMessages = conv.messages.length > 0;
 
   return (
     <KeyboardAvoidingView
@@ -151,7 +187,7 @@ export default function ChatScreen() {
           <Pressable
             onPress={() => router.back()}
             hitSlop={8}
-            style={({ pressed }) => [styles.backBtn, { opacity: pressed ? 0.6 : 1 }]}
+            style={({ pressed }) => [styles.headerBtn, { opacity: pressed ? 0.6 : 1 }]}
           >
             <Ionicons name="chevron-back" size={20} color="#fff" />
           </Pressable>
@@ -170,28 +206,59 @@ export default function ChatScreen() {
 
           {/* Name + status */}
           <View style={{ flex: 1 }}>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-              <Text style={styles.headerName} numberOfLines={1}>{conv.participantName}</Text>
-            </View>
+            <Text style={styles.headerName} numberOfLines={1}>{conv.participantName}</Text>
             <Text style={styles.headerRole}>
               {ROLE_LABELS[conv.participantRole] ?? conv.participantRole}
               {conv.participantVerified ? " · Vérifié ✓" : ""}
             </Text>
           </View>
 
+          {/* Rate button */}
           <Pressable
-            onPress={() => router.push("/inbox" as any)}
+            onPress={openRatingModal}
             hitSlop={8}
-            style={({ pressed }) => [styles.inboxBtn, { opacity: pressed ? 0.6 : 1 }]}
+            style={({ pressed }) => [
+              styles.headerBtn,
+              {
+                opacity: pressed ? 0.6 : 1,
+                backgroundColor: ratingDone ? "rgba(245,158,11,0.25)" : "rgba(255,255,255,0.15)",
+              },
+            ]}
+          >
+            <Ionicons
+              name={ratingDone ? "star" : "star-outline"}
+              size={18}
+              color={ratingDone ? "#F59E0B" : "#fff"}
+            />
+          </Pressable>
+
+          <Pressable
+            onPress={() => router.push("/(tabs)/messages" as any)}
+            hitSlop={8}
+            style={({ pressed }) => [styles.headerBtn, { opacity: pressed ? 0.6 : 1 }]}
           >
             <Ionicons name="chatbubbles-outline" size={20} color="#fff" />
           </Pressable>
         </View>
 
-        {/* Subject chip */}
-        <View style={[styles.subjectChip, { backgroundColor: "rgba(255,255,255,0.12)" }]}>
-          <Ionicons name={catIcon} size={13} color={catColor} />
-          <Text style={styles.subjectText} numberOfLines={1}>{conv.subject}</Text>
+        {/* Subject chip + existing rating preview */}
+        <View style={styles.headerBottom}>
+          <View style={[styles.subjectChip, { backgroundColor: "rgba(255,255,255,0.12)" }]}>
+            <Ionicons name={catIcon} size={13} color={catColor} />
+            <Text style={styles.subjectText} numberOfLines={1}>{conv.subject}</Text>
+          </View>
+          {ratingDone && conv.rating && (
+            <View style={styles.ratingPreview}>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Ionicons
+                  key={i}
+                  name={i < conv.rating!.stars ? "star" : "star-outline"}
+                  size={11}
+                  color="#F59E0B"
+                />
+              ))}
+            </View>
+          )}
         </View>
       </LinearGradient>
 
@@ -205,7 +272,6 @@ export default function ChatScreen() {
       >
         {groups.map((group) => (
           <View key={group.date}>
-            {/* Date separator */}
             <View style={styles.dateSep}>
               <View style={[styles.dateLine, { backgroundColor: colors.border }]} />
               <Text style={[styles.dateLabel, { color: colors.mutedForeground, backgroundColor: colors.background }]}>
@@ -234,12 +300,7 @@ export default function ChatScreen() {
                       {msg.text}
                     </Text>
                     <View style={styles.bubbleMeta}>
-                      <Text
-                        style={[
-                          styles.bubbleTime,
-                          { color: isMe ? "rgba(255,255,255,0.6)" : colors.mutedForeground },
-                        ]}
-                      >
+                      <Text style={[styles.bubbleTime, { color: isMe ? "rgba(255,255,255,0.6)" : colors.mutedForeground }]}>
                         {formatTime(msg.createdAt)}
                       </Text>
                       {isMe && (
@@ -267,25 +328,66 @@ export default function ChatScreen() {
             </View>
           </View>
         )}
+
+        {/* Rate CTA — shows after first exchange */}
+        {hasMessages && !ratingDone && (
+          <Pressable
+            onPress={openRatingModal}
+            style={({ pressed }) => [
+              styles.rateCta,
+              { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.8 : 1 },
+            ]}
+          >
+            <View style={styles.rateCtaRow}>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Ionicons key={i} name="star-outline" size={18} color="#F59E0B" />
+              ))}
+            </View>
+            <Text style={[styles.rateCtaText, { color: colors.foreground }]}>
+              Évaluez {conv.participantName.split(" ")[0]}
+            </Text>
+            <Text style={[styles.rateCtaSub, { color: colors.mutedForeground }]}>
+              Aidez la communauté NAFA en laissant une note
+            </Text>
+          </Pressable>
+        )}
+
+        {/* Existing rating display */}
+        {ratingDone && conv.rating && (
+          <Pressable
+            onPress={openRatingModal}
+            style={({ pressed }) => [
+              styles.ratingCard,
+              { backgroundColor: "#FEF3C7", borderColor: "#F59E0B33", opacity: pressed ? 0.85 : 1 },
+            ]}
+          >
+            <View style={styles.ratingCardRow}>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Ionicons
+                  key={i}
+                  name={i < conv.rating!.stars ? "star" : "star-outline"}
+                  size={18}
+                  color="#F59E0B"
+                />
+              ))}
+              <Text style={styles.ratingCardStars}>{STAR_LABELS[conv.rating.stars]}</Text>
+            </View>
+            {conv.rating.comment ? (
+              <Text style={styles.ratingCardComment}>"{conv.rating.comment}"</Text>
+            ) : null}
+            <Text style={styles.ratingCardEdit}>Modifier l'évaluation</Text>
+          </Pressable>
+        )}
       </ScrollView>
 
       {/* Input bar */}
       <View
         style={[
           styles.inputBar,
-          {
-            backgroundColor: colors.card,
-            borderTopColor: colors.border,
-            paddingBottom: bottomPad + 8,
-          },
+          { backgroundColor: colors.card, borderTopColor: colors.border, paddingBottom: bottomPad + 8 },
         ]}
       >
-        <View
-          style={[
-            styles.inputWrap,
-            { backgroundColor: colors.background, borderColor: colors.border },
-          ]}
-        >
+        <View style={[styles.inputWrap, { backgroundColor: colors.background, borderColor: colors.border }]}>
           <TextInput
             value={input}
             onChangeText={setInput}
@@ -302,29 +404,123 @@ export default function ChatScreen() {
           disabled={!input.trim()}
           style={({ pressed }) => [
             styles.sendBtn,
-            {
-              backgroundColor: input.trim() ? BRAND_MID : colors.border,
-              opacity: pressed ? 0.8 : 1,
-            },
+            { backgroundColor: input.trim() ? BRAND_MID : colors.border, opacity: pressed ? 0.8 : 1 },
           ]}
         >
           <Ionicons name="send" size={18} color={input.trim() ? "#fff" : colors.mutedForeground} />
         </Pressable>
       </View>
+
+      {/* Rating Modal */}
+      <Modal
+        visible={showRating}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowRating(false)}
+      >
+        <Pressable style={styles.modalOverlay} onPress={() => setShowRating(false)}>
+          <Pressable
+            style={[styles.modalSheet, { backgroundColor: colors.card }]}
+            onPress={(e) => e.stopPropagation()}
+          >
+            {/* Handle */}
+            <View style={[styles.modalHandle, { backgroundColor: colors.border }]} />
+
+            {/* Header */}
+            <View style={styles.modalHeader}>
+              <View style={[styles.modalAvatar, { backgroundColor: catColor + "22" }]}>
+                <Text style={[styles.modalAvatarText, { color: catColor }]}>{initials}</Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.modalTitle, { color: colors.foreground }]}>
+                  Évaluer {conv.participantName.split(" ")[0]}
+                </Text>
+                <Text style={[styles.modalSub, { color: colors.mutedForeground }]}>
+                  {conv.subject}
+                </Text>
+              </View>
+              <Pressable onPress={() => setShowRating(false)} hitSlop={8}>
+                <Ionicons name="close" size={22} color={colors.mutedForeground} />
+              </Pressable>
+            </View>
+
+            {/* Stars */}
+            <View style={styles.starsRow}>
+              {Array.from({ length: 5 }).map((_, i) => {
+                const star = i + 1;
+                return (
+                  <Pressable
+                    key={star}
+                    onPress={() => setSelectedStars(star)}
+                    style={({ pressed }) => [styles.starBtn, { opacity: pressed ? 0.7 : 1 }]}
+                    hitSlop={4}
+                  >
+                    <Ionicons
+                      name={star <= selectedStars ? "star" : "star-outline"}
+                      size={40}
+                      color={star <= selectedStars ? "#F59E0B" : colors.mutedForeground}
+                    />
+                  </Pressable>
+                );
+              })}
+            </View>
+
+            {/* Star label */}
+            <Text style={[styles.starLabel, { color: selectedStars > 0 ? "#F59E0B" : colors.mutedForeground }]}>
+              {selectedStars > 0 ? STAR_LABELS[selectedStars] : "Touchez une étoile pour noter"}
+            </Text>
+
+            {/* Comment */}
+            <View style={[styles.commentWrap, { backgroundColor: colors.background, borderColor: colors.border }]}>
+              <TextInput
+                value={ratingComment}
+                onChangeText={setRatingComment}
+                placeholder="Laissez un commentaire (facultatif)..."
+                placeholderTextColor={colors.mutedForeground}
+                style={[styles.commentInput, { color: colors.foreground }]}
+                multiline
+                maxLength={200}
+              />
+            </View>
+            <Text style={[styles.commentCount, { color: colors.mutedForeground }]}>
+              {ratingComment.length}/200
+            </Text>
+
+            {/* Buttons */}
+            <View style={styles.modalBtns}>
+              <Pressable
+                onPress={() => setShowRating(false)}
+                style={[styles.modalBtnSecondary, { borderColor: colors.border }]}
+              >
+                <Text style={[styles.modalBtnSecondaryText, { color: colors.mutedForeground }]}>Annuler</Text>
+              </Pressable>
+              <Pressable
+                onPress={handleSubmitRating}
+                disabled={selectedStars === 0}
+                style={[
+                  styles.modalBtnPrimary,
+                  { backgroundColor: selectedStars > 0 ? "#F59E0B" : colors.border },
+                ]}
+              >
+                <Ionicons name="star" size={16} color={selectedStars > 0 ? "#fff" : colors.mutedForeground} />
+                <Text style={[styles.modalBtnPrimaryText, { color: selectedStars > 0 ? "#fff" : colors.mutedForeground }]}>
+                  {conv.rating ? "Modifier" : "Envoyer"}
+                </Text>
+              </Pressable>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+
   header: { paddingHorizontal: 16, paddingBottom: 14 },
   headerRow: { flexDirection: "row", alignItems: "center", gap: 10, marginTop: 8 },
-  backBtn: {
-    width: 36, height: 36, borderRadius: 18,
-    backgroundColor: "rgba(255,255,255,0.15)",
-    alignItems: "center", justifyContent: "center",
-  },
-  inboxBtn: {
+  headerBtn: {
     width: 36, height: 36, borderRadius: 18,
     backgroundColor: "rgba(255,255,255,0.15)",
     alignItems: "center", justifyContent: "center",
@@ -342,12 +538,13 @@ const styles = StyleSheet.create({
   },
   headerName: { fontSize: 16, fontFamily: "Inter_700Bold", color: "#fff", flex: 1 },
   headerRole: { fontSize: 12, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.7)", marginTop: 1 },
+  headerBottom: { flexDirection: "row", alignItems: "center", gap: 10, marginTop: 8 },
   subjectChip: {
     flexDirection: "row", alignItems: "center", gap: 6,
-    alignSelf: "flex-start", paddingHorizontal: 12, paddingVertical: 6,
-    borderRadius: 20, marginTop: 8,
+    paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20,
   },
   subjectText: { fontSize: 12, fontFamily: "Inter_500Medium", color: "rgba(255,255,255,0.85)" },
+  ratingPreview: { flexDirection: "row", gap: 2 },
 
   messages: { paddingHorizontal: 12, paddingTop: 16 },
   dateSep: { flexDirection: "row", alignItems: "center", marginVertical: 16, gap: 10 },
@@ -371,6 +568,27 @@ const styles = StyleSheet.create({
   },
   typingDot: { width: 6, height: 6, borderRadius: 3 },
 
+  // Rate CTA card
+  rateCta: {
+    marginTop: 20, marginHorizontal: 8, padding: 16,
+    borderRadius: 14, borderWidth: 1,
+    alignItems: "center", gap: 6,
+  },
+  rateCtaRow: { flexDirection: "row", gap: 4 },
+  rateCtaText: { fontSize: 15, fontFamily: "Inter_600SemiBold" },
+  rateCtaSub: { fontSize: 12, fontFamily: "Inter_400Regular", textAlign: "center" },
+
+  // Existing rating card
+  ratingCard: {
+    marginTop: 20, marginHorizontal: 8, padding: 16,
+    borderRadius: 14, borderWidth: 1,
+    gap: 6,
+  },
+  ratingCardRow: { flexDirection: "row", alignItems: "center", gap: 4 },
+  ratingCardStars: { fontSize: 13, fontFamily: "Inter_600SemiBold", color: "#D97706", marginLeft: 4 },
+  ratingCardComment: { fontSize: 13, fontFamily: "Inter_400Regular", color: "#92400E", fontStyle: "italic", lineHeight: 19 },
+  ratingCardEdit: { fontSize: 12, fontFamily: "Inter_500Medium", color: "#D97706", marginTop: 2 },
+
   inputBar: {
     flexDirection: "row", gap: 10, alignItems: "flex-end",
     paddingHorizontal: 12, paddingTop: 10, borderTopWidth: StyleSheet.hairlineWidth,
@@ -387,8 +605,65 @@ const styles = StyleSheet.create({
   sendBtn: {
     width: 44, height: 44, borderRadius: 22,
     alignItems: "center", justifyContent: "center",
-    marginBottom: 0,
   },
+
   errorText: { fontSize: 16, fontFamily: "Inter_400Regular", marginTop: 12 },
   backLink: { marginTop: 16 },
+
+  // Modal
+  modalOverlay: {
+    flex: 1, backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "flex-end",
+  },
+  modalSheet: {
+    borderTopLeftRadius: 24, borderTopRightRadius: 24,
+    paddingHorizontal: 20, paddingBottom: 36, paddingTop: 12,
+    gap: 0,
+  },
+  modalHandle: {
+    width: 40, height: 4, borderRadius: 2,
+    alignSelf: "center", marginBottom: 20,
+  },
+  modalHeader: {
+    flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 24,
+  },
+  modalAvatar: {
+    width: 44, height: 44, borderRadius: 22,
+    alignItems: "center", justifyContent: "center",
+  },
+  modalAvatarText: { fontSize: 16, fontFamily: "Inter_700Bold" },
+  modalTitle: { fontSize: 17, fontFamily: "Inter_700Bold" },
+  modalSub: { fontSize: 12, fontFamily: "Inter_400Regular", marginTop: 2 },
+
+  starsRow: {
+    flexDirection: "row", justifyContent: "center", gap: 8, marginBottom: 10,
+  },
+  starBtn: { padding: 4 },
+  starLabel: {
+    textAlign: "center", fontSize: 14, fontFamily: "Inter_600SemiBold",
+    marginBottom: 20, minHeight: 20,
+  },
+
+  commentWrap: {
+    borderWidth: 1, borderRadius: 14,
+    paddingHorizontal: 14, paddingVertical: 10, minHeight: 90,
+    marginBottom: 4,
+  },
+  commentInput: {
+    fontSize: 14, fontFamily: "Inter_400Regular",
+    textAlignVertical: "top", minHeight: 70,
+  },
+  commentCount: { fontSize: 11, fontFamily: "Inter_400Regular", textAlign: "right", marginBottom: 20 },
+
+  modalBtns: { flexDirection: "row", gap: 12 },
+  modalBtnSecondary: {
+    flex: 1, paddingVertical: 14, borderRadius: 14, borderWidth: 1,
+    alignItems: "center", justifyContent: "center",
+  },
+  modalBtnSecondaryText: { fontSize: 15, fontFamily: "Inter_600SemiBold" },
+  modalBtnPrimary: {
+    flex: 2, paddingVertical: 14, borderRadius: 14,
+    flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8,
+  },
+  modalBtnPrimaryText: { fontSize: 15, fontFamily: "Inter_700Bold" },
 });

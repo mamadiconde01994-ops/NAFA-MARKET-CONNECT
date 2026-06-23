@@ -123,11 +123,17 @@ function ConvCard({
               ? `${last.senderId === "me" ? "Vous : " : ""}${last.text}`
               : "Démarrez la conversation"}
           </Text>
-          {unread > 0 && (
+          {unread > 0 ? (
             <View style={[styles.unreadBadge, { backgroundColor: catColor }]}>
               <Text style={styles.unreadText}>{unread}</Text>
             </View>
-          )}
+          ) : conv.rating ? (
+            <View style={styles.ratingRow}>
+              {Array.from({ length: conv.rating.stars }).map((_, i) => (
+                <Ionicons key={i} name="star" size={11} color="#F59E0B" />
+              ))}
+            </View>
+          ) : null}
         </View>
       </View>
     </Pressable>

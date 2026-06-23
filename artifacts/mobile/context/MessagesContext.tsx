@@ -8,6 +8,12 @@ export interface Message {
   read: boolean;
 }
 
+export interface ConversationRating {
+  stars: number;
+  comment: string;
+  createdAt: string;
+}
+
 export interface Conversation {
   id: string;
   participantId: string;
@@ -18,6 +24,7 @@ export interface Conversation {
   subjectCategory: string;
   messages: Message[];
   createdAt: string;
+  rating?: ConversationRating;
 }
 
 interface MessagesContextValue {
@@ -32,6 +39,7 @@ interface MessagesContextValue {
   ) => string;
   markAsRead: (conversationId: string) => void;
   getConversation: (id: string) => Conversation | undefined;
+  rateConversation: (conversationId: string, stars: number, comment: string) => void;
 }
 
 const MessagesContext = createContext<MessagesContextValue | null>(null);
@@ -317,9 +325,22 @@ export function MessagesProvider({ children }: { children: React.ReactNode }) {
     [conversations]
   );
 
+  const rateConversation = useCallback(
+    (conversationId: string, stars: number, comment: string) => {
+      setConversations((prev) =>
+        prev.map((cv) =>
+          cv.id === conversationId
+            ? { ...cv, rating: { stars, comment, createdAt: new Date().toISOString() } }
+            : cv
+        )
+      );
+    },
+    []
+  );
+
   return (
     <MessagesContext.Provider
-      value={{ conversations, totalUnread, sendMessage, startConversation, markAsRead, getConversation }}
+      value={{ conversations, totalUnread, sendMessage, startConversation, markAsRead, getConversation, rateConversation }}
     >
       {children}
     </MessagesContext.Provider>
