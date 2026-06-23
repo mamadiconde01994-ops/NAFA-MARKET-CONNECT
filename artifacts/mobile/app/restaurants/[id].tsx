@@ -14,6 +14,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MOCK_RESTAURANTS } from "@/constants/mockData";
+import { useMessages } from "@/context/MessagesContext";
 import { useColors } from "@/hooks/useColors";
 import { formatPrice } from "@/lib/format";
 
@@ -37,6 +38,7 @@ export default function RestaurantDetailScreen() {
   const similarRestaurants = restaurant
     ? MOCK_RESTAURANTS.filter((r) => r.id !== restaurant.id && r.cuisine === restaurant.cuisine).slice(0, 4)
     : [];
+  const { startConversation } = useMessages();
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 + 84 : 100;
@@ -49,9 +51,13 @@ export default function RestaurantDetailScreen() {
 
   const handleMessage = () => {
     if (!restaurant) return;
-    router.push(
-      `/chat?name=${encodeURIComponent(restaurant.name)}&context=${encodeURIComponent("Réservation / Question")}` as any,
+    const convId = startConversation(
+      { id: `owner-${restaurant.id}`, name: restaurant.name, role: "restaurant", verified: true },
+      "Réservation / Question",
+      "restaurants",
+      `Bonjour ! Je souhaite avoir des informations sur ${restaurant.name}. Êtes-vous disponible pour une réservation ?`
     );
+    router.push(`/chat/${convId}` as any);
   };
 
   if (!restaurant) {

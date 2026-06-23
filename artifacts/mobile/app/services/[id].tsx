@@ -15,6 +15,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MOCK_SERVICES } from "@/constants/mockData";
+import { useMessages } from "@/context/MessagesContext";
 import { useColors } from "@/hooks/useColors";
 import { formatPrice } from "@/lib/format";
 import type { ServiceCategoryId } from "@/types";
@@ -98,6 +99,8 @@ export default function ServiceDetailScreen() {
     );
   }
 
+  const { startConversation } = useMessages();
+
   const handleCall = () => {
     Linking.openURL(`tel:${provider.phone}`);
   };
@@ -105,6 +108,16 @@ export default function ServiceDetailScreen() {
   const handleWhatsApp = () => {
     const phone = provider.phone.replace(/\s/g, "");
     Linking.openURL(`https://wa.me/${phone}`);
+  };
+
+  const handleMessage = () => {
+    const convId = startConversation(
+      { id: provider.id, name: provider.name, role: "partner", verified: provider.verified },
+      provider.name,
+      "services",
+      `Bonjour ${provider.name}, j'ai vu votre annonce sur NAFA et je souhaite obtenir un devis pour vos services. Êtes-vous disponible ?`
+    );
+    router.push(`/chat/${convId}` as any);
   };
 
   return (
@@ -345,15 +358,22 @@ export default function ServiceDetailScreen() {
         ]}
       >
         <Pressable
+          onPress={handleMessage}
+          style={[styles.ctaSecondary, { borderColor: "#7C3AED" }]}
+        >
+          <Ionicons name="chatbubble-outline" size={18} color="#7C3AED" />
+          <Text style={[styles.ctaSecondaryText, { color: "#7C3AED" }]}>Message</Text>
+        </Pressable>
+        <Pressable
           onPress={handleWhatsApp}
           style={[styles.ctaSecondary, { borderColor: "#16A34A" }]}
         >
-          <Ionicons name="logo-whatsapp" size={20} color="#16A34A" />
+          <Ionicons name="logo-whatsapp" size={18} color="#16A34A" />
           <Text style={[styles.ctaSecondaryText, { color: "#16A34A" }]}>WhatsApp</Text>
         </Pressable>
         <Pressable onPress={handleCall} style={styles.ctaPrimary}>
-          <Ionicons name="call" size={20} color="#FFFFFF" />
-          <Text style={styles.ctaPrimaryText}>Appeler maintenant</Text>
+          <Ionicons name="call" size={18} color="#FFFFFF" />
+          <Text style={styles.ctaPrimaryText}>Appeler</Text>
         </Pressable>
       </View>
     </View>

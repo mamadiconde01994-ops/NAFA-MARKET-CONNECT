@@ -14,6 +14,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { MOCK_PROPERTIES } from "@/constants/mockData";
+import { useMessages } from "@/context/MessagesContext";
 import { useColors } from "@/hooks/useColors";
 import { formatPrice } from "@/lib/format";
 import type { PropertyType } from "@/types";
@@ -35,6 +36,7 @@ export default function PropertyDetailScreen() {
   const similarProperties = property
     ? MOCK_PROPERTIES.filter((p) => p.id !== property.id && (p.type === property.type || p.city === property.city)).slice(0, 4)
     : [];
+  const { startConversation } = useMessages();
 
   const topPad = Platform.OS === "web" ? 67 : insets.top;
   const bottomPad = Platform.OS === "web" ? 34 + 84 : 100;
@@ -47,9 +49,13 @@ export default function PropertyDetailScreen() {
 
   const handleMessage = () => {
     if (!property) return;
-    router.push(
-      `/chat?name=${encodeURIComponent(property.agentName)}&context=${encodeURIComponent(property.title)}` as any,
+    const convId = startConversation(
+      { id: `agent-${property.id}`, name: property.agentName, role: "partner", verified: true },
+      property.title,
+      "real-estate",
+      `Bonjour ${property.agentName}, je suis intéressé(e) par votre bien "${property.title}" à ${property.city}. Pouvez-vous me donner plus d'informations ?`
     );
+    router.push(`/chat/${convId}` as any);
   };
 
   if (!property) {
