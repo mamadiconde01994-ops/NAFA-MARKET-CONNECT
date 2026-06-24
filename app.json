@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "677f7ca8-5ac0-42dd-b881-db9d5b464dfd"
+      }
+    },
+    "android": {
+      "package": "com.nafa.market.connect"
+    }
+  }
+}

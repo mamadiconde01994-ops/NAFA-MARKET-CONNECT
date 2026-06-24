@@ -325,6 +325,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   unreadText: { fontSize: 11, fontFamily: "Inter_700Bold", color: "#fff" },
+  ratingRow: { flexDirection: "row", alignItems: "center", gap: 3 },
 
   empty: { alignItems: "center", paddingVertical: 64, paddingHorizontal: 28 },
   emptyIcon: {
